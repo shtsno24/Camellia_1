@@ -1,0 +1,27 @@
+﻿モータ：回転角指定モード（ステップ指定モード）、無限モード（次の命令が来るまで回り続けるモード）、モータstatus変数
+壁センサ：mm単位取得モード、raw_data取得モード、値格納変数
+モータ回転角：回転角度蓄積変数
+バッテリー：電圧変数
+ブザー：鳴らす関数
+ロータリーエンコーダ：回転方向変数、回転方向読み取り関数
+LEDstatus：LED状態管理関数
+LEDsensor：LED点灯関数、PWM点滅関数
+キャリブレーション：モータ回転角リセット関数、壁センサ調整関数、バッテリー電圧調整関数
+error_status；電圧監視関数、フェイルセーフ関数、status変数(char)、ブザー・LED作動関数
+
+====================================================================================================================
+
+壁センサ：ADC(AD0)
+	  電圧変換(float)+距離変換関数(float)
+	  距離/raw_data格納変数(union(距離用float/raw_data用char))
+
+バッテリー：ADC(AD1)
+	    電圧取得関数(float)/電圧変数(float)
+
+ロータリーエンコーダ：回転方向変数(char)、回転方向取得関数(char)
+
+ブザー：鳴らす関数(void)、status通知変数(char/R)(statusLED、sensorLEDと共用)
+
+statusLED：点灯関数(void)、status通知関数(char/R)(buzzer、sensorLEDと共用)
+
+sensorLED；点灯関数(void)、status通知変数(char/R)(buzzer、statusLEDと共用)

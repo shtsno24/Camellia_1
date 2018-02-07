@@ -25,7 +25,7 @@ int count_cmt_0 = 0, count_cmt_1, i, rot = -1, old = 0, cnt_l = 0, cnt_r = 0,
 //dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, distance;
 double vel_l = 250, vel_r = 250, tar_vel_l = 300, tar_vel_r = 300, acc_l = 200,
 		acc_r = 200;
-float batt, diff, kp_r = 0.3, kp_l = 0.3;
+float batt, diff, kp_r = 0.2, kp_l = 0.2;
 short sen_diff_l = 0, sen_diff_r = 0, sen_old_L, sen_old_R;
 short duty[17];
 short sen[4];
@@ -206,7 +206,7 @@ void diff_calc(void) {
 	}
 
 	if (cnt_ctl == 1) {
-		diff = (float) (l_motor.cnt - r_motor.cnt) * 0.1;
+		diff = (float) (l_motor.cnt - r_motor.cnt) * 5;
 		return;
 	} else {
 		if ((r_sen.sen >= r_sen.non_threshold)
@@ -275,26 +275,34 @@ void sen_cmt1() {
 	CMT1.CMCNT = 0;
 
 	sen_LED_drv(R_LED, on);
-	r_sen.sen = get_sensor(R_sen, ad_0);		//R sensor
+	for (i = 0; i < 100; i++)
+		;
+	r_sen.sen = get_sensor(R_sen, ad_0); //R sensor
 	sen_LED_drv(R_LED, off);
 
 	sen_LED_drv(CR_LED, on);
+	for (i = 0; i < 100; i++)
+		;
 	cr_sen.sen = get_sensor(CR_sen, ad_0);		//CR sensor
 	sen_LED_drv(CR_LED, off);
 	//sen_LED_drv(R_LED, off);
 
 	sen_LED_drv(CL_LED, on);
+	for (i = 0; i < 100; i++)
+		;
 	cl_sen.sen = get_sensor(CL_sen, ad_0);		//CL sensor
 	sen_LED_drv(CL_LED, off);
 
 	sen_LED_drv(L_LED, on);
+	for (i = 0; i < 100; i++)
+		;
 	l_sen.sen = get_sensor(L_sen, ad_0);		//L sensor
 	sen_LED_drv(L_LED, off);
 
-	r_sen.sen -= get_sensor(CR_sen, ad_0);		//CR sensor
+	cr_sen.sen -= get_sensor(CR_sen, ad_0);		//CR sensor
 	cl_sen.sen -= get_sensor(CL_sen, ad_0);		//CL sensor
 	l_sen.sen -= get_sensor(L_sen, ad_0);		//L sensor
-	cr_sen.sen -= get_sensor(R_sen, ad_0);		//R sensor
+	r_sen.sen -= get_sensor(R_sen, ad_0);		//R sensor
 
 	cr_sen.diff = cr_sen.sen - cr_sen.old;
 	r_sen.diff = r_sen.sen - r_sen.old;
@@ -305,7 +313,6 @@ void sen_cmt1() {
 	r_sen.old = r_sen.sen;		//R sensor
 	cl_sen.old = cl_sen.sen;		//CL sensor
 	l_sen.old = l_sen.sen;		//L sensor
-
 	diff_calc();
 
 	vel_calc();
@@ -549,6 +556,14 @@ void mot_drv(int dist, int t_vel, int t_acc, char rot_dir_flag, int end_flag,
 	PE.DRL.BIT.B2 = 0; //reset(0 : off, 1 : on)
 }
 
+void mot_onoff(char sw) {
+	if (sw == on) {
+		PE.DRL.BIT.B3 = 1;
+	} else {
+		PE.DRL.BIT.B3 = 0;
+	}
+}
+
 void mot_app(int dist, int t_vel, int t_acc, char move_flag, char end_flag) {
 	cnt_ctl = 0;
 	/*
@@ -629,7 +644,7 @@ int main(void) {
 	float v_l = 0;
 	init_sci1();
 	initALL();
-
+	mot_onoff(off);
 //	PE.DRL.BIT.B6 = 0;
 	PE.DRL.BIT.B7 = 0;
 
@@ -664,6 +679,7 @@ int main(void) {
 		wait_ms(100);
 
 		if (PB.DR.BIT.B5 != 0) {
+			mot_onoff(off);
 			myprintf("sen : %d | %d | %d | %d\n", l_sen.sen, cl_sen.sen,
 					cr_sen.sen, r_sen.sen);
 		} else {
@@ -683,6 +699,7 @@ int main(void) {
 			 */
 
 			//sen_calibration();
+			mot_onoff(on);
 			UX_effect(alart);
 			mot_app(900, 400, 500, straight, on);
 			wait_ms(100);

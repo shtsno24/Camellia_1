@@ -19,8 +19,8 @@
 #define round(A)((int)(A + 0.5))
 
 char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, clt = 0,
-		stop_l = 0, stop_r = 0, cnt_ctl = 0;
-int count_cmt_0 = 0, count_cmt_1, i, rot = -1, old = 0, cnt_l = 0, cnt_r = 0,
+		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0;
+int count_cmt_0 = 0, count_cmt_1, i, rot = 0, old = 0, cnt_l = 0, cnt_r = 0,
 		distance, duty_R = 0, duty_R_h = 0, duty_L = 0, duty_L_h = 0;
 //dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, distance;
 double vel_l = 250, vel_r = 250, tar_vel_l = 300, tar_vel_r = 300, acc_l = 200,
@@ -67,6 +67,10 @@ enum motor {
 
 enum ux {
 	error = 0, click = 1, alart = 2
+};
+
+enum mode {
+	sen_cal = 0, search = 1, run = 2, test = 3
 };
 
 void pass(void) {
@@ -213,29 +217,35 @@ void diff_calc(void) {
 				&& (l_sen.sen >= l_sen.non_threshold)) {
 			diff = (float) ((l_sen.sen - (l_sen.ref_wall + ref_boost_L))
 					- (r_sen.ref_wall - (r_sen.ref_wall + ref_boost_R)));
-			sta_LED_drv(Green, on);
-			sta_LED_drv(Yerrow, off);
-			sta_LED_drv(Red, off);
+			if (sta_LED_flag == 1) {
+				sta_LED_drv(Green, on);
+				sta_LED_drv(Yerrow, off);
+				sta_LED_drv(Red, off);
+			}
 
 		} else if ((r_sen.sen >= r_sen.non_threshold)
 				&& (l_sen.sen < l_sen.non_threshold)) {
 			diff = (float) (-2 * (r_sen.sen - (r_sen.ref_wall + ref_boost_R)));
-			sta_LED_drv(Green, off);
-			sta_LED_drv(Yerrow, on);
-			sta_LED_drv(Red, off);
-
+			if (sta_LED_flag == 1) {
+				sta_LED_drv(Green, off);
+				sta_LED_drv(Yerrow, on);
+				sta_LED_drv(Red, off);
+			}
 		} else if ((r_sen.sen < r_sen.non_threshold)
 				&& (l_sen.sen >= l_sen.non_threshold)) {
 			diff = (float) (2 * (l_sen.sen - (l_sen.ref_wall + ref_boost_L)));
-			sta_LED_drv(Green, off);
-			sta_LED_drv(Yerrow, off);
-			sta_LED_drv(Red, on);
-
+			if (sta_LED_flag == 1) {
+				sta_LED_drv(Green, off);
+				sta_LED_drv(Yerrow, off);
+				sta_LED_drv(Red, on);
+			}
 		} else {
 			diff = (float) (l_motor.cnt - r_motor.cnt);
-			sta_LED_drv(Green, off);
-			sta_LED_drv(Yerrow, off);
-			sta_LED_drv(Red, off);
+			if (sta_LED_flag == 1) {
+				sta_LED_drv(Green, off);
+				sta_LED_drv(Yerrow, off);
+				sta_LED_drv(Red, off);
+			}
 		}
 	}
 
@@ -475,36 +485,6 @@ void UX_effect(char pattern) {
 	}
 }
 
-int Rotate_detect(void) {
-	int now = PE.DRL.BIT.B14;
-	now = now << 1;
-	now += PE.DRL.BIT.B15;
-
-	if (now == 3) {
-		now = 2;
-	} else if (now == 2) {
-		now = 3;
-	}
-
-	if (old == 0 && now == 3) {
-		rot -= 1;
-		UX_effect(click);
-	} else if (old == 3 && now == 0) {
-		rot += 1;
-		UX_effect(click);
-	} else if (now > old) {
-		rot += 1;
-		UX_effect(click);
-	} else if (now < old) {
-		rot -= 1;
-		UX_effect(click);
-	} else {
-		rot += 0;
-	}
-	old = now;
-	return rot;
-}
-
 float batt_vol(void) {
 	float vol_ad, voltage;
 	vol_ad = (float) get_sensor(3, ad_1) / 1024.0 * 5.0;
@@ -639,32 +619,59 @@ void sen_calibration() {
 	sta_LED_drv(Rst_status_LED, off);
 }
 
+void Rotate_detect(void) {
+	int now = PE.DRL.BIT.B14;
+	now = now << 1;
+	now += PE.DRL.BIT.B15;
+
+	if (now == 3) {
+		now = 2;
+	} else if (now == 2) {
+		now = 3;
+	}
+
+	if (old == 0 && now == 3) {
+		rot -= 1;
+		UX_effect(click);
+	} else if (old == 3 && now == 0) {
+		rot += 1;
+		UX_effect(click);
+	} else if (now > old) {
+		rot += 1;
+		UX_effect(click);
+	} else if (now < old) {
+		rot -= 1;
+		UX_effect(click);
+	} else {
+		rot += 0;
+	}
+	old = now;
+	//return rot;
+}
+
+void mode_selector() {
+	rot_sw = (char) (rot % 5);
+	Rotate_detect();
+	sta_LED_drv(Red, (rot_sw + 1) & 1);
+	sta_LED_drv(Yerrow, ((rot_sw + 1) & 2) >> 1);
+	sta_LED_drv(Green, ((rot_sw + 1) & 4) >> 2);
+}
+
 int main(void) {
 	float v_r = 0;
 	float v_l = 0;
 	init_sci1();
 	initALL();
 	mot_onoff(off);
-//	PE.DRL.BIT.B6 = 0;
 	PE.DRL.BIT.B7 = 0;
 
 	duty[0] = 6250 - 1;		//(1ms)
 	duty[1] = round(duty[0] / 2);		//(about 0.5ms)
 	duty[4] = 6250 - 1;		//(1ms)
 	duty[5] = round(duty[4] / 2);		//(about 0.5ms)
-//duty[0] = 0;		//(1ms)
-//duty[1] = 0;		//(about 0.5ms)
-//duty[4] = 0;		//(1ms)
-//duty[5] = 0;		//(about 0.5ms)
-//	duty[6] = 6250 - 1;		//(1ms)
-//	duty[7] = round(duty[6] / 2);		//(about 0.5ms)
-//	duty[8] = 6250 - 1;		//(1ms)
-//	duty[9] = round(duty[8] / 2);		//(about 0.5ms)
-//	duty[12] = round(duty[8] / 2);		//(about 0.5ms)
-//	duty[13] = round(duty[8] / 2);		//(about 0.5ms)
-//	duty[16] = 0; //for reset MTU count
+
 	wait_ms(300);
-	while (batt_vol() < 11.1) {
+	while (batt_vol() < 11.3) {
 		myprintf("Low_battery\n");
 		UX_effect(error);
 	}
@@ -672,151 +679,179 @@ int main(void) {
 	sta_LED_drv(Red, off);
 
 	while (1) {
-		batt = batt_vol();
-		//myprintf("\n%f | %d \n", batt, rot);
-		myprintf("%f\n", batt);
-		myprintf("\n");
-		wait_ms(100);
-
-		if (PB.DR.BIT.B5 != 0) {
-			mot_onoff(off);
+		while (PB.DR.BIT.B5 != 0) {
+			batt = batt_vol();
+			mode_selector();
+			myprintf("batt : %f\n", batt);
 			myprintf("sen : %d | %d | %d | %d\n", l_sen.sen, cl_sen.sen,
 					cr_sen.sen, r_sen.sen);
-		} else {
-			/*
-			 sta_LED_drv(Red, on);
-			 buzzer_drv(on);
-			 wait_ms(500);
-			 sta_LED_drv(Red, off);
-			 sta_LED_drv(Yerrow, on);
-			 wait_ms(500);
-			 sta_LED_drv(Yerrow, off);
-			 sta_LED_drv(Green, on);
-			 wait_ms(500);
-			 sta_LED_drv(Green, off);
-			 buzzer_drv(off);
-			 distance = (int) ((90.0 / 180 * 3.1415) * (spec.tire_dim / 2));
-			 */
-
-			//sen_calibration();
-			mot_onoff(on);
-			UX_effect(alart);
-			mot_app(900, 400, 500, straight, on);
+			myprintf("mode : %d\n", rot_sw);
 			wait_ms(100);
+		}
+		wait_ms(100);
 
-			/*
-			 mot_app(1000, 500, 1000, back, on);
-			 wait_ms(100);
-			 mot_app(80, 900, 1000, left, on);
-			 wait_ms(100);
-			 mot_app(80, 900, 1000, right, on);
-			 */
-
-			//sta_LED_drv(Rst_status_LED, off);
-			/*
-			 while (1) {
-
-			 wait_ms(100);
-			 cnt_ctl = 1;
-			 mot_app(93, 300, 500, straight, 1);
-			 cnt_ctl = 0;
-			 while (dist_flag_l != 1)
-			 ;
-			 if (sen[1] <= spec.sen_ref_non_L) {
-			 mot_app(94, 500, 500, straight, 1);
-			 while (dist_flag_l != 1)
-			 ;
-			 cnt_ctl = 1;
-			 wait_ms(1000);
-			 mot_app(distance, 300, 500, left, 1);
-			 while (dist_flag_l != 1)
-			 ;
-			 cnt_ctl = 0;
-			 wait_ms(1000);
-
-			 } else if (sen[2] <= spec.sen_ref_non_CL) {
-			 wait_ms(500);
-			 mot_app(94, 500, 500, straight, 1);
-			 while (dist_flag_r != 1)
-			 ;
-
-			 } else if (sen[3] <= spec.sen_ref_non_R) {
-			 mot_app(94, 300, 500, straight, 1);
-			 while (dist_flag_l != 1)
-			 ;
-			 cnt_ctl = 1;
-			 wait_ms(1000);
-			 mot_app(distance, 300, 500, right, 1);
-			 while (dist_flag_l != 1)
-			 ;
-			 cnt_ctl = 0;
-			 wait_ms(1000);
-
-			 } else {
-			 mot_app(94, 500, 500, straight, 1);
-			 while (dist_flag_l != 1)
-			 ;
-			 cnt_ctl = 1;
-			 wait_ms(500);
-			 mot_app(distance, 300, 500, left, 1);
-			 while (dist_flag_l != 1)
-			 ;
-			 wait_ms(500);
-			 mot_app(100, 300, 500, back, 1);
-			 while (dist_flag_l != 1)
-			 ;
-			 wait_ms(500);
-			 mot_app(15, 300, 500, straight, 1);
-			 while (dist_flag_l != 1)
-			 ;
-			 wait_ms(1500);
-			 mot_app(distance, 300, 500, left, 1);
-			 while (dist_flag_l != 1)
-			 ;
-			 wait_ms(500);
-			 mot_app(100, 300, 500, back, 1);
-			 while (dist_flag_l != 1)
-			 ;
-			 wait_ms(500);
-			 mot_app(15, 300, 500, straight, 1);
-			 while (dist_flag_l != 1)
-			 ;
-			 wait_ms(500);
-			 cnt_ctl = 0;
-			 }
-			 }
-			 */
-			/*
-			 for (i = 0; i < 2; i++) {
-
-			 mot_app(45, 400, 500, straight, 1, 0);
-			 while (dist_flag_l != 1)
-			 ;
-			 mot_app(900, 700, 800, straight, 1, 1);
-			 while (dist_flag_l != 1) {
-			 if ((sen[1] >= spec.sen_ref_wall_R)
-			 && (sen[3] < spec.sen_ref_wall_L)) {
-			 sta_LED_drv(Yerrow,on);
-			 } else if ((sen[1] < spec.sen_ref_wall_R)
-			 && (sen[3] >= spec.sen_ref_wall_L)) {
-			 sta_LED_drv(Green,on);
-			 }
-			 }
-			 mot_app(45, 300, 500, straight, 1, 0);
-			 while (dist_flag_l != 1)
-			 ;
-			 wait_ms(500);
-			 cnt_ctl = 1;
-			 mot_app(2 * distance, 300, 20, right, 1, 1);
-			 while (dist_flag_l != 1)
-			 ;
-			 cnt_ctl = 0;
-			 wait_ms(500);
-			 }
-			 sta_LED_drv(Rst_status_LED,off);
-			 */
+		switch (rot_sw) {
+		case sen_cal:
+			sen_calibration();
+			break;
+		case search:
+			break;
+		case run:
+			break;
+		case test:
+			sta_LED_flag = 1;
+			UX_effect(alart);
+			mot_onoff(on);
+			mot_app(90000, 400, 500, straight, on);
+			wait_ms(100);
+			sta_LED_flag = 0;
+			break;
 		}
 
+		mot_onoff(off);
+
+		/*
+		 if (PB.DR.BIT.B5 != 0) {
+
+		 mot_onoff(off);
+		 myprintf("mode : %d\n", mode_selector());
+		 myprintf("sen : %d | %d | %d | %d\n", l_sen.sen, cl_sen.sen,
+		 cr_sen.sen, r_sen.sen);
+		 } else {
+
+		 //sen_calibration();
+
+		 mot_onoff(on);
+		 UX_effect(alart);
+		 mot_app(900, 400, 500, straight, on);
+		 wait_ms(100);
+		 */
+		/*
+		 sta_LED_drv(Red, on);
+		 buzzer_drv(on);
+		 wait_ms(500);
+		 sta_LED_drv(Red, off);
+		 sta_LED_drv(Yerrow, on);
+		 wait_ms(500);
+		 sta_LED_drv(Yerrow, off);
+		 sta_LED_drv(Green, on);
+		 wait_ms(500);
+		 sta_LED_drv(Green, off);
+		 buzzer_drv(off);
+		 distance = (int) ((90.0 / 180 * 3.1415) * (spec.tire_dim / 2));
+		 */
+
+		/*
+		 mot_app(1000, 500, 1000, back, on);
+		 wait_ms(100);
+		 mot_app(80, 900, 1000, left, on);
+		 wait_ms(100);
+		 mot_app(80, 900, 1000, right, on);
+		 */
+
+		//sta_LED_drv(Rst_status_LED, off);
+		/*
+		 while (1) {
+
+		 wait_ms(100);
+		 cnt_ctl = 1;
+		 mot_app(93, 300, 500, straight, 1);
+		 cnt_ctl = 0;
+		 while (dist_flag_l != 1)
+		 ;
+		 if (sen[1] <= spec.sen_ref_non_L) {
+		 mot_app(94, 500, 500, straight, 1);
+		 while (dist_flag_l != 1)
+		 ;
+		 cnt_ctl = 1;
+		 wait_ms(1000);
+		 mot_app(distance, 300, 500, left, 1);
+		 while (dist_flag_l != 1)
+		 ;
+		 cnt_ctl = 0;
+		 wait_ms(1000);
+
+		 } else if (sen[2] <= spec.sen_ref_non_CL) {
+		 wait_ms(500);
+		 mot_app(94, 500, 500, straight, 1);
+		 while (dist_flag_r != 1)
+		 ;
+
+		 } else if (sen[3] <= spec.sen_ref_non_R) {
+		 mot_app(94, 300, 500, straight, 1);
+		 while (dist_flag_l != 1)
+		 ;
+		 cnt_ctl = 1;
+		 wait_ms(1000);
+		 mot_app(distance, 300, 500, right, 1);
+		 while (dist_flag_l != 1)
+		 ;
+		 cnt_ctl = 0;
+		 wait_ms(1000);
+
+		 } else {
+		 mot_app(94, 500, 500, straight, 1);
+		 while (dist_flag_l != 1)
+		 ;
+		 cnt_ctl = 1;
+		 wait_ms(500);
+		 mot_app(distance, 300, 500, left, 1);
+		 while (dist_flag_l != 1)
+		 ;
+		 wait_ms(500);
+		 mot_app(100, 300, 500, back, 1);
+		 while (dist_flag_l != 1)
+		 ;
+		 wait_ms(500);
+		 mot_app(15, 300, 500, straight, 1);
+		 while (dist_flag_l != 1)
+		 ;
+		 wait_ms(1500);
+		 mot_app(distance, 300, 500, left, 1);
+		 while (dist_flag_l != 1)
+		 ;
+		 wait_ms(500);
+		 mot_app(100, 300, 500, back, 1);
+		 while (dist_flag_l != 1)
+		 ;
+		 wait_ms(500);
+		 mot_app(15, 300, 500, straight, 1);
+		 while (dist_flag_l != 1)
+		 ;
+		 wait_ms(500);
+		 cnt_ctl = 0;
+		 }
+		 }
+		 */
+		/*
+		 for (i = 0; i < 2; i++) {
+
+		 mot_app(45, 400, 500, straight, 1, 0);
+		 while (dist_flag_l != 1)
+		 ;
+		 mot_app(900, 700, 800, straight, 1, 1);
+		 while (dist_flag_l != 1) {
+		 if ((sen[1] >= spec.sen_ref_wall_R)
+		 && (sen[3] < spec.sen_ref_wall_L)) {
+		 sta_LED_drv(Yerrow,on);
+		 } else if ((sen[1] < spec.sen_ref_wall_R)
+		 && (sen[3] >= spec.sen_ref_wall_L)) {
+		 sta_LED_drv(Green,on);
+		 }
+		 }
+		 mot_app(45, 300, 500, straight, 1, 0);
+		 while (dist_flag_l != 1)
+		 ;
+		 wait_ms(500);
+		 cnt_ctl = 1;
+		 mot_app(2 * distance, 300, 20, right, 1, 1);
+		 while (dist_flag_l != 1)
+		 ;
+		 cnt_ctl = 0;
+		 wait_ms(500);
+		 }
+		 sta_LED_drv(Rst_status_LED,off);
+		 */
 	}
 
 }

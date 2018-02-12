@@ -246,8 +246,8 @@ void diff_calc(void) {
 				sta_LED_drv(Green, off);
 				sta_LED_drv(Yerrow, off);
 				sta_LED_drv(Red, off);
-			}
-		}*/
+			*/}
+		}
 	}
 
 }

@@ -239,15 +239,14 @@ void diff_calc(void) {
 				sta_LED_drv(Yerrow, off);
 				sta_LED_drv(Red, on);
 			}
-		}
-		/*else {
+		} else {
 			diff = (float) (l_motor.cnt - r_motor.cnt);
 			if (sta_LED_flag == 1) {
 				sta_LED_drv(Green, off);
 				sta_LED_drv(Yerrow, off);
 				sta_LED_drv(Red, off);
 			}
-		}*/
+		}
 	}
 
 }
@@ -703,7 +702,7 @@ int main(void) {
 			sta_LED_flag = 1;
 			UX_effect(alart);
 			mot_onoff(on);
-			mot_app(1260, 400, 500, straight, on);
+			mot_app(90000, 400, 500, straight, on);
 			wait_ms(100);
 			sta_LED_flag = 0;
 			break;

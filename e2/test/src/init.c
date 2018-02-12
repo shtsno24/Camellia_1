@@ -57,12 +57,12 @@ void initIO(void) {
 }
 
 void initSPEC() {
-	spec.tread = 92.0;
-	spec.tire_dim = 91.0;
+	spec.tread = 90.0;
+	spec.tire_dim = 90.0;
 	spec.step_dist = 0.408407;
 	spec.vel_min = 250;
 	spec.tar_vel_min = 300;
-
+/*
 	spec.sen_min_CR = 29;
 	spec.sen_min_R = 28;
 	spec.sen_min_CL = 80;
@@ -83,7 +83,7 @@ void initSPEC() {
 	spec.sen_ref_non_R = 10;
 	spec.sen_ref_non_CL = 20;
 	spec.sen_ref_non_L = 10;
-
+*/
 	spec.pwm_base_clock = 6250 - 1; //(interrupt duty : 1ms(@6.25MHz))
 	spec.pwm_half_clock = round((6250 - 1) / 2);
 }
@@ -118,8 +118,8 @@ void initMOT(void) {
 	r_motor.acc = 0.0;
 	l_motor.acc = 0.0;
 
-	r_motor.min_vel = 250.0;
-	l_motor.min_vel = 250.0;
+	r_motor.min_vel = 200.0;
+	l_motor.min_vel = 200.0;
 	r_motor.max_vel = 1500.0;
 	l_motor.max_vel = 1500.0;
 	r_motor.vel = 300.0;

@@ -6,20 +6,20 @@
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="sta_LED_drv" key="selection"/>
+		<item value="step_dist" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="step_dist"/>
+			<item value="tire_dim"/>
 			<item value="sta_LED_drv"/>
 			<item value="sta_LED_flag"/>
 			<item value="rot"/>
 			<item value="cnt_ctl"/>
 			<item value="sen_LED"/>
 			<item value="sen_LED_drv"/>
-			<item value="end_flag"/>
-			<item value="diff"/>
 		</list>
 		<list key="replacehistory">
 			<item value="buzzer_drv"/>

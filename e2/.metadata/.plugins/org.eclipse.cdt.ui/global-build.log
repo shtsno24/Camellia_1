@@ -70012,3 +70012,909 @@ Constructing the output ELF image....
 Saving the ELF output file test.x
 
 'Build complete.'
+15:08:13 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/init.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/init.d" -MT"src/init.obj" -MT"src/init.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/init.c"
+shc -lang=c -object="src/init.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/init.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/init.c'
+
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:13:30 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:16:30 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/init.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/init.d" -MT"src/init.obj" -MT"src/init.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/init.c"
+shc -lang=c -object="src/init.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/init.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/init.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:34:52 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:37:02 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:39:11 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:40:39 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:42:32 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:43:03 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:44:45 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:46:03 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:46:51 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:48:57 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:49:53 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/init.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/init.d" -MT"src/init.obj" -MT"src/init.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/init.c"
+shc -lang=c -object="src/init.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/init.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/init.c'
+
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:51:26 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/init.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/init.d" -MT"src/init.obj" -MT"src/init.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/init.c"
+shc -lang=c -object="src/init.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/init.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/init.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:53:12 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/init.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/init.d" -MT"src/init.obj" -MT"src/init.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/init.c"
+shc -lang=c -object="src/init.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/init.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/init.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:55:08 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/init.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/init.d" -MT"src/init.obj" -MT"src/init.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/init.c"
+shc -lang=c -object="src/init.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/init.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/init.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+15:55:26 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/init.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/init.d" -MT"src/init.obj" -MT"src/init.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/init.c"
+shc -lang=c -object="src/init.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/init.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/init.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+16:00:24 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/init.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/init.d" -MT"src/init.obj" -MT"src/init.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/init.c"
+shc -lang=c -object="src/init.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/init.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/init.c'
+
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+16:01:47 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+16:06:28 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Scanning and building file: ../src/test.c'
+'Invoking: Scanner and Compiler'
+scandep1 -MM -MP -MF"src/test.d" -MT"src/test.obj" -MT"src/test.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/test.c"
+shc -lang=c -object="src/test.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/test.c"
+C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
+'Finished scanning and building: ../src/test.c'
+
+'Invoking: Linker'
+'Building target:'
+optlnk  -subcommand="LinkerSubCommand.tmp"  -library="C:\D\mice\CAMELL~1\e2\test\Release\test.lib" -noprelink -list="test.map" -nooptimize -nodebug -output="C:\D\mice\Camellia_1\e2\test\Release\test.abs" -rom=D=R -nomessage -nologo
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+Maximum link size limited to 256KB code+data.
+
+Optimizing Linkage Editor Completed
+'Finished building:'
+
+'Invoking: Converter'
+optlnk   "C:\D\mice\Camellia_1\e2\test\Release\test.abs" -form=stype  -output="C:\D\mice\Camellia_1\e2\test\Release\test.mot"
+
+Optimizing Linkage Editor V.10.02.01.000
+Copyright (C) 1989 (1989 - 2013) Renesas Electronics Corporation and
+Renesas Solutions Corp. All rights reserved.
+SentinelRMS (C) 1989-2010 SafeNet, Inc. All rights reserved.
+Software license problem:
+	Duration of Trial License of UNKNOWN is exhausted. (37)
+
+Optimizing Linkage Editor Completed
+'Finished building target:'
+
+make --no-print-directory post-build
+
+C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
+Loading input file test.abs
+Parsing the ELF input file.....
+Converting the DWARF information....
+Constructing the output ELF image....
+Saving the ELF output file test.x
+
+'Build complete.'
+16:11:10 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+make all 
+'Build complete.'

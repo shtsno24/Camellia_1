@@ -89,18 +89,18 @@ void initSPEC() {
 }
 
 void initSEN(void) {
-	r_sen.non_threshold = 70;
+	r_sen.non_threshold = 100;
 	cr_sen.non_threshold = 50;
 	cl_sen.non_threshold = 50;
-	l_sen.non_threshold = 70;
+	l_sen.non_threshold = 100;
 
-	r_sen.diff_threshold = 3;
+	r_sen.diff_threshold = 75;
 	cr_sen.diff_threshold = 3;
 	cl_sen.diff_threshold = 3;
-	l_sen.diff_threshold = 3;
+	l_sen.diff_threshold = 75;
 
-	r_sen.ref_wall = 291;
-	l_sen.ref_wall = 340;
+	r_sen.ref_wall = 721;
+	l_sen.ref_wall = 296;
 	cr_sen.ref_wall = 600;
 	cl_sen.ref_wall = 600;
 

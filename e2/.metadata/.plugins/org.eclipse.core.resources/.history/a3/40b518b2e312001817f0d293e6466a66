@@ -212,7 +212,7 @@ void diff_calc(void) {
 	}
 
 	if (cnt_ctl == 1) {
-		diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
+		diff = (float) (l_motor.cnt - r_motor.cnt) * 10;
 		sta_LED_drv(Green, on);
 		sta_LED_drv(Yerrow, on);
 		sta_LED_drv(Red, on);
@@ -245,7 +245,7 @@ void diff_calc(void) {
 				sta_LED_drv(Red, on);
 			}
 		} else {
-			diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
+			diff = (float) (l_motor.cnt - r_motor.cnt) * 10;
 			if (sta_LED_flag == 1) {
 				sta_LED_drv(Green, off);
 				sta_LED_drv(Yerrow, off);
@@ -332,11 +332,11 @@ void sen_cmt1() {
 
 	vel_calc();
 	/*
-	 if (PB.DR.BIT.B5 == 1) {
-	 run_interruption = 1;
-	 } else {
-	 run_interruption = 0;
-	 }*/
+	if (PB.DR.BIT.B5 == 1) {
+		run_interruption = 1;
+	} else {
+		run_interruption = 0;
+	}*/
 
 }
 
@@ -723,33 +723,33 @@ int main(void) {
 			half_block = 75;
 			full_block = 151;
 			r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
-					+ 0;
+					- 5;
 			l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
-					+ 0;
+					- 5;
 			sta_LED_flag = 1;
 			UX_effect(alart);
 			mot_onoff(on);
-			mot_app(half_block, 270, 1500, straight, on);
+			mot_app(half_block, 280, 1500, straight, on);
 			//wait_ms(300);
 			while (run_interruption != 1) {
 				if (r_sen.sen <= r_sen.non_threshold) {
 
 					mot_app(half_block, 280, 1500, straight, on);
-					wait_ms(750);
+					wait_ms(500);
 					mot_app(r_distance, 280, 100, right, on);
-					wait_ms(750);
+					wait_ms(500);
 					mot_app(half_block, 280, 1500, straight, on);
 
 				} else if (l_sen.sen <= l_sen.non_threshold) {
 
 					mot_app(half_block, 280, 1500, straight, on);
-					wait_ms(750);
+					wait_ms(500);
 					mot_app(l_distance, 280, 100, left, on);
-					wait_ms(750);
+					wait_ms(500);
 					mot_app(half_block, 280, 1500, straight, on);
 
 				} else if (cl_sen.sen <= cl_sen.non_threshold) {
-					mot_app(full_block, 270, 1500, straight, on);
+					mot_app(full_block, 280, 1500, straight, on);
 					//wait_ms(3000);
 				} else {
 					mot_app(half_block, 280, 1500, straight, on);
@@ -827,6 +827,7 @@ int main(void) {
 		 */
 
 		//sta_LED_drv(Rst_status_LED, off);
+
 		/*
 		 for (i = 0; i < 2; i++) {
 

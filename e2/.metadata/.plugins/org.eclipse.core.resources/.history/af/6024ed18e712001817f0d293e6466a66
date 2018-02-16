@@ -245,7 +245,7 @@ void diff_calc(void) {
 				sta_LED_drv(Red, on);
 			}
 		} else {
-			diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
+			diff = (float) (l_motor.cnt - r_motor.cnt) * 10;
 			if (sta_LED_flag == 1) {
 				sta_LED_drv(Green, off);
 				sta_LED_drv(Yerrow, off);

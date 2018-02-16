@@ -19,7 +19,8 @@
 #define round(A)((int)(A + 0.5))
 
 char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, clt = 0,
-		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0;
+		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0,
+		run_interruption = 0;
 int count_cmt_0 = 0, count_cmt_1, i, rot = 0, old = 0, cnt_l = 0, cnt_r = 0,
 		r_distance, l_distance, duty_R = 0, duty_R_h = 0, duty_L = 0, duty_L_h =
 				0, half_block, full_block;
@@ -199,52 +200,52 @@ void diff_calc(void) {
 	short ref_boost_L, ref_boost_R;
 
 	if (abs(r_sen.diff) > r_sen.diff_threshold) {
-		ref_boost_R = 30;  //変化量が一定以上なら、閾値を引き上げる
+		ref_boost_R = 50;  //変化量が一定以上なら、閾値を引き上げる
 	} else {
 		ref_boost_R = 0; //変化量が一定以下なら、設定通りの閾値
 	}
 
 	if (abs(l_sen.diff) > l_sen.diff_threshold) {
-		ref_boost_L = 30;  //変化量が一定以上なら、閾値を引き上げる
+		ref_boost_L = 50;  //変化量が一定以上なら、閾値を引き上げる
 	} else {
 		ref_boost_L = 0; //変化量が一定以下なら、設定通りの閾値
 	}
 
 	if (cnt_ctl == 1) {
-		diff = (float) (l_motor.cnt - r_motor.cnt) * 100;
-		sta_LED_drv(Green, off);
-		sta_LED_drv(Yerrow, off);
-		sta_LED_drv(Red, off);
+		diff = (float) (l_motor.cnt - r_motor.cnt) * 10;
+		sta_LED_drv(Green, on);
+		sta_LED_drv(Yerrow, on);
+		sta_LED_drv(Red, on);
 		return;
 	} else {
-		if ((r_sen.sen >= r_sen.non_threshold)
-				&& (l_sen.sen >= l_sen.non_threshold)) {
-			diff = (float) ((l_sen.sen - (l_sen.ref_wall + ref_boost_L))
-					- (r_sen.ref_wall - (r_sen.ref_wall + ref_boost_R)));
+		if ((r_sen.sen >= r_sen.non_threshold + ref_boost_R)
+				&& (l_sen.sen >= l_sen.non_threshold + ref_boost_L)) {
+			diff = (float) ((l_sen.sen - l_sen.ref_wall)
+					- (r_sen.sen - r_sen.ref_wall));
 			if (sta_LED_flag == 1) {
 				sta_LED_drv(Green, on);
 				sta_LED_drv(Yerrow, off);
 				sta_LED_drv(Red, off);
 			}
 
-		} else if ((r_sen.sen >= r_sen.non_threshold)
-				&& (l_sen.sen < l_sen.non_threshold)) {
-			diff = (float) (-2 * (r_sen.sen - (r_sen.ref_wall + ref_boost_R)));
+		} else if ((r_sen.sen >= r_sen.non_threshold + ref_boost_R)
+				&& (l_sen.sen < l_sen.non_threshold + ref_boost_L)) {
+			diff = (float) (-2 * (r_sen.sen - r_sen.ref_wall));
 			if (sta_LED_flag == 1) {
 				sta_LED_drv(Green, off);
 				sta_LED_drv(Yerrow, on);
 				sta_LED_drv(Red, off);
 			}
-		} else if ((r_sen.sen < r_sen.non_threshold)
-				&& (l_sen.sen >= l_sen.non_threshold)) {
-			diff = (float) (2 * (l_sen.sen - (l_sen.ref_wall + ref_boost_L)));
+		} else if ((r_sen.sen < r_sen.non_threshold + ref_boost_R)
+				&& (l_sen.sen >= l_sen.non_threshold + ref_boost_L)) {
+			diff = (float) (2 * (l_sen.sen - l_sen.ref_wall));
 			if (sta_LED_flag == 1) {
 				sta_LED_drv(Green, off);
 				sta_LED_drv(Yerrow, off);
 				sta_LED_drv(Red, on);
 			}
 		} else {
-			diff = (float) (l_motor.cnt - r_motor.cnt) * 10000;
+			diff = (float) (l_motor.cnt - r_motor.cnt) * 10;
 			if (sta_LED_flag == 1) {
 				sta_LED_drv(Green, off);
 				sta_LED_drv(Yerrow, off);
@@ -330,6 +331,11 @@ void sen_cmt1() {
 	diff_calc();
 
 	vel_calc();
+	if (PB.DR.BIT.B5 == 1) {
+		run_interruption = 1;
+	} else {
+		run_interruption = 0;
+	}
 
 }
 
@@ -689,6 +695,12 @@ int main(void) {
 	sta_LED_drv(Red, off);
 
 	while (1) {
+		while (batt_vol() < 11.3) {
+			myprintf("Low_battery\n");
+			UX_effect(error);
+		}
+
+		sta_LED_drv(Red, off);
 		while (PB.DR.BIT.B5 != 0) {
 			batt = batt_vol();
 			mode_selector();
@@ -717,22 +729,22 @@ int main(void) {
 			UX_effect(alart);
 			mot_onoff(on);
 			mot_app(half_block, 280, 1500, straight, on);
-			wait_ms(3000);
-			while (1) {
+			//wait_ms(300);
+			while (run_interruption != 1) {
 				if (r_sen.sen <= r_sen.non_threshold) {
 
 					mot_app(half_block, 280, 1500, straight, on);
-					wait_ms(1000);
+					wait_ms(500);
 					mot_app(r_distance, 280, 100, right, on);
-					wait_ms(1000);
+					wait_ms(500);
 					mot_app(half_block, 280, 1500, straight, on);
 
 				} else if (l_sen.sen <= l_sen.non_threshold) {
 
 					mot_app(half_block, 280, 1500, straight, on);
-					wait_ms(1000);
+					wait_ms(500);
 					mot_app(l_distance, 280, 100, left, on);
-					wait_ms(1000);
+					wait_ms(500);
 					mot_app(half_block, 280, 1500, straight, on);
 
 				} else if (cl_sen.sen <= cl_sen.non_threshold) {
@@ -759,6 +771,7 @@ int main(void) {
 
 				}
 			}
+			wait_ms(300);
 			break;
 
 		case test:
@@ -813,79 +826,7 @@ int main(void) {
 		 */
 
 		//sta_LED_drv(Rst_status_LED, off);
-		/*
-		 while (1) {
 
-		 wait_ms(100);
-		 cnt_ctl = 1;
-		 mot_app(93, 300, 500, straight, 1);
-		 cnt_ctl = 0;
-		 while (dist_flag_l != 1)
-		 ;
-		 if (sen[1] <= spec.sen_ref_non_L) {
-		 mot_app(94, 500, 500, straight, 1);
-		 while (dist_flag_l != 1)
-		 ;
-		 cnt_ctl = 1;
-		 wait_ms(1000);
-		 mot_app(distance, 300, 500, left, 1);
-		 while (dist_flag_l != 1)
-		 ;
-		 cnt_ctl = 0;
-		 wait_ms(1000);
-
-		 } else if (sen[2] <= spec.sen_ref_non_CL) {
-		 wait_ms(500);
-		 mot_app(94, 500, 500, straight, 1);
-		 while (dist_flag_r != 1)
-		 ;
-
-		 } else if (sen[3] <= spec.sen_ref_non_R) {
-		 mot_app(94, 300, 500, straight, 1);
-		 while (dist_flag_l != 1)
-		 ;
-		 cnt_ctl = 1;
-		 wait_ms(1000);
-		 mot_app(distance, 300, 500, right, 1);
-		 while (dist_flag_l != 1)
-		 ;
-		 cnt_ctl = 0;
-		 wait_ms(1000);
-
-		 } else {
-		 mot_app(94, 500, 500, straight, 1);
-		 while (dist_flag_l != 1)
-		 ;
-		 cnt_ctl = 1;
-		 wait_ms(500);
-		 mot_app(distance, 300, 500, left, 1);
-		 while (dist_flag_l != 1)
-		 ;
-		 wait_ms(500);
-		 mot_app(100, 300, 500, back, 1);
-		 while (dist_flag_l != 1)
-		 ;
-		 wait_ms(500);
-		 mot_app(15, 300, 500, straight, 1);
-		 while (dist_flag_l != 1)
-		 ;
-		 wait_ms(1500);
-		 mot_app(distance, 300, 500, left, 1);
-		 while (dist_flag_l != 1)
-		 ;
-		 wait_ms(500);
-		 mot_app(100, 300, 500, back, 1);
-		 while (dist_flag_l != 1)
-		 ;
-		 wait_ms(500);
-		 mot_app(15, 300, 500, straight, 1);
-		 while (dist_flag_l != 1)
-		 ;
-		 wait_ms(500);
-		 cnt_ctl = 0;
-		 }
-		 }
-		 */
 		/*
 		 for (i = 0; i < 2; i++) {
 

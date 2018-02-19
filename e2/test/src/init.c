@@ -10,6 +10,7 @@
 
 #define round(A)((int)(A + 0.5))
 
+int j;
 SPC spec;
 SEN r_sen, cr_sen, l_sen, cl_sen;
 MOT r_motor, l_motor;
@@ -62,28 +63,28 @@ void initSPEC() {
 	spec.step_dist = 0.408407;
 	spec.vel_min = 250;
 	spec.tar_vel_min = 300;
-/*
-	spec.sen_min_CR = 29;
-	spec.sen_min_R = 28;
-	spec.sen_min_CL = 80;
-	spec.sen_min_L = 20;
+	/*
+	 spec.sen_min_CR = 29;
+	 spec.sen_min_R = 28;
+	 spec.sen_min_CL = 80;
+	 spec.sen_min_L = 20;
 
-	spec.sen_max_CR = 230;
-	spec.sen_max_R = 871;
-	spec.sen_max_CL = 800;
-	spec.sen_max_L = 990;
+	 spec.sen_max_CR = 230;
+	 spec.sen_max_R = 871;
+	 spec.sen_max_CL = 800;
+	 spec.sen_max_L = 990;
 
-	spec.sen_ref_R = 30;
-	spec.sen_ref_L = 12;
-	spec.sen_ref_wall_R = 15;
-	spec.sen_ref_wall_L = 10;
-	spec.sen_diff_threshold = 5;
+	 spec.sen_ref_R = 30;
+	 spec.sen_ref_L = 12;
+	 spec.sen_ref_wall_R = 15;
+	 spec.sen_ref_wall_L = 10;
+	 spec.sen_diff_threshold = 5;
 
-	spec.sen_ref_non_CR = 10;
-	spec.sen_ref_non_R = 10;
-	spec.sen_ref_non_CL = 20;
-	spec.sen_ref_non_L = 10;
-*/
+	 spec.sen_ref_non_CR = 10;
+	 spec.sen_ref_non_R = 10;
+	 spec.sen_ref_non_CL = 20;
+	 spec.sen_ref_non_L = 10;
+	 */
 	spec.pwm_base_clock = 6250 - 1; //(interrupt duty : 1ms(@6.25MHz))
 	spec.pwm_half_clock = round((6250 - 1) / 2);
 }
@@ -94,20 +95,22 @@ void initSEN(void) {
 	cl_sen.non_threshold = 50;
 	l_sen.non_threshold = 100;
 
-	r_sen.diff_threshold = 30;
-	cr_sen.diff_threshold = 3;
-	cl_sen.diff_threshold = 3;
-	l_sen.diff_threshold = 30;
+	r_sen.diff_threshold = 3;
+	cr_sen.diff_threshold = 695;
+	cl_sen.diff_threshold = 478;
+	l_sen.diff_threshold = 3;
 
-	r_sen.ref_wall = 581;
-	l_sen.ref_wall = 446;
+	r_sen.ref_wall = 658;
+	l_sen.ref_wall = 435;
 	cr_sen.ref_wall = 600;
 	cl_sen.ref_wall = 600;
 
-	r_sen.old = 0;
-	cr_sen.old = 0;
-	l_sen.old = 0;
-	cl_sen.old = 0;
+	for (j = 0; j < 9; j++) {
+		r_sen.old[j] = 0;
+		cr_sen.old[j] = 0;
+		l_sen.old[j] = 0;
+		cl_sen.old[j] = 0;
+	}
 }
 
 void initMOT(void) {

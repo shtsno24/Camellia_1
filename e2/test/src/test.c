@@ -200,18 +200,19 @@ void diff_calc(void) {
 	short ref_boost_L, ref_boost_R;
 
 	if (abs(r_sen.diff) > r_sen.diff_threshold) {
-		ref_boost_R = 50;  //変化量が一定以上なら、閾値を引き上げる
+		ref_boost_R = 450;  //変化量が一定以上なら、閾値を引き上げる
 	} else {
 		ref_boost_R = 0; //変化量が一定以下なら、設定通りの閾値
 	}
 
 	if (abs(l_sen.diff) > l_sen.diff_threshold) {
-		ref_boost_L = 50;  //変化量が一定以上なら、閾値を引き上げる
+		ref_boost_L = 450;  //変化量が一定以上なら、閾値を引き上げる
 	} else {
 		ref_boost_L = 0; //変化量が一定以下なら、設定通りの閾値
 	}
 
-	if (cnt_ctl == 1) {
+	if (cnt_ctl == 1 || cr_sen.ref_wall < cr_sen.sen
+			|| cl_sen.ref_wall < cl_sen.sen) {
 		diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
 		sta_LED_drv(Green, on);
 		sta_LED_drv(Yerrow, on);
@@ -263,11 +264,6 @@ void vel_calc() {
 
 	} else if (l_motor.tar_vel + kp_l * diff <= l_motor.vel) {
 		l_motor.vel = l_motor.vel - (l_motor.acc * 0.001);
-//		if (l_motor.tar_vel + kp_l * diff >= l_motor.min_vel) {
-
-//		} else {
-//			l_motor.tar_vel = l_motor.min_vel;
-//		}
 	}
 
 	if (r_motor.tar_vel - kp_r * diff > r_motor.vel) {
@@ -275,11 +271,7 @@ void vel_calc() {
 
 	} else if (r_motor.tar_vel - kp_r * diff <= r_motor.vel) {
 		r_motor.vel = r_motor.vel - (r_motor.acc * 0.001);
-//		if (r_motor.tar_vel + kp_r * diff >= r_motor.min_vel) {
 
-//		} else {
-//			r_motor.tar_vel = r_motor.min_vel;
-//		}
 	}
 
 }
@@ -300,7 +292,6 @@ void sen_cmt1() {
 		;
 	cr_sen.sen = get_sensor(CR_sen, ad_0);		//CR sensor
 	sen_LED_drv(CR_LED, off);
-	//sen_LED_drv(R_LED, off);
 
 	sen_LED_drv(CL_LED, on);
 	for (i = 0; i < 100; i++)
@@ -319,15 +310,23 @@ void sen_cmt1() {
 	l_sen.sen -= get_sensor(L_sen, ad_0);		//L sensor
 	r_sen.sen -= get_sensor(R_sen, ad_0);		//R sensor
 
-	cr_sen.diff = cr_sen.sen - cr_sen.old;
-	r_sen.diff = r_sen.sen - r_sen.old;
-	cl_sen.diff = cl_sen.sen - cl_sen.old;
-	l_sen.diff = l_sen.sen - l_sen.old;
+	cr_sen.diff = cr_sen.sen - cr_sen.old[8];
+	r_sen.diff = r_sen.sen - r_sen.old[8];
+	cl_sen.diff = cl_sen.sen - cl_sen.old[8];
+	l_sen.diff = l_sen.sen - l_sen.old[8];
 
-	cr_sen.old = cr_sen.sen;		//CR sensor
-	r_sen.old = r_sen.sen;		//R sensor
-	cl_sen.old = cl_sen.sen;		//CL sensor
-	l_sen.old = l_sen.sen;		//L sensor
+	for (i = 1; i < 9; i++) {
+		r_sen.old[i] = r_sen.old[i - 1];
+		cr_sen.old[i] = cr_sen.old[i - 1];
+		l_sen.old[i] = l_sen.old[i - 1];
+		cl_sen.old[i] = cl_sen.old[i - 1];
+	}
+
+	cr_sen.old[0] = cr_sen.sen;		//CR sensor
+	r_sen.old[0] = r_sen.sen;		//R sensor
+	cl_sen.old[0] = cl_sen.sen;		//CL sensor
+	l_sen.old[0] = l_sen.sen;		//L sensor
+
 	diff_calc();
 
 	vel_calc();
@@ -708,6 +707,8 @@ int main(void) {
 			myprintf("batt : %f\n", batt);
 			myprintf("sen : %d | %d | %d | %d\n", l_sen.sen, cl_sen.sen,
 					cr_sen.sen, r_sen.sen);
+			myprintf("sen : %d | %d | %d | %d\n", l_sen.diff, cl_sen.diff,
+					cr_sen.diff, r_sen.diff);
 			myprintf("mode : %d\n", rot_sw);
 			wait_ms(100);
 		}
@@ -723,9 +724,9 @@ int main(void) {
 			half_block = 75;
 			full_block = 151;
 			r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
-					+ 0;
+					- 3;
 			l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
-					+ 0;
+					- 3;
 			sta_LED_flag = 1;
 			UX_effect(alart);
 			mot_onoff(on);
@@ -734,25 +735,41 @@ int main(void) {
 			while (run_interruption != 1) {
 				if (r_sen.sen <= r_sen.non_threshold) {
 
-					mot_app(half_block, 280, 1500, straight, on);
-					wait_ms(750);
-					mot_app(r_distance, 280, 100, right, on);
-					wait_ms(750);
-					mot_app(half_block, 280, 1500, straight, on);
+					mot_app(half_block, 300, 1500, straight, on);
+					wait_ms(100);
+					mot_onoff(off);
+					wait_ms(450);
+					mot_onoff(on);
+					wait_ms(100);
+					mot_app(r_distance, 280, 150, right, on);
+					wait_ms(100);
+					mot_onoff(off);
+					wait_ms(450);
+					mot_onoff(on);
+					wait_ms(100);
+					mot_app(half_block, 300, 1500, straight, on);
 
 				} else if (l_sen.sen <= l_sen.non_threshold) {
 
-					mot_app(half_block, 280, 1500, straight, on);
-					wait_ms(750);
-					mot_app(l_distance, 280, 100, left, on);
-					wait_ms(750);
-					mot_app(half_block, 280, 1500, straight, on);
+					mot_app(half_block, 300, 1500, straight, on);
+					wait_ms(100);
+					mot_onoff(off);
+					wait_ms(450);
+					mot_onoff(on);
+					wait_ms(100);
+					mot_app(l_distance, 280, 150, left, on);
+					wait_ms(100);
+					mot_onoff(off);
+					wait_ms(450);
+					mot_onoff(on);
+					wait_ms(100);
+					mot_app(half_block, 300, 1500, straight, on);
 
 				} else if (cl_sen.sen <= cl_sen.non_threshold) {
-					mot_app(full_block, 270, 1500, straight, on);
+					mot_app(full_block, 330, 1500, straight, on);
 					//wait_ms(3000);
 				} else {
-					mot_app(half_block, 280, 1500, straight, on);
+					mot_app(half_block, 300, 1500, straight, on);
 					wait_ms(1000);
 					mot_app(r_distance, 280, 100, right, on);
 					wait_ms(1000);
@@ -764,11 +781,11 @@ int main(void) {
 					wait_ms(1000);
 					mot_app(r_distance, 280, 100, right, on);
 					wait_ms(1000);
-					mot_app(half_block, 280, 100, back, on);
+					mot_app(half_block, 300, 100, back, on);
 					mot_onoff(off);
 					wait_ms(1000);
 					mot_onoff(on);
-					mot_app(18 + half_block, 280, 100, straight, on);
+					mot_app(18 + half_block, 300, 100, straight, on);
 
 				}
 			}

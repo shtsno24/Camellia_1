@@ -64,7 +64,7 @@ typedef struct mot {
 
 typedef struct sen {
 	short sen;
-	short old;
+	short old[9];
 	short ref_wall;
 	short non_threshold;
 	short diff_threshold;

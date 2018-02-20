@@ -752,17 +752,18 @@ int main(void) {
 		wait_ms(100);
 
 		switch (rot_sw) {
+
 		case sen_cal:
-			sen_calibration();
-			break;
-		case search:
-			half_block = 97;
-			full_block = 190;
+
+			//sen_calibration();
+			half_block = 96;
+			full_block = 186;
 			r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
-					- 3;
+					+ 1;
 			l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
-					- 3;
+					+ 1;
 			sta_LED_flag = 1;
+
 			UX_effect(alart);
 			mot_onoff(on);
 			mot_app(half_block, 300, 1500, straight, on);
@@ -776,16 +777,36 @@ int main(void) {
 			mot_app(full_block, 300, 1500, straight, on);
 			wait_ms(100);
 			mot_onoff(off);
+
+			while (PB.DR.BIT.B5 != 0)
+				;
+			UX_effect(alart);
+			mot_onoff(on);
+			mot_app(r_distance, 280, 100, right, on);
+			wait_ms(100);
+			mot_onoff(off);
+
+			while (PB.DR.BIT.B5 != 0)
+				;
+			UX_effect(alart);
+			mot_onoff(on);
+			mot_app(l_distance, 280, 100, left, on);
+			wait_ms(100);
+			mot_onoff(off);
+
 			sta_LED_flag = 0;
 			break;
 
-		case run:
-			half_block = 97;
-			full_block = 190;
+
+
+		case search:
+
+			half_block = 96;
+			full_block = 186;
 			r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
-					- 3;
+					+ 1;
 			l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
-					- 3;
+					+ 1;
 			sta_LED_flag = 1;
 			UX_effect(alart);
 			mot_onoff(on);
@@ -794,7 +815,7 @@ int main(void) {
 			while (run_interruption != 1) {
 				if (r_sen.sen <= r_sen.non_threshold) {
 
-					mot_app(half_block, 300, 1500, straight, on);
+					mot_app(half_block, 270, 1500, straight, on);
 					wait_ms(100);
 					mot_onoff(off);
 					wait_ms(450);
@@ -806,11 +827,11 @@ int main(void) {
 					wait_ms(450);
 					mot_onoff(on);
 					wait_ms(100);
-					mot_app(half_block, 300, 1500, straight, on);
+					mot_app2(half_block, 300, 1500, straight, on);
 
 				} else if (l_sen.sen <= l_sen.non_threshold) {
 
-					mot_app(half_block, 300, 1500, straight, on);
+					mot_app(half_block, 270, 1500, straight, on);
 					wait_ms(100);
 					mot_onoff(off);
 					wait_ms(450);
@@ -822,7 +843,7 @@ int main(void) {
 					wait_ms(450);
 					mot_onoff(on);
 					wait_ms(100);
-					mot_app(half_block, 300, 1500, straight, on);
+					mot_app2(half_block, 300, 1500, straight, on);
 
 				} else if (cl_sen.sen <= cl_sen.non_threshold) {
 					mot_app2(full_block, 330, 1500, straight, on);
@@ -844,11 +865,15 @@ int main(void) {
 					mot_onoff(off);
 					wait_ms(1000);
 					mot_onoff(on);
-					mot_app(18 + half_block, 300, 100, straight, on);
+					mot_app2(18 + half_block, 300, 100, straight, on);
 
 				}
 			}
 			wait_ms(300);
+			break;
+
+		case run:
+
 			break;
 
 		case test:

@@ -213,7 +213,7 @@ void diff_calc(void) {
 
 	if (cnt_ctl == 1 || cr_sen.ref_wall < cr_sen.sen
 			|| cl_sen.ref_wall < cl_sen.sen) {
-		diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
+		diff = (float) (l_motor.cnt - r_motor.cnt) * 80;
 		sta_LED_drv(Green, on);
 		sta_LED_drv(Yerrow, on);
 		sta_LED_drv(Red, on);
@@ -246,7 +246,7 @@ void diff_calc(void) {
 				sta_LED_drv(Red, on);
 			}
 		} else {
-			diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
+			diff = (float) (l_motor.cnt - r_motor.cnt) * 80;
 			if (sta_LED_flag == 1) {
 				sta_LED_drv(Green, off);
 				sta_LED_drv(Yerrow, off);
@@ -750,7 +750,7 @@ int main(void) {
 		case sen_cal:
 
 			//sen_calibration();
-			half_block = 94;
+			half_block = 92;
 			full_block = 180;
 			r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
 					+ 1;
@@ -793,7 +793,7 @@ int main(void) {
 
 		case search:
 
-			half_block = 94;
+			half_block = 92;
 			full_block = 180;
 			r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
 					+ 1;
@@ -845,7 +845,7 @@ int main(void) {
 					wait_ms(1000);
 					mot_app(r_distance, 300, 2000, right, on);
 					wait_ms(1000);
-					mot_app(half_block, 280, 2000, back, on);
+					mot_app(half_block, 270, 2000, back, on);
 					mot_onoff(off);
 					wait_ms(1000);
 					mot_onoff(on);
@@ -853,7 +853,7 @@ int main(void) {
 					wait_ms(1000);
 					mot_app(r_distance, 300, 2000, right, on);
 					wait_ms(1000);
-					mot_app(half_block, 300, 2000, back, on);
+					mot_app(half_block, 270, 2000, back, on);
 					mot_onoff(off);
 					wait_ms(1000);
 					mot_onoff(on);

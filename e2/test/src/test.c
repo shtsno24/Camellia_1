@@ -579,8 +579,8 @@ void mot_app(int dist, int t_vel, int t_acc, char move_flag, char end_flag) {
 		t_vel = sqrt(r_motor.vel * r_motor.vel + t_acc * dist);
 	}
 
-	mot_drv(dist / 4 * 4, t_vel, t_acc, move_flag & 1, end_flag, R_motor);
-	mot_drv(dist / 4 * 4, t_vel, t_acc, (move_flag & 2) >> 1, end_flag,
+	mot_drv(dist / 4 * 3, t_vel, t_acc, move_flag & 1, end_flag, R_motor);
+	mot_drv(dist / 4 * 3, t_vel, t_acc, (move_flag & 2) >> 1, end_flag,
 			L_motor);
 
 	while (1) {
@@ -598,6 +598,43 @@ void mot_app(int dist, int t_vel, int t_acc, char move_flag, char end_flag) {
 			break;
 		}
 	}
+	cnt_ctl = 0;
+}
+
+void mot_app2(int dist, int t_vel, int t_acc, char move_flag, char end_flag) {
+
+	if (move_flag == straight) {
+		cnt_ctl = 0;
+	} else {
+		cnt_ctl = 1;
+	}
+	/*
+	 if (t_acc > r_motor.max_acc) {
+	 t_acc = r_motor.max_acc;
+	 } else if (t_acc < r_motor.min_acc) {
+	 t_acc = r_motor.min_acc;
+	 }
+
+	 if (t_vel > r_motor.max_vel) {
+	 t_vel = r_motor.max_vel;
+	 } else if (t_vel < r_motor.min_vel) {
+	 t_vel = r_motor.min_vel;
+	 }
+	 */
+
+	if (t_vel * t_vel - r_motor.vel * r_motor.vel > t_acc * dist / 2) {
+		t_vel = sqrt(r_motor.vel * r_motor.vel + t_acc * dist);
+	}
+
+	mot_drv(dist, t_vel, t_acc, move_flag & 1, end_flag, R_motor);
+	mot_drv(dist, t_vel, t_acc, (move_flag & 2) >> 1, end_flag, L_motor);
+
+	while (1) {
+		if (l_motor.stop_flag == 1 || r_motor.stop_flag == 1) {
+			break;
+		}
+	}
+
 	cnt_ctl = 0;
 }
 
@@ -707,8 +744,8 @@ int main(void) {
 			myprintf("batt : %f\n", batt);
 			myprintf("sen : %d | %d | %d | %d\n", l_sen.sen, cl_sen.sen,
 					cr_sen.sen, r_sen.sen);
-			myprintf("sen : %d | %d | %d | %d\n", l_sen.diff, cl_sen.diff,
-					cr_sen.diff, r_sen.diff);
+			//myprintf("sen : %d | %d | %d | %d\n", l_sen.diff, cl_sen.diff,
+			//cr_sen.diff, r_sen.diff);
 			myprintf("mode : %d\n", rot_sw);
 			wait_ms(100);
 		}
@@ -719,10 +756,32 @@ int main(void) {
 			sen_calibration();
 			break;
 		case search:
+			half_block = 97;
+			full_block = 190;
+			r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
+					- 3;
+			l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
+					- 3;
+			sta_LED_flag = 1;
+			UX_effect(alart);
+			mot_onoff(on);
+			mot_app(half_block, 300, 1500, straight, on);
+			wait_ms(100);
+			mot_onoff(off);
+
+			while (PB.DR.BIT.B5 != 0)
+				;
+			UX_effect(alart);
+			mot_onoff(on);
+			mot_app(full_block, 300, 1500, straight, on);
+			wait_ms(100);
+			mot_onoff(off);
+			sta_LED_flag = 0;
 			break;
+
 		case run:
-			half_block = 75;
-			full_block = 151;
+			half_block = 97;
+			full_block = 190;
 			r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
 					- 3;
 			l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
@@ -766,7 +825,7 @@ int main(void) {
 					mot_app(half_block, 300, 1500, straight, on);
 
 				} else if (cl_sen.sen <= cl_sen.non_threshold) {
-					mot_app(full_block, 330, 1500, straight, on);
+					mot_app2(full_block, 330, 1500, straight, on);
 					//wait_ms(3000);
 				} else {
 					mot_app(half_block, 300, 1500, straight, on);

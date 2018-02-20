@@ -59,7 +59,7 @@ void initIO(void) {
 
 void initSPEC() {
 	spec.tread = 90.0;
-	spec.tire_dim = 79.0;
+	spec.tire_dim = 90.0;
 	spec.step_dist = 0.408407;
 	spec.vel_min = 250;
 	spec.tar_vel_min = 300;
@@ -96,8 +96,8 @@ void initSEN(void) {
 	l_sen.non_threshold = 100;
 
 	r_sen.diff_threshold = 3;
-	cr_sen.diff_threshold = 695;
-	cl_sen.diff_threshold = 478;
+	cr_sen.diff_threshold = 657;
+	cl_sen.diff_threshold = 434;
 	l_sen.diff_threshold = 3;
 
 	r_sen.ref_wall = 658;

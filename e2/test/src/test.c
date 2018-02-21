@@ -213,7 +213,7 @@ void diff_calc(void) {
 
 	if (cnt_ctl == 1 || cr_sen.ref_wall < cr_sen.sen
 			|| cl_sen.ref_wall < cl_sen.sen) {
-		diff = (float) (l_motor.cnt - r_motor.cnt) * 80;
+		diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
 		sta_LED_drv(Green, on);
 		sta_LED_drv(Yerrow, on);
 		sta_LED_drv(Red, on);
@@ -246,7 +246,7 @@ void diff_calc(void) {
 				sta_LED_drv(Red, on);
 			}
 		} else {
-			diff = (float) (l_motor.cnt - r_motor.cnt) * 80;
+			diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
 			if (sta_LED_flag == 1) {
 				sta_LED_drv(Green, off);
 				sta_LED_drv(Yerrow, off);
@@ -710,6 +710,63 @@ void mode_selector() {
 	sta_LED_drv(Green, ((rot_sw + 1) & 4) >> 2);
 }
 
+void move_left() {
+	mot_app(half_block, 305, 2000, straight, on);
+	wait_ms(100);
+	mot_onoff(off);
+	wait_ms(450);
+	mot_onoff(on);
+	wait_ms(100);
+	mot_app(l_distance, 310, 2000, left, on);
+	wait_ms(100);
+	mot_onoff(off);
+	wait_ms(450);
+	mot_onoff(on);
+	wait_ms(100);
+	mot_app2(half_block, 330, 2000, straight, on);
+}
+
+void move_right() {
+	mot_app(half_block, 305, 2000, straight, on);
+	wait_ms(100);
+	mot_onoff(off);
+	wait_ms(450);
+	mot_onoff(on);
+	wait_ms(100);
+	mot_app(r_distance, 310, 2000, right, on);
+	wait_ms(100);
+	mot_onoff(off);
+	wait_ms(450);
+	mot_onoff(on);
+	wait_ms(100);
+	mot_app2(half_block, 330, 2000, straight, on);
+
+}
+
+void move_forward() {
+	mot_app2(full_block, 410, 2000, straight, on);
+}
+
+void move_back() {
+	mot_app(half_block, 305, 2000, straight, on);
+	wait_ms(1000);
+	mot_app(r_distance, 310, 2000, right, on);
+	wait_ms(1000);
+	mot_app(half_block, 270, 2000, back, on);
+	mot_onoff(off);
+	wait_ms(1000);
+	mot_onoff(on);
+	mot_app(18, 280, 2000, straight, on);
+	wait_ms(1000);
+	mot_app(r_distance, 310, 2000, right, on);
+	wait_ms(1000);
+	mot_app(half_block, 270, 2000, back, on);
+	mot_onoff(off);
+	wait_ms(1000);
+	mot_onoff(on);
+	mot_app2(15 + half_block, 330, 2000, straight, on);
+}
+
 int main(void) {
 	float v_r = 0;
 	float v_l = 0;
@@ -723,6 +780,11 @@ int main(void) {
 	duty[1] = round(duty[0] / 2);		//(about 0.5ms)
 	duty[4] = 6250 - 1;		//(1ms)
 	duty[5] = round(duty[4] / 2);		//(about 0.5ms)
+
+	half_block = 92;
+	full_block = 178.5;
+	r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2)) + 1;
+	l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2)) - 0.5;
 
 	while (1) {
 		while (batt_vol() < 11.3) {
@@ -750,17 +812,14 @@ int main(void) {
 		case sen_cal:
 
 			//sen_calibration();
-			half_block = 92;
-			full_block = 180;
-			r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
-					+ 1;
-			l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
-					+ 1;
+
 			sta_LED_flag = 1;
 
 			UX_effect(alart);
 			mot_onoff(on);
-			mot_app(half_block, 300, 1500, straight, on);
+			wait_ms(100);
+			mot_app2(half_block, 330, 2000, straight, on);
+			mot_app(half_block, 295, 2000, straight, on);
 			wait_ms(100);
 			mot_onoff(off);
 
@@ -768,7 +827,8 @@ int main(void) {
 				;
 			UX_effect(alart);
 			mot_onoff(on);
-			mot_app(full_block, 300, 1500, straight, on);
+			wait_ms(100);
+			mot_app(r_distance, 310, 2000, right, on);
 			wait_ms(100);
 			mot_onoff(off);
 
@@ -776,7 +836,8 @@ int main(void) {
 				;
 			UX_effect(alart);
 			mot_onoff(on);
-			mot_app(r_distance, 280, 100, right, on);
+			wait_ms(100);
+			mot_app(l_distance, 310, 2000, left, on);
 			wait_ms(100);
 			mot_onoff(off);
 
@@ -784,7 +845,10 @@ int main(void) {
 				;
 			UX_effect(alart);
 			mot_onoff(on);
-			mot_app(l_distance, 280, 100, left, on);
+			wait_ms(100);
+			mot_app2(half_block, 400, 2000, straight, on);
+			mot_app2(full_block * 14, 400, 2000, straight, on);
+			mot_app(half_block, 400, 2000, straight, on);
 			wait_ms(100);
 			mot_onoff(off);
 
@@ -793,72 +857,24 @@ int main(void) {
 
 		case search:
 
-			half_block = 92;
-			full_block = 180;
-			r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
-					+ 1;
-			l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))
-					+ 1;
+			//half_block = 95;
+			//full_block = 181;
+			//r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))+ 1;
+			//l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))+ 1;
 			sta_LED_flag = 1;
 			UX_effect(alart);
 			mot_onoff(on);
-			mot_app(half_block, 300, 1500, straight, on);
+			mot_app(half_block, 310, 1500, straight, on);
 			//wait_ms(300);
 			while (run_interruption != 1) {
 				if (r_sen.sen <= r_sen.non_threshold) {
-
-					mot_app(half_block, 300, 2000, straight, on);
-					wait_ms(100);
-					mot_onoff(off);
-					wait_ms(450);
-					mot_onoff(on);
-					wait_ms(100);
-					mot_app(r_distance, 300, 2000, right, on);
-					wait_ms(100);
-					mot_onoff(off);
-					wait_ms(450);
-					mot_onoff(on);
-					wait_ms(100);
-					mot_app2(half_block, 340, 2000, straight, on);
-
+					move_right();
 				} else if (l_sen.sen <= l_sen.non_threshold) {
-
-					mot_app(half_block, 300, 2000, straight, on);
-					wait_ms(100);
-					mot_onoff(off);
-					wait_ms(450);
-					mot_onoff(on);
-					wait_ms(100);
-					mot_app(l_distance, 300, 2000, left, on);
-					wait_ms(100);
-					mot_onoff(off);
-					wait_ms(450);
-					mot_onoff(on);
-					wait_ms(100);
-					mot_app2(half_block, 340, 2000, straight, on);
-
+					move_left();
 				} else if (cl_sen.sen <= cl_sen.non_threshold) {
-					mot_app2(full_block, 350, 2000, straight, on);
-					//wait_ms(3000);
+					move_forward();
 				} else {
-					mot_app(half_block, 300, 2000, straight, on);
-					wait_ms(1000);
-					mot_app(r_distance, 300, 2000, right, on);
-					wait_ms(1000);
-					mot_app(half_block, 270, 2000, back, on);
-					mot_onoff(off);
-					wait_ms(1000);
-					mot_onoff(on);
-					mot_app(18, 280, 2000, straight, on);
-					wait_ms(1000);
-					mot_app(r_distance, 300, 2000, right, on);
-					wait_ms(1000);
-					mot_app(half_block, 270, 2000, back, on);
-					mot_onoff(off);
-					wait_ms(1000);
-					mot_onoff(on);
-					mot_app2(18 + half_block, 340, 2000, straight, on);
-
+					move_back();
 				}
 			}
 			wait_ms(300);
@@ -873,83 +889,17 @@ int main(void) {
 			sta_LED_flag = 1;
 			UX_effect(alart);
 			mot_onoff(on);
-			mot_app(720, 400, 500, straight, on);
+			wait_ms(100);
+			mot_app(full_block * 5, 400, 500, straight, on);
 			wait_ms(100);
 			sta_LED_flag = 0;
+			mot_onoff(off);
 			break;
 		}
 
 		mot_onoff(off);
 
-		/*
-		 if (PB.DR.BIT.B5 != 0) {
 
-		 mot_onoff(off);
-		 myprintf("mode : %d\n", mode_selector());
-		 myprintf("sen : %d | %d | %d | %d\n", l_sen.sen, cl_sen.sen,
-		 cr_sen.sen, r_sen.sen);
-		 } else {
-
-		 //sen_calibration();
-
-		 mot_onoff(on);
-		 UX_effect(alart);
-		 mot_app(900, 400, 500, straight, on);
-		 wait_ms(100);
-		 */
-		/*
-		 sta_LED_drv(Red, on);
-		 buzzer_drv(on);
-		 wait_ms(500);
-		 sta_LED_drv(Red, off);
-		 sta_LED_drv(Yerrow, on);
-		 wait_ms(500);
-		 sta_LED_drv(Yerrow, off);
-		 sta_LED_drv(Green, on);
-		 wait_ms(500);
-		 sta_LED_drv(Green, off);
-		 buzzer_drv(off);
-		 distance = (int) ((90.0 / 180 * 3.1415) * (spec.tire_dim / 2));
-		 */
-
-		/*
-		 mot_app(1000, 500, 1000, back, on);
-		 wait_ms(100);
-		 mot_app(80, 900, 1000, left, on);
-		 wait_ms(100);
-		 mot_app(80, 900, 1000, right, on);
-		 */
-
-		//sta_LED_drv(Rst_status_LED, off);
-		/*
-		 for (i = 0; i < 2; i++) {
-
-		 mot_app(45, 400, 500, straight, 1, 0);
-		 while (dist_flag_l != 1)
-		 ;
-		 mot_app(900, 700, 800, straight, 1, 1);
-		 while (dist_flag_l != 1) {
-		 if ((sen[1] >= spec.sen_ref_wall_R)
-		 && (sen[3] < spec.sen_ref_wall_L)) {
-		 sta_LED_drv(Yerrow,on);
-		 } else if ((sen[1] < spec.sen_ref_wall_R)
-		 && (sen[3] >= spec.sen_ref_wall_L)) {
-		 sta_LED_drv(Green,on);
-		 }
-		 }
-		 mot_app(45, 300, 500, straight, 1, 0);
-		 while (dist_flag_l != 1)
-		 ;
-		 wait_ms(500);
-		 cnt_ctl = 1;
-		 mot_app(2 * distance, 300, 20, right, 1, 1);
-		 while (dist_flag_l != 1)
-		 ;
-		 cnt_ctl = 0;
-		 wait_ms(500);
-		 }
-		 sta_LED_drv(Rst_status_LED,off);
-		 */
 	}
 
 }

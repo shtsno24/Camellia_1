@@ -6,20 +6,20 @@
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="B2" key="selection"/>
+		<item value="direction" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="direction"/>
+			<item value="pos_y"/>
+			<item value="pos_x"/>
 			<item value="B2"/>
 			<item value="r_motor.cnt"/>
 			<item value="cnt"/>
 			<item value="r_sen.old[i] = 0;"/>
 			<item value="sen.old"/>
-			<item value="step_dist"/>
-			<item value="for"/>
-			<item value="i"/>
 		</list>
 		<list key="replacehistory">
 			<item value="buzzer_drv"/>

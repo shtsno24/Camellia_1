@@ -20,7 +20,7 @@
 
 char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, clt = 0,
 		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0,
-		run_interruption = 0, direction = 0, pos_x = 0, pos_y = 0;
+		run_interruption = 0, direction = 0, pos_x, pos_y;
 
 int count_cmt_0 = 0, count_cmt_1, i, rot = 0, old = 0, cnt_l = 0, cnt_r = 0,
 		r_distance, l_distance, duty_R = 0, duty_R_h = 0, duty_L = 0, duty_L_h =
@@ -692,6 +692,7 @@ void direction_detect() {
 	if (direction >= 4) {
 		direction %= 4;
 	}
+
 	if (direction == 0) {
 		pos_y += 1;
 		/*
@@ -713,7 +714,7 @@ void direction_detect() {
 		 sta_LED_drv(Yerrow, on);
 		 sta_LED_drv(Green, off);
 		 */
-	} else {
+	} else if (direction == 2) {
 		pos_y -= 1;
 		/*
 		 sta_LED_drv(Red, off);
@@ -722,12 +723,12 @@ void direction_detect() {
 		 */
 	}
 
-	if (pos_x == 1) {
+	if (pos_y == 1) {
 		sta_LED_drv(Green, on);
 	} else {
 		sta_LED_drv(Green, off);
 	}
-	if (pos_y == 1) {
+	if (pos_x == 1) {
 		sta_LED_drv(Red, on);
 	} else {
 		sta_LED_drv(Red, off);
@@ -889,6 +890,8 @@ int main(void) {
 			UX_effect(alart);
 			mot_onoff(on);
 			mot_app(half_block, 310, 1500, straight, on);
+			pos_x = 0;
+			pos_y = 1;
 			while (run_interruption != 1) {
 				if (r_sen.sen <= r_sen.non_threshold) {
 					direction += 1;
@@ -897,6 +900,7 @@ int main(void) {
 					direction += 3;
 					move_left();
 				} else if (cl_sen.sen <= cl_sen.non_threshold) {
+					direction += 0;
 					move_forward();
 				} else {
 					direction += 2;

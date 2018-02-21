@@ -20,11 +20,12 @@
 
 char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, clt = 0,
 		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0,
-		run_interruption = 0;
+		run_interruption = 0, direction = 0;
+
 int count_cmt_0 = 0, count_cmt_1, i, rot = 0, old = 0, cnt_l = 0, cnt_r = 0,
 		r_distance, l_distance, duty_R = 0, duty_R_h = 0, duty_L = 0, duty_L_h =
 				0, half_block, full_block;
-//dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, distance;
+
 double vel_l = 250, vel_r = 250, tar_vel_l = 300, tar_vel_r = 300, acc_l = 200,
 		acc_r = 200;
 float batt, diff, kp_r = 0.2, kp_l = 0.2;
@@ -214,44 +215,53 @@ void diff_calc(void) {
 	if (cnt_ctl == 1 || cr_sen.ref_wall < cr_sen.sen
 			|| cl_sen.ref_wall < cl_sen.sen) {
 		diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
-		sta_LED_drv(Green, on);
-		sta_LED_drv(Yerrow, on);
-		sta_LED_drv(Red, on);
+		/*
+		 sta_LED_drv(Green, on);
+		 sta_LED_drv(Yerrow, on);
+		 sta_LED_drv(Red, on);
+		 */
 		return;
 	} else {
 		if ((r_sen.sen >= r_sen.non_threshold + ref_boost_R)
 				&& (l_sen.sen >= l_sen.non_threshold + ref_boost_L)) {
 			diff = (float) ((l_sen.sen - l_sen.ref_wall)
 					- (r_sen.sen - r_sen.ref_wall));
-			if (sta_LED_flag == 1) {
-				sta_LED_drv(Green, on);
-				sta_LED_drv(Yerrow, off);
-				sta_LED_drv(Red, off);
-			}
-
+			/*
+			 if (sta_LED_flag == 1) {
+			 sta_LED_drv(Green, on);
+			 sta_LED_drv(Yerrow, off);
+			 sta_LED_drv(Red, off);
+			 }
+			 */
 		} else if ((r_sen.sen >= r_sen.non_threshold + ref_boost_R)
 				&& (l_sen.sen < l_sen.non_threshold + ref_boost_L)) {
 			diff = (float) (-2 * (r_sen.sen - r_sen.ref_wall));
-			if (sta_LED_flag == 1) {
-				sta_LED_drv(Green, off);
-				sta_LED_drv(Yerrow, on);
-				sta_LED_drv(Red, off);
-			}
+			/*
+			 if (sta_LED_flag == 1) {
+			 sta_LED_drv(Green, off);
+			 sta_LED_drv(Yerrow, on);
+			 sta_LED_drv(Red, off);
+			 }
+			 */
 		} else if ((r_sen.sen < r_sen.non_threshold + ref_boost_R)
 				&& (l_sen.sen >= l_sen.non_threshold + ref_boost_L)) {
 			diff = (float) (2 * (l_sen.sen - l_sen.ref_wall));
-			if (sta_LED_flag == 1) {
-				sta_LED_drv(Green, off);
-				sta_LED_drv(Yerrow, off);
-				sta_LED_drv(Red, on);
-			}
+			/*
+			 if (sta_LED_flag == 1) {
+			 sta_LED_drv(Green, off);
+			 sta_LED_drv(Yerrow, off);
+			 sta_LED_drv(Red, on);
+			 }
+			 */
 		} else {
 			diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
-			if (sta_LED_flag == 1) {
-				sta_LED_drv(Green, off);
-				sta_LED_drv(Yerrow, off);
-				sta_LED_drv(Red, off);
-			}
+			/*
+			 if (sta_LED_flag == 1) {
+			 sta_LED_drv(Green, off);
+			 sta_LED_drv(Yerrow, off);
+			 sta_LED_drv(Red, off);
+			 }
+			 */
 		}
 	}
 
@@ -330,12 +340,6 @@ void sen_cmt1() {
 	diff_calc();
 
 	vel_calc();
-	/*
-	 if (PB.DR.BIT.B5 == 1) {
-	 run_interruption = 1;
-	 } else {
-	 run_interruption = 0;
-	 }*/
 
 }
 
@@ -561,19 +565,6 @@ void mot_app(int dist, int t_vel, int t_acc, char move_flag, char end_flag) {
 	} else {
 		cnt_ctl = 1;
 	}
-	/*
-	 if (t_acc > r_motor.max_acc) {
-	 t_acc = r_motor.max_acc;
-	 } else if (t_acc < r_motor.min_acc) {
-	 t_acc = r_motor.min_acc;
-	 }
-
-	 if (t_vel > r_motor.max_vel) {
-	 t_vel = r_motor.max_vel;
-	 } else if (t_vel < r_motor.min_vel) {
-	 t_vel = r_motor.min_vel;
-	 }
-	 */
 
 	if (t_vel * t_vel - r_motor.vel * r_motor.vel > t_acc * dist / 2) {
 		t_vel = sqrt(r_motor.vel * r_motor.vel + t_acc * dist);
@@ -608,19 +599,6 @@ void mot_app2(int dist, int t_vel, int t_acc, char move_flag, char end_flag) {
 	} else {
 		cnt_ctl = 1;
 	}
-	/*
-	 if (t_acc > r_motor.max_acc) {
-	 t_acc = r_motor.max_acc;
-	 } else if (t_acc < r_motor.min_acc) {
-	 t_acc = r_motor.min_acc;
-	 }
-
-	 if (t_vel > r_motor.max_vel) {
-	 t_vel = r_motor.max_vel;
-	 } else if (t_vel < r_motor.min_vel) {
-	 t_vel = r_motor.min_vel;
-	 }
-	 */
 
 	if (t_vel * t_vel - r_motor.vel * r_motor.vel > t_acc * dist / 2) {
 		t_vel = sqrt(r_motor.vel * r_motor.vel + t_acc * dist);
@@ -699,7 +677,7 @@ void Rotate_detect(void) {
 		rot += 0;
 	}
 	old = now;
-	//return rot;
+
 }
 
 void mode_selector() {
@@ -856,11 +834,6 @@ int main(void) {
 			break;
 
 		case search:
-
-			//half_block = 95;
-			//full_block = 181;
-			//r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))+ 1;
-			//l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2))+ 1;
 			sta_LED_flag = 1;
 			UX_effect(alart);
 			mot_onoff(on);
@@ -869,20 +842,45 @@ int main(void) {
 			while (run_interruption != 1) {
 				if (r_sen.sen <= r_sen.non_threshold) {
 					move_right();
+					direction += 1;
 				} else if (l_sen.sen <= l_sen.non_threshold) {
 					move_left();
+					direction += 3;
 				} else if (cl_sen.sen <= cl_sen.non_threshold) {
 					move_forward();
 				} else {
 					move_back();
+					direction += 2;
 				}
+
+				if (direction >= 4) {
+					direction %= 4;
+				}
+
+				if (direction == 0) {
+					sta_LED_drv(Red, off);
+					sta_LED_drv(Yerrow, off);
+					sta_LED_drv(Green, on);
+				} else if (direction == 1) {
+					sta_LED_drv(Red, on);
+					sta_LED_drv(Yerrow, off);
+					sta_LED_drv(Green, off);
+				} else if (direction == 3) {
+					sta_LED_drv(Red, off);
+					sta_LED_drv(Yerrow, on);
+					sta_LED_drv(Green, off);
+				} else {
+					sta_LED_drv(Red, off);
+					sta_LED_drv(Yerrow, off);
+					sta_LED_drv(Green, off);
+				}
+
 			}
 			wait_ms(300);
 			sta_LED_flag = 0;
 			break;
 
 		case run:
-
 			break;
 
 		case test:
@@ -898,7 +896,6 @@ int main(void) {
 		}
 
 		mot_onoff(off);
-
 
 	}
 

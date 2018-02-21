@@ -20,7 +20,7 @@
 
 char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, clt = 0,
 		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0,
-		run_interruption = 0, direction = 0;
+		run_interruption = 0, direction = 0, pos_x = 0, pos_y = 0;
 
 int count_cmt_0 = 0, count_cmt_1, i, rot = 0, old = 0, cnt_l = 0, cnt_r = 0,
 		r_distance, l_distance, duty_R = 0, duty_R_h = 0, duty_L = 0, duty_L_h =
@@ -215,53 +215,53 @@ void diff_calc(void) {
 	if (cnt_ctl == 1 || cr_sen.ref_wall < cr_sen.sen
 			|| cl_sen.ref_wall < cl_sen.sen) {
 		diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
-		/*
-		 sta_LED_drv(Green, on);
-		 sta_LED_drv(Yerrow, on);
-		 sta_LED_drv(Red, on);
-		 */
+		if (sta_LED_flag == 1) {
+			sta_LED_drv(Green, on);
+			sta_LED_drv(Yerrow, on);
+			sta_LED_drv(Red, on);
+		}
 		return;
 	} else {
 		if ((r_sen.sen >= r_sen.non_threshold + ref_boost_R)
 				&& (l_sen.sen >= l_sen.non_threshold + ref_boost_L)) {
 			diff = (float) ((l_sen.sen - l_sen.ref_wall)
 					- (r_sen.sen - r_sen.ref_wall));
-			/*
-			 if (sta_LED_flag == 1) {
-			 sta_LED_drv(Green, on);
-			 sta_LED_drv(Yerrow, off);
-			 sta_LED_drv(Red, off);
-			 }
-			 */
+
+			if (sta_LED_flag == 1) {
+				sta_LED_drv(Green, on);
+				sta_LED_drv(Yerrow, off);
+				sta_LED_drv(Red, off);
+			}
+
 		} else if ((r_sen.sen >= r_sen.non_threshold + ref_boost_R)
 				&& (l_sen.sen < l_sen.non_threshold + ref_boost_L)) {
 			diff = (float) (-2 * (r_sen.sen - r_sen.ref_wall));
-			/*
-			 if (sta_LED_flag == 1) {
-			 sta_LED_drv(Green, off);
-			 sta_LED_drv(Yerrow, on);
-			 sta_LED_drv(Red, off);
-			 }
-			 */
+
+			if (sta_LED_flag == 1) {
+				sta_LED_drv(Green, off);
+				sta_LED_drv(Yerrow, on);
+				sta_LED_drv(Red, off);
+			}
+
 		} else if ((r_sen.sen < r_sen.non_threshold + ref_boost_R)
 				&& (l_sen.sen >= l_sen.non_threshold + ref_boost_L)) {
 			diff = (float) (2 * (l_sen.sen - l_sen.ref_wall));
-			/*
-			 if (sta_LED_flag == 1) {
-			 sta_LED_drv(Green, off);
-			 sta_LED_drv(Yerrow, off);
-			 sta_LED_drv(Red, on);
-			 }
-			 */
+
+			if (sta_LED_flag == 1) {
+				sta_LED_drv(Green, off);
+				sta_LED_drv(Yerrow, off);
+				sta_LED_drv(Red, on);
+			}
+
 		} else {
 			diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
-			/*
-			 if (sta_LED_flag == 1) {
-			 sta_LED_drv(Green, off);
-			 sta_LED_drv(Yerrow, off);
-			 sta_LED_drv(Red, off);
-			 }
-			 */
+
+			if (sta_LED_flag == 1) {
+				sta_LED_drv(Green, off);
+				sta_LED_drv(Yerrow, off);
+				sta_LED_drv(Red, off);
+			}
+
 		}
 	}
 
@@ -688,10 +688,58 @@ void mode_selector() {
 	sta_LED_drv(Green, ((rot_sw + 1) & 4) >> 2);
 }
 
+void direction_detect() {
+	if (direction >= 4) {
+		direction %= 4;
+	}
+	if (direction == 0) {
+		pos_y += 1;
+		/*
+		 sta_LED_drv(Red, off);
+		 sta_LED_drv(Yerrow, off);
+		 sta_LED_drv(Green, on);
+		 */
+	} else if (direction == 1) {
+		pos_x += 1;
+		/*
+		 sta_LED_drv(Red, on);
+		 sta_LED_drv(Yerrow, off);
+		 sta_LED_drv(Green, off);
+		 */
+	} else if (direction == 3) {
+		pos_x -= 1;
+		/*
+		 sta_LED_drv(Red, off);
+		 sta_LED_drv(Yerrow, on);
+		 sta_LED_drv(Green, off);
+		 */
+	} else {
+		pos_y -= 1;
+		/*
+		 sta_LED_drv(Red, off);
+		 sta_LED_drv(Yerrow, off);
+		 sta_LED_drv(Green, off);
+		 */
+	}
+
+	if (pos_x == 1) {
+		sta_LED_drv(Green, on);
+	} else {
+		sta_LED_drv(Green, off);
+	}
+	if (pos_y == 1) {
+		sta_LED_drv(Red, on);
+	} else {
+		sta_LED_drv(Red, off);
+	}
+
+}
+
 void move_left() {
 	mot_app(half_block, 305, 2000, straight, on);
 	wait_ms(100);
 	mot_onoff(off);
+	direction_detect();
 	wait_ms(450);
 	mot_onoff(on);
 	wait_ms(100);
@@ -708,6 +756,7 @@ void move_right() {
 	mot_app(half_block, 305, 2000, straight, on);
 	wait_ms(100);
 	mot_onoff(off);
+	direction_detect();
 	wait_ms(450);
 	mot_onoff(on);
 	wait_ms(100);
@@ -722,12 +771,14 @@ void move_right() {
 }
 
 void move_forward() {
+	direction_detect();
 	mot_app2(full_block, 410, 2000, straight, on);
 }
 
 void move_back() {
 	mot_app(half_block, 305, 2000, straight, on);
 	wait_ms(1000);
+	direction_detect();
 	mot_app(r_distance, 310, 2000, right, on);
 	wait_ms(1000);
 	mot_app(half_block, 270, 2000, back, on);
@@ -784,7 +835,7 @@ int main(void) {
 			wait_ms(100);
 		}
 		wait_ms(100);
-
+		sta_LED_drv(Rst_status_LED, off);
 		switch (rot_sw) {
 
 		case sen_cal:
@@ -834,45 +885,22 @@ int main(void) {
 			break;
 
 		case search:
-			sta_LED_flag = 1;
+			sta_LED_flag = 0;
 			UX_effect(alart);
 			mot_onoff(on);
 			mot_app(half_block, 310, 1500, straight, on);
-			//wait_ms(300);
 			while (run_interruption != 1) {
 				if (r_sen.sen <= r_sen.non_threshold) {
-					move_right();
 					direction += 1;
+					move_right();
 				} else if (l_sen.sen <= l_sen.non_threshold) {
-					move_left();
 					direction += 3;
+					move_left();
 				} else if (cl_sen.sen <= cl_sen.non_threshold) {
 					move_forward();
 				} else {
-					move_back();
 					direction += 2;
-				}
-
-				if (direction >= 4) {
-					direction %= 4;
-				}
-
-				if (direction == 0) {
-					sta_LED_drv(Red, off);
-					sta_LED_drv(Yerrow, off);
-					sta_LED_drv(Green, on);
-				} else if (direction == 1) {
-					sta_LED_drv(Red, on);
-					sta_LED_drv(Yerrow, off);
-					sta_LED_drv(Green, off);
-				} else if (direction == 3) {
-					sta_LED_drv(Red, off);
-					sta_LED_drv(Yerrow, on);
-					sta_LED_drv(Green, off);
-				} else {
-					sta_LED_drv(Red, off);
-					sta_LED_drv(Yerrow, off);
-					sta_LED_drv(Green, off);
+					move_back();
 				}
 
 			}

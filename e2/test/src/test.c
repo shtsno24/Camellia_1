@@ -17,14 +17,16 @@
 #include "math.h"
 
 #define round(A)((int)(A + 0.5))
+#define map_size 16
 
 char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, clt = 0,
 		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0,
-		run_interruption = 0, direction = 0, pos_x, pos_y;
+		run_interruption = 0, direction = 0, pos_x, pos_y, map[16][16],
+		wall_in_the_block = 0;
 
-int count_cmt_0 = 0, count_cmt_1, i, rot = 0, old = 0, cnt_l = 0, cnt_r = 0,
-		r_distance, l_distance, duty_R = 0, duty_R_h = 0, duty_L = 0, duty_L_h =
-				0, half_block, full_block;
+int count_cmt_0 = 0, count_cmt_1, i, j, k, rot = 0, old = 0, cnt_l = 0, cnt_r =
+		0, r_distance, l_distance, duty_R = 0, duty_R_h = 0, duty_L = 0,
+		duty_L_h = 0, half_block, full_block;
 
 double vel_l = 250, vel_r = 250, tar_vel_l = 300, tar_vel_r = 300, acc_l = 200,
 		acc_r = 200;
@@ -722,17 +724,9 @@ void direction_detect() {
 		 sta_LED_drv(Green, off);
 		 */
 	}
-
-	if (pos_y == 1) {
-		sta_LED_drv(Green, on);
-	} else {
-		sta_LED_drv(Green, off);
-	}
-	if (pos_x == 1) {
-		sta_LED_drv(Red, on);
-	} else {
-		sta_LED_drv(Red, off);
-	}
+	sta_LED_drv(Red, pos_y & 1);
+	sta_LED_drv(Yerrow, (pos_x & 1) >> 0);
+	sta_LED_drv(Green, (pos_x & 2) >> 1);
 
 }
 
@@ -740,7 +734,6 @@ void move_left() {
 	mot_app(half_block, 305, 2000, straight, on);
 	wait_ms(100);
 	mot_onoff(off);
-	direction_detect();
 	wait_ms(450);
 	mot_onoff(on);
 	wait_ms(100);
@@ -751,13 +744,14 @@ void move_left() {
 	mot_onoff(on);
 	wait_ms(100);
 	mot_app2(half_block, 330, 2000, straight, on);
+	//direction_detect();
 }
 
 void move_right() {
 	mot_app(half_block, 305, 2000, straight, on);
 	wait_ms(100);
 	mot_onoff(off);
-	direction_detect();
+
 	wait_ms(450);
 	mot_onoff(on);
 	wait_ms(100);
@@ -768,18 +762,18 @@ void move_right() {
 	mot_onoff(on);
 	wait_ms(100);
 	mot_app2(half_block, 330, 2000, straight, on);
+	//direction_detect();
 
 }
 
 void move_forward() {
-	direction_detect();
 	mot_app2(full_block, 410, 2000, straight, on);
+	//direction_detect();
 }
 
 void move_back() {
 	mot_app(half_block, 305, 2000, straight, on);
 	wait_ms(1000);
-	direction_detect();
 	mot_app(r_distance, 310, 2000, right, on);
 	wait_ms(1000);
 	mot_app(half_block, 270, 2000, back, on);
@@ -795,6 +789,40 @@ void move_back() {
 	wait_ms(1000);
 	mot_onoff(on);
 	mot_app2(15 + half_block, 330, 2000, straight, on);
+	//direction_detect();
+}
+
+void iter_map() {
+	char i, buff = 0;
+
+	if (r_sen.sen <= r_sen.non_threshold) {
+		wall_in_the_block |= 4;
+	}
+	if (l_sen.sen <= l_sen.non_threshold) {
+		wall_in_the_block |= 1;
+	}
+	if (cl_sen.sen <= cl_sen.non_threshold) {
+		wall_in_the_block |= 8;
+	}
+
+	wall_in_the_block |= 2;
+
+	buff |= (wall_in_the_block | 8) << ((0 + direction) % 4);
+	buff |= (wall_in_the_block | 4) << ((1 + direction) % 4);
+	buff |= (wall_in_the_block | 2) << ((2 + direction) % 4);
+	buff |= (wall_in_the_block | 1) << ((3 + direction) % 4);
+
+	map[pos_y][pos_x] |= buff;
+}
+
+void print_map() {
+	int i, j;
+	for (i = 0; i < map_size; i++) {
+		for (j = 0; j < map_size; j++) {
+			myprintf(" %d ", map[i][j]);
+		}
+		myprintf("\n");
+	}
 }
 
 int main(void) {
@@ -815,6 +843,12 @@ int main(void) {
 	full_block = 178.5;
 	r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2)) + 1;
 	l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2)) - 0.5;
+
+	for (i = 0; i < 16; i++) {
+		for (j = 0; j < 16; j++) {
+			map[i][j] = 0;
+		}
+	}
 
 	while (1) {
 		while (batt_vol() < 11.3) {
@@ -886,33 +920,49 @@ int main(void) {
 			break;
 
 		case search:
+			k = 0;
 			sta_LED_flag = 0;
+			pos_x = 0;
+			pos_y = 1;
 			UX_effect(alart);
 			mot_onoff(on);
 			mot_app(half_block, 310, 1500, straight, on);
-			pos_x = 0;
-			pos_y = 1;
+
 			while (run_interruption != 1) {
+
+				wall_in_the_block = 0;
+				iter_map();
 				if (r_sen.sen <= r_sen.non_threshold) {
 					direction += 1;
 					move_right();
+					wall_in_the_block |= 4;
 				} else if (l_sen.sen <= l_sen.non_threshold) {
 					direction += 3;
 					move_left();
+					wall_in_the_block |= 1;
 				} else if (cl_sen.sen <= cl_sen.non_threshold) {
 					direction += 0;
 					move_forward();
+					wall_in_the_block |= 8;
 				} else {
 					direction += 2;
 					move_back();
+					wall_in_the_block |= 2;
 				}
-
+				direction_detect();
+				k++;
+				if (k == 10) {
+					run_interruption = 1;
+				}
 			}
 			wait_ms(300);
 			sta_LED_flag = 0;
 			break;
 
 		case run:
+			sta_LED_flag = 0;
+			UX_effect(alart);
+			print_map();
 			break;
 
 		case test:

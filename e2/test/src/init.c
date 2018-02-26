@@ -10,7 +10,7 @@
 
 #define round(A)((int)(A + 0.5))
 
-int j;
+int n;
 SPC spec;
 SEN r_sen, cr_sen, l_sen, cl_sen;
 MOT r_motor, l_motor;
@@ -61,8 +61,8 @@ void initSPEC() {
 	spec.tread = 90.0;
 	spec.tire_dim = 90.0;
 	spec.step_dist = 0.408407;
-	spec.vel_min = 250;
-	spec.tar_vel_min = 300;
+	spec.vel_min = 200;
+	spec.tar_vel_min = 250;
 	/*
 	 spec.sen_min_CR = 29;
 	 spec.sen_min_R = 28;
@@ -105,11 +105,11 @@ void initSEN(void) {
 	cr_sen.ref_wall = 600;
 	cl_sen.ref_wall = 600;
 
-	for (j = 0; j < 9; j++) {
-		r_sen.old[j] = 0;
-		cr_sen.old[j] = 0;
-		l_sen.old[j] = 0;
-		cl_sen.old[j] = 0;
+	for (n = 0; n < 9; n++) {
+		r_sen.old[n] = 0;
+		cr_sen.old[n] = 0;
+		l_sen.old[n] = 0;
+		cl_sen.old[n] = 0;
 	}
 }
 

@@ -17,16 +17,15 @@
 #include "math.h"
 
 #define round(A)((int)(A + 0.5))
-#define map_size 16
+#define map_size 15
 
 char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, clt = 0,
 		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0,
-		run_interruption = 0, direction = 0, pos_x, pos_y, map[16][16],
-		wall_in_the_block = 0;
+		run_interruption = 0, direction = 0, pos_x, pos_y, wall;
 
 int count_cmt_0 = 0, count_cmt_1, i, j, k, rot = 0, old = 0, cnt_l = 0, cnt_r =
 		0, r_distance, l_distance, duty_R = 0, duty_R_h = 0, duty_L = 0,
-		duty_L_h = 0, half_block, full_block;
+		duty_L_h = 0, half_block, full_block, map_x[map_size], map_y[map_size];
 
 double vel_l = 250, vel_r = 250, tar_vel_l = 300, tar_vel_r = 300, acc_l = 200,
 		acc_r = 200;
@@ -691,10 +690,6 @@ void mode_selector() {
 }
 
 void direction_detect() {
-	if (direction >= 4) {
-		direction %= 4;
-	}
-
 	if (direction == 0) {
 		pos_y += 1;
 		/*
@@ -793,35 +788,48 @@ void move_back() {
 }
 
 void iter_map() {
-	char i, buff = 0;
+	/*
+	 * wall : left-back-right-front
+	 * map_x : parallel walls to x-axis
+	 * map_y : parallel walls to y-axis
+	 * */
 
-	if (r_sen.sen <= r_sen.non_threshold) {
-		wall_in_the_block |= 4;
+	wall = 0;
+	if (r_sen.sen > r_sen.non_threshold) {
+		wall |= 1 << ((1 + direction) % 4);
 	}
-	if (l_sen.sen <= l_sen.non_threshold) {
-		wall_in_the_block |= 1;
+	if (l_sen.sen > l_sen.non_threshold) {
+		wall |= 1 << ((3 + direction) % 4);
 	}
-	if (cl_sen.sen <= cl_sen.non_threshold) {
-		wall_in_the_block |= 8;
+	if (cl_sen.sen > cl_sen.non_threshold) {
+		wall |= 1 << ((0 + direction) % 4);
 	}
 
-	wall_in_the_block |= 2;
+	if (pos_x + 1 < map_size) {
+		map_x[pos_x + 1] |= (wall | 1) << pos_y;
+	}
+	if (pos_x > 0) {
+		map_x[pos_x] |= (wall | 4) << pos_y - 2;
+	}
 
-	buff |= (wall_in_the_block | 8) << ((0 + direction) % 4);
-	buff |= (wall_in_the_block | 4) << ((1 + direction) % 4);
-	buff |= (wall_in_the_block | 2) << ((2 + direction) % 4);
-	buff |= (wall_in_the_block | 1) << ((3 + direction) % 4);
+	if (pos_y + 1 < map_size) {
+		map_y[pos_y + 1] |= (wall | 2) << pos_x - 1;
+	}
+	if (pos_y > 0) {
+		map_y[pos_y] |= (wall | 8) << pos_x - 3;
+	}
 
-	map[pos_y][pos_x] |= buff;
 }
 
 void print_map() {
-	int i, j;
+	int i;
 	for (i = 0; i < map_size; i++) {
-		for (j = 0; j < map_size; j++) {
-			myprintf(" %d ", map[i][j]);
-		}
-		myprintf("\n");
+		myprintf("%d\n", map_x[i]);
+
+	}
+	for (i = 0; i < map_size; i++) {
+		myprintf("%d\n", map_y[i]);
+
 	}
 }
 
@@ -844,10 +852,9 @@ int main(void) {
 	r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2)) + 1;
 	l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2)) - 0.5;
 
-	for (i = 0; i < 16; i++) {
-		for (j = 0; j < 16; j++) {
-			map[i][j] = 0;
-		}
+	for (i = 0; i < map_size; i++) {
+		map_x[i] = 0;
+		map_y[i] = 0;
 	}
 
 	while (1) {
@@ -929,26 +936,33 @@ int main(void) {
 			mot_app(half_block, 310, 1500, straight, on);
 
 			while (run_interruption != 1) {
-
-				wall_in_the_block = 0;
 				iter_map();
+				/*
+				 while (PB.DR.BIT.B5 != 0) {
+				 }
+				 UX_effect(alart);
+
+				 myprintf("%d | %d \n", wall, direction);
+				 while (PB.DR.BIT.B5 != 0) {
+				 }
+				 UX_effect(alart);
+				 */
 				if (r_sen.sen <= r_sen.non_threshold) {
 					direction += 1;
 					move_right();
-					wall_in_the_block |= 4;
+
 				} else if (l_sen.sen <= l_sen.non_threshold) {
 					direction += 3;
 					move_left();
-					wall_in_the_block |= 1;
 				} else if (cl_sen.sen <= cl_sen.non_threshold) {
 					direction += 0;
 					move_forward();
-					wall_in_the_block |= 8;
 				} else {
 					direction += 2;
 					move_back();
-					wall_in_the_block |= 2;
 				}
+				direction %= 4;
+
 				direction_detect();
 				k++;
 				if (k == 10) {

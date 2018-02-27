@@ -17,7 +17,7 @@
 #include "math.h"
 
 #define round(A)((int)(A + 0.5))
-#define map_size 15
+#define map_size 17
 
 char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, clt = 0,
 		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0,
@@ -789,9 +789,11 @@ void move_back() {
 
 void iter_map() {
 	/*
-	 * wall : left-back-right-front
-	 * map_x : parallel walls to x-axis
-	 * map_y : parallel walls to y-axis
+	 * wall : W-S-E-N
+	 * 		 MSB   LSB
+	 *
+	 * map_x : vertical walls to x-axis
+	 * map_y : vertical walls to y-axis
 	 * */
 
 	wall = 0;
@@ -805,32 +807,67 @@ void iter_map() {
 		wall |= 1 << ((0 + direction) % 4);
 	}
 
-	if (pos_x + 1 < map_size) {
-		map_x[pos_x + 1] |= (wall | 1) << pos_y;
+	if (pos_x < map_size) {
+		map_x[pos_x] |= ((wall & 2) >> 1) << pos_y;
 	}
-	if (pos_x > 0) {
-		map_x[pos_x] |= (wall | 4) << pos_y - 2;
-	}
-
-	if (pos_y + 1 < map_size) {
-		map_y[pos_y + 1] |= (wall | 2) << pos_x - 1;
-	}
-	if (pos_y > 0) {
-		map_y[pos_y] |= (wall | 8) << pos_x - 3;
+	if (pos_x - 1 >= 0) {
+		map_x[pos_x - 1] |= ((wall & 8) >> 3) << pos_y;
 	}
 
+	if (pos_y < map_size) {
+		map_y[pos_y] |= ((wall & 1) >> 0) << pos_x;
+	}
+	if (pos_y - 1 >= 0) {
+		map_y[pos_y - 1] |= ((wall & 4) >> 2) << pos_x;
+	}
+}
+
+void print_xmap(int row) {
+	int i, mask = 1;
+	mask <<= row;
+	myprintf("|");
+	for (i = 0; i < map_size; i++) {
+		myprintf("  ");
+		if (map_x[i] & mask) {
+			myprintf("|");
+		} else {
+			myprintf(" ");
+		}
+	}
+	myprintf("\n", mask);
+	//myprintf(" |\n");
+}
+
+void print_ymap(int row) {
+	int i, mask;
+	for (i = 0; i < map_size; i++) {
+		myprintf("+");
+		mask = 1 << i;
+		if (map_y[row] & mask) {
+			myprintf("--");
+		} else {
+			myprintf("  ");
+		}
+	}
+	myprintf("+\n");
 }
 
 void print_map() {
-	int i;
+	int i, buff_x, buff_y;
 	for (i = 0; i < map_size; i++) {
-		myprintf("%d\n", map_x[i]);
-
+		print_ymap(map_size - 1 - i);
+		print_xmap(map_size - 1 - i);
 	}
 	for (i = 0; i < map_size; i++) {
-		myprintf("%d\n", map_y[i]);
-
+		myprintf("+--");
 	}
+	myprintf("+\n");
+	/*
+	for (i = 0; i < map_size; i++) {
+		myprintf("%d\n", map_x[map_size - 1 - i]);
+		myprintf("%d\n", map_y[map_size - 1 - i]);
+	}
+    */
 }
 
 int main(void) {
@@ -933,7 +970,7 @@ int main(void) {
 			pos_y = 1;
 			UX_effect(alart);
 			mot_onoff(on);
-			mot_app(half_block, 310, 1500, straight, on);
+			mot_app2(half_block, 310, 1500, straight, on);
 
 			while (run_interruption != 1) {
 				iter_map();
@@ -964,11 +1001,11 @@ int main(void) {
 				direction %= 4;
 
 				direction_detect();
-				k++;
-				if (k == 10) {
+				if (pos_x == 0 & pos_y == 0) {
 					run_interruption = 1;
 				}
 			}
+			mot_app(half_block, 310, 1500, straight, on);
 			wait_ms(300);
 			sta_LED_flag = 0;
 			break;

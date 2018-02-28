@@ -91,17 +91,17 @@ void initSPEC() {
 
 void initSEN(void) {
 	r_sen.non_threshold = 100;
-	cr_sen.non_threshold = 50;
-	cl_sen.non_threshold = 50;
+	cr_sen.non_threshold = 60;
+	cl_sen.non_threshold = 60;
 	l_sen.non_threshold = 100;
 
-	r_sen.diff_threshold = 4;
+	r_sen.diff_threshold = 2;
 	cr_sen.diff_threshold = 657;
 	cl_sen.diff_threshold = 434;
-	l_sen.diff_threshold = 4;
+	l_sen.diff_threshold = 2;
 
-	r_sen.ref_wall = 682;
-	l_sen.ref_wall = 415;
+	r_sen.ref_wall = 291;
+	l_sen.ref_wall = 232;
 	cr_sen.ref_wall = 600;
 	cl_sen.ref_wall = 600;
 
@@ -121,10 +121,10 @@ void initMOT(void) {
 	r_motor.acc = 0.0;
 	l_motor.acc = 0.0;
 
-	r_motor.min_vel = 200.0;
-	l_motor.min_vel = 200.0;
-	r_motor.max_vel = 1500.0;
-	l_motor.max_vel = 1500.0;
+	r_motor.min_vel = 240.0;
+	l_motor.min_vel = 240.0;
+	r_motor.max_vel = 2000.0;
+	l_motor.max_vel = 2000.0;
 	r_motor.vel = 300.0;
 	l_motor.vel = 300.0;
 

@@ -17,7 +17,7 @@
 #include "math.h"
 
 #define round(A)((int)(A + 0.5))
-#define map_size 17
+#define map_size 5
 
 char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, clt = 0,
 		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0,
@@ -25,14 +25,12 @@ char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, clt = 0,
 
 int count_cmt_0 = 0, count_cmt_1, i, j, k, rot = 0, old = 0, cnt_l = 0, cnt_r =
 		0, r_distance, l_distance, duty_R = 0, duty_R_h = 0, duty_L = 0,
-		duty_L_h = 0, half_block, full_block, map_x[map_size], map_y[map_size];
+		duty_L_h = 0, half_block, full_block, map_x[map_size - 1],
+		map_y[map_size - 1];
 
 double vel_l = 250, vel_r = 250, tar_vel_l = 300, tar_vel_r = 300, acc_l = 200,
 		acc_r = 200;
-float batt, diff, kp_r = 0.2, kp_l = 0.2;
-short sen_diff_l = 0, sen_diff_r = 0, sen_old_L, sen_old_R;
-short duty[17];
-short sen[4];
+float batt, diff, kp_r = 0.3, kp_l = 0.3;
 
 extern SPC spec;
 extern SEN r_sen, cr_sen, l_sen, cl_sen;
@@ -74,7 +72,7 @@ enum ux {
 };
 
 enum mode {
-	sen_cal = 0, search = 1, run = 2, test = 3
+	sen_cal = 0, search = 1, map = 2, test = 3, run = 4
 };
 
 void pass(void) {
@@ -321,12 +319,12 @@ void sen_cmt1() {
 	l_sen.sen -= get_sensor(L_sen, ad_0);		//L sensor
 	r_sen.sen -= get_sensor(R_sen, ad_0);		//R sensor
 
-	cr_sen.diff = cr_sen.sen - cr_sen.old[8];
-	r_sen.diff = r_sen.sen - r_sen.old[8];
-	cl_sen.diff = cl_sen.sen - cl_sen.old[8];
-	l_sen.diff = l_sen.sen - l_sen.old[8];
+	cr_sen.diff = cr_sen.sen - cr_sen.old[4];
+	r_sen.diff = r_sen.sen - r_sen.old[4];
+	cl_sen.diff = cl_sen.sen - cl_sen.old[4];
+	l_sen.diff = l_sen.sen - l_sen.old[4];
 
-	for (i = 1; i < 9; i++) {
+	for (i = 1; i < 5; i++) {
 		r_sen.old[i] = r_sen.old[i - 1];
 		cr_sen.old[i] = cr_sen.old[i - 1];
 		l_sen.old[i] = l_sen.old[i - 1];
@@ -807,14 +805,14 @@ void iter_map() {
 		wall |= 1 << ((0 + direction) % 4);
 	}
 
-	if (pos_x < map_size) {
+	if (pos_x < map_size - 1) {
 		map_x[pos_x] |= ((wall & 2) >> 1) << pos_y;
 	}
 	if (pos_x - 1 >= 0) {
 		map_x[pos_x - 1] |= ((wall & 8) >> 3) << pos_y;
 	}
 
-	if (pos_y < map_size) {
+	if (pos_y < map_size - 1) {
 		map_y[pos_y] |= ((wall & 1) >> 0) << pos_x;
 	}
 	if (pos_y - 1 >= 0) {
@@ -825,8 +823,8 @@ void iter_map() {
 void print_xmap(int row) {
 	int i, mask = 1;
 	mask <<= row;
-	myprintf("|");
-	for (i = 0; i < map_size; i++) {
+
+	for (i = 0; i < map_size - 1; i++) {
 		myprintf("  ");
 		if (map_x[i] & mask) {
 			myprintf("|");
@@ -834,40 +832,50 @@ void print_xmap(int row) {
 			myprintf(" ");
 		}
 	}
-	myprintf("\n", mask);
-	//myprintf(" |\n");
+
 }
 
 void print_ymap(int row) {
 	int i, mask;
-	for (i = 0; i < map_size; i++) {
-		myprintf("+");
+	for (i = 0; i < map_size - 1; i++) {
 		mask = 1 << i;
 		if (map_y[row] & mask) {
 			myprintf("--");
 		} else {
 			myprintf("  ");
 		}
+		myprintf("+");
 	}
-	myprintf("+\n");
+	mask <<= 1;
+	if (map_y[row] & mask) {
+		myprintf("--");
+	} else {
+		myprintf("  ");
+	}
+
 }
 
 void print_map() {
-	int i, buff_x, buff_y;
-	for (i = 0; i < map_size; i++) {
-		print_ymap(map_size - 1 - i);
-		print_xmap(map_size - 1 - i);
-	}
+	int i;
+	myprintf("\n");
 	for (i = 0; i < map_size; i++) {
 		myprintf("+--");
 	}
-	myprintf("+\n");
-	/*
-	for (i = 0; i < map_size; i++) {
-		myprintf("%d\n", map_x[map_size - 1 - i]);
-		myprintf("%d\n", map_y[map_size - 1 - i]);
+	myprintf("+\n|");
+
+	print_xmap(map_size - 1);
+	myprintf("  |\n+");
+	for (i = 1; i < map_size; i++) {
+		print_ymap(map_size - 1 - i);
+		myprintf("+\n|");
+		print_xmap(map_size - 1 - i);
+		myprintf("  |\n+");
 	}
-    */
+
+	for (i = 0; i < map_size; i++) {
+		myprintf("--+");
+	}
+	myprintf("\n\n");
 }
 
 int main(void) {
@@ -879,12 +887,7 @@ int main(void) {
 	mot_onoff(off);
 	PE.DRL.BIT.B7 = 0;
 
-	duty[0] = 6250 - 1;		//(1ms)
-	duty[1] = round(duty[0] / 2);		//(about 0.5ms)
-	duty[4] = 6250 - 1;		//(1ms)
-	duty[5] = round(duty[4] / 2);		//(about 0.5ms)
-
-	half_block = 92;
+	half_block = 92.5;
 	full_block = 178.5;
 	r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2)) + 1;
 	l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2)) - 0.5;
@@ -920,55 +923,25 @@ int main(void) {
 		case sen_cal:
 
 			//sen_calibration();
-
 			sta_LED_flag = 1;
-
 			UX_effect(alart);
 			mot_onoff(on);
 			wait_ms(100);
-			mot_app2(half_block, 330, 2000, straight, on);
-			mot_app(half_block, 295, 2000, straight, on);
+			mot_app(full_block * 5, 400, 500, straight, on);
 			wait_ms(100);
-			mot_onoff(off);
-
-			while (PB.DR.BIT.B5 != 0)
-				;
-			UX_effect(alart);
-			mot_onoff(on);
-			wait_ms(100);
-			mot_app(r_distance, 310, 2000, right, on);
-			wait_ms(100);
-			mot_onoff(off);
-
-			while (PB.DR.BIT.B5 != 0)
-				;
-			UX_effect(alart);
-			mot_onoff(on);
-			wait_ms(100);
-			mot_app(l_distance, 310, 2000, left, on);
-			wait_ms(100);
-			mot_onoff(off);
-
-			while (PB.DR.BIT.B5 != 0)
-				;
-			UX_effect(alart);
-			mot_onoff(on);
-			wait_ms(100);
-			mot_app2(half_block, 400, 2000, straight, on);
-			mot_app2(full_block * 14, 400, 2000, straight, on);
-			mot_app(half_block, 400, 2000, straight, on);
-			wait_ms(100);
-			mot_onoff(off);
-
 			sta_LED_flag = 0;
+			mot_onoff(off);
+
 			break;
 
 		case search:
-			k = 0;
 			sta_LED_flag = 0;
 			pos_x = 0;
 			pos_y = 1;
+			direction = 0;
+			run_interruption = 0;
 			UX_effect(alart);
+
 			mot_onoff(on);
 			mot_app2(half_block, 310, 1500, straight, on);
 
@@ -1008,23 +981,59 @@ int main(void) {
 			mot_app(half_block, 310, 1500, straight, on);
 			wait_ms(300);
 			sta_LED_flag = 0;
+			pos_x = 0;
+			pos_y = 0;
 			break;
 
-		case run:
+		case map:
 			sta_LED_flag = 0;
 			UX_effect(alart);
 			print_map();
 			break;
 
 		case test:
+
 			sta_LED_flag = 1;
+
 			UX_effect(alart);
 			mot_onoff(on);
 			wait_ms(100);
-			mot_app(full_block * 5, 400, 500, straight, on);
+			mot_app2(half_block, 330, 2000, straight, on);
+			mot_app(half_block, 295, 2000, straight, on);
 			wait_ms(100);
-			sta_LED_flag = 0;
 			mot_onoff(off);
+
+			while (PB.DR.BIT.B5 != 0)
+				;
+			UX_effect(alart);
+			mot_onoff(on);
+			wait_ms(100);
+			mot_app(r_distance, 310, 2000, right, on);
+			wait_ms(100);
+			mot_onoff(off);
+
+			while (PB.DR.BIT.B5 != 0)
+				;
+			UX_effect(alart);
+			mot_onoff(on);
+			wait_ms(100);
+			mot_app(l_distance, 310, 2000, left, on);
+			wait_ms(100);
+			mot_onoff(off);
+
+			while (PB.DR.BIT.B5 != 0)
+				;
+			UX_effect(alart);
+			mot_onoff(on);
+			wait_ms(100);
+			mot_app2(half_block, 400, 2000, straight, on);
+			mot_app2(full_block * 4, 400, 2000, straight, on);
+			mot_app(half_block, 400, 2000, straight, on);
+			wait_ms(100);
+			mot_onoff(off);
+
+			sta_LED_flag = 0;
+
 			break;
 		}
 

@@ -17,19 +17,21 @@
 #include "math.h"
 
 #define round(A)((int)(A + 0.5))
-#define map_size 5
+#define map_size 16
 
 char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, clt = 0,
 		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0,
 		run_interruption = 0, direction = 0, pos_x, pos_y, goal_x = 1, goal_y =
-				3, wall;
+				3, wall, path[map_size * map_size];
 
 unsigned char dist_map[map_size][map_size];
 
 int count_cmt_0 = 0, count_cmt_1, i, j, k, rot = 0, old = 0, cnt_l = 0, cnt_r =
 		0, r_distance, l_distance, duty_R = 0, duty_R_h = 0, duty_L = 0,
-		duty_L_h = 0, half_block, full_block, wall_map_x[map_size - 1],
-		wall_map_y[map_size - 1];
+		duty_L_h = 0, half_block, full_block;
+
+unsigned int wall_map_x[map_size - 1], wall_map_y[map_size - 1],
+		searched_map_x[map_size - 1], searched_map_y[map_size - 1];
 
 double vel_l = 250, vel_r = 250, tar_vel_l = 300, tar_vel_r = 300, acc_l = 200,
 		acc_r = 200;
@@ -811,16 +813,20 @@ void iter_wall_map() {
 
 	if (pos_x < map_size - 1) {
 		wall_map_x[pos_x] |= ((wall & 2) >> 1) << pos_y;
+		searched_map_x[pos_x] &= ~(1 << pos_y);
 	}
 	if (pos_x - 1 >= 0) {
 		wall_map_x[pos_x - 1] |= ((wall & 8) >> 3) << pos_y;
+		searched_map_x[pos_x - 1] &= ~(1 << pos_y);
 	}
 
 	if (pos_y < map_size - 1) {
 		wall_map_y[pos_y] |= ((wall & 1) >> 0) << pos_x;
+		searched_map_y[pos_y] &= ~(1 << pos_x);
 	}
 	if (pos_y - 1 >= 0) {
 		wall_map_y[pos_y - 1] |= ((wall & 4) >> 2) << pos_x;
+		searched_map_y[pos_y - 1] &= ~(1 << pos_x);
 	}
 }
 
@@ -828,21 +834,21 @@ char get_wall_from_map(char x, char y) {
 	char wall = 0;
 
 	if (x < map_size - 1) {
-		wall |= (wall_map_x[x] & (1 << y)) >> (y - 1);
-		myprintf("%d\n",(wall_map_x[x] & (1 << y)) >> (y - 1));
+		wall |= ((wall_map_x[x] & (1 << y)) >> y) << 1;
+		myprintf("%d\n", ((wall_map_x[x] & (1 << y)) >> y) << 1);
 	}
 	if (x - 1 >= 0) {
-		wall |= (wall_map_x[x - 1] & (1 << y)) >> (y - 3);
-		myprintf("%d\n",(wall_map_x[x - 1] & (1 << y)) >> (y - 3));
+		wall |= ((wall_map_x[x - 1] & (1 << y)) >> y) << 3;
+		myprintf("%d\n", ((wall_map_x[x - 1] & (1 << y)) >> y) << 3);
 	}
 
 	if (y < map_size - 1) {
 		wall |= (wall_map_y[y] & (1 << x)) >> x;
-		myprintf("%d\n",(wall_map_y[y] & (1 << x)) >> x);
+		myprintf("%d\n", (wall_map_y[y] & (1 << x)) >> x);
 	}
 	if (y - 1 >= 0) {
-		wall |= (wall_map_y[y - 1] & (1 << x)) >> (x - 2);
-		myprintf("%d\n",(wall_map_y[y - 1] & (1 << x)) >> (x - 2));
+		wall |= ((wall_map_y[y - 1] & (1 << x)) >> x) << 2;
+		myprintf("%d\n", ((wall_map_y[y - 1] & (1 << x)) >> x) << 2);
 	}
 	return wall;
 
@@ -906,11 +912,72 @@ void print_wall_map() {
 	myprintf("\n\n");
 }
 
+void print_searched_map_x(int row) {
+	int i, mask = 1;
+	mask <<= row;
+
+	for (i = 0; i < map_size - 1; i++) {
+		myprintf("  ");
+		if (searched_map_x[i] & mask) {
+			myprintf("|");
+		} else {
+			myprintf(" ");
+		}
+	}
+
+}
+
+void print_searched_map_y(int row) {
+	int i, mask;
+	for (i = 0; i < map_size - 1; i++) {
+		mask = 1 << i;
+		if (searched_map_y[row] & mask) {
+			myprintf("--");
+		} else {
+			myprintf("  ");
+		}
+		myprintf("+");
+	}
+	mask <<= 1;
+	if (searched_map_y[row] & mask) {
+		myprintf("--");
+	} else {
+		myprintf("  ");
+	}
+
+}
+
+void print_searched_map() {
+	int i;
+	myprintf("\n");
+	for (i = 0; i < map_size; i++) {
+		myprintf("+--");
+	}
+	myprintf("+\n|");
+
+	print_searched_map_x(map_size - 1);
+	myprintf("  |\n+");
+	for (i = 1; i < map_size; i++) {
+		print_searched_map_y(map_size - 1 - i);
+		myprintf("+\n|");
+		print_searched_map_x(map_size - 1 - i);
+		myprintf("  |\n+");
+	}
+
+	for (i = 0; i < map_size; i++) {
+		myprintf("--+");
+	}
+	myprintf("\n\n");
+}
+
 void initwall_map() {
 	int i;
-	for (i = 0; i < map_size; i++) {
+	for (i = 0; i < map_size - 1; i++) {
 		wall_map_x[i] = 0;
 		wall_map_y[i] = 0;
+		searched_map_x[i] = 0xffffffff;
+		searched_map_y[i] = 0xffffffff;
+
 	}
 }
 
@@ -925,30 +992,86 @@ void initdist_map() {
 	dist_map[goal_x][goal_y] = 0;
 }
 
-void iter_dist_map() {
-	unsigned char buff_x = 0, buff_y = 0, wall;
-	int i, j;
-	for (i = 0; i < map_size; i++) {
-		for (j = 0; j < map_size; j++) {
-			if (dist_map[i][j] == 0) {
-				buff_x = i;
-				buff_y = j;
-			}
-		}
-	}
-	wall = get_wall_from_map(buff_x, buff_y);
-	myprintf("\ngoal : %d\n\n", wall);
-}
-
 void print_dist_map() {
 	int i, j;
 
 	myprintf("\n");
 	for (i = 0; i < map_size; i++) {
 		for (j = 0; j < map_size; j++) {
-			myprintf("%d ", dist_map[j][map_size - 1 - i]);
+			myprintf("%3d ", dist_map[j][map_size - 1 - i]);
 		}
 		myprintf("\n");
+	}
+}
+
+void iter_dist_map() {
+	unsigned char buff_x = 0, buff_y = 0, wall, dist = 0;
+	int i, j, k;
+	while (dist_map[0][0] == 255) {
+		for (i = 0; i < map_size; i++) {
+			for (j = 0; j < map_size; j++) {
+				if (dist_map[i][j] == dist) {
+					buff_x = i;
+					buff_y = j;
+					wall = get_wall_from_map(buff_x, buff_y);
+
+					if ((wall & 2) != 2) {
+						if (buff_x != (map_size - 1)) {
+							if (dist_map[buff_x + 1][buff_y] == 255) {
+								dist_map[buff_x + 1][buff_y] = dist + 1;
+							}
+						}
+					}
+					if ((wall & 8) != 8) {
+						if (buff_x != 0) {
+							if (dist_map[buff_x - 1][buff_y] == 255) {
+								dist_map[buff_x - 1][buff_y] = dist + 1;
+							}
+						}
+					}
+
+					if ((wall & 1) != 1) {
+						if (buff_y != (map_size - 1)) {
+							if (dist_map[buff_x][buff_y + 1] == 255) {
+								dist_map[buff_x][buff_y + 1] = dist + 1;
+							}
+						}
+					}
+
+					if ((wall & 4) != 4) {
+						if (buff_y != 0) {
+							if (dist_map[buff_x][buff_y - 1] == 255) {
+								dist_map[buff_x][buff_y - 1] = dist + 1;
+							}
+						}
+					}
+				}
+			}
+		}
+		print_dist_map();
+		dist++;
+	}
+}
+
+char read_dist_map(char x, char y) {
+	return dist_map[x][y];
+}
+
+void generate_path() {
+	/*
+	 * =================
+	 * about path[]
+	 * 0:forward
+	 * 1:right
+	 * 2:backward
+	 * 3:left
+	 * 4:goal
+	 * =================
+	 * */
+	char x = pos_x, y = pos_y;
+
+	while (dist_map[x][y] != 0) {
+
 	}
 }
 
@@ -992,18 +1115,7 @@ int main(void) {
 		sta_LED_drv(Rst_status_LED, off);
 		switch (rot_sw) {
 
-		case sen_cal:
-
-			//sen_calibration();
-			sta_LED_flag = 1;
-			UX_effect(alart);
-			mot_onoff(on);
-			wait_ms(100);
-			mot_app(full_block * 5, 400, 500, straight, on);
-			wait_ms(100);
-			sta_LED_flag = 0;
-			mot_onoff(off);
-
+		case run:
 			break;
 
 		case search:
@@ -1050,6 +1162,7 @@ int main(void) {
 					run_interruption = 1;
 				}
 			}
+			iter_wall_map();
 			mot_app(half_block, 310, 1500, straight, on);
 			wait_ms(300);
 			sta_LED_flag = 0;
@@ -1061,8 +1174,9 @@ int main(void) {
 			sta_LED_flag = 0;
 			UX_effect(alart);
 			print_wall_map();
-			print_dist_map();
+			print_searched_map();
 			iter_dist_map();
+
 			break;
 
 		case test:

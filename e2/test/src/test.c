@@ -31,7 +31,8 @@ int count_cmt_0 = 0, count_cmt_1, i, j, k, rot = 0, old = 0, cnt_l = 0, cnt_r =
 		duty_L_h = 0, half_block, full_block;
 
 unsigned int wall_map_x[map_size - 1], wall_map_y[map_size - 1],
-		searched_map_x[map_size - 1], searched_map_y[map_size - 1];
+		searched_map_x[map_size - 1], searched_map_y[map_size - 1],
+		mixed_map_x[map_size - 1], mixed_map_y[map_size - 1];
 
 double vel_l = 250, vel_r = 250, tar_vel_l = 300, tar_vel_r = 300, acc_l = 200,
 		acc_r = 200;
@@ -830,30 +831,6 @@ void iter_wall_map() {
 	}
 }
 
-char get_wall_from_map(char x, char y) {
-	char wall = 0;
-
-	if (x < map_size - 1) {
-		wall |= ((wall_map_x[x] & (1 << y)) >> y) << 1;
-		myprintf("%d\n", ((wall_map_x[x] & (1 << y)) >> y) << 1);
-	}
-	if (x - 1 >= 0) {
-		wall |= ((wall_map_x[x - 1] & (1 << y)) >> y) << 3;
-		myprintf("%d\n", ((wall_map_x[x - 1] & (1 << y)) >> y) << 3);
-	}
-
-	if (y < map_size - 1) {
-		wall |= (wall_map_y[y] & (1 << x)) >> x;
-		myprintf("%d\n", (wall_map_y[y] & (1 << x)) >> x);
-	}
-	if (y - 1 >= 0) {
-		wall |= ((wall_map_y[y - 1] & (1 << x)) >> x) << 2;
-		myprintf("%d\n", ((wall_map_y[y - 1] & (1 << x)) >> x) << 2);
-	}
-	return wall;
-
-}
-
 void print_wall_map_x(int row) {
 	int i, mask = 1;
 	mask <<= row;
@@ -981,6 +958,96 @@ void initwall_map() {
 	}
 }
 
+void mix_map() {
+	int i;
+	for (i = 0; i < map_size - 1; i++) {
+		mixed_map_x[i] = wall_map_x[i] | searched_map_x[i];
+		mixed_map_y[i] = wall_map_y[i] | searched_map_y[i];
+	}
+}
+
+void print_mixed_map_x(int row) {
+	int i, mask = 1;
+	mask <<= row;
+
+	for (i = 0; i < map_size - 1; i++) {
+		myprintf("  ");
+		if (mixed_map_x[i] & mask) {
+			myprintf("|");
+		} else {
+			myprintf(" ");
+		}
+	}
+
+}
+
+void print_mixed_map_y(int row) {
+	int i, mask;
+	for (i = 0; i < map_size - 1; i++) {
+		mask = 1 << i;
+		if (mixed_map_y[row] & mask) {
+			myprintf("--");
+		} else {
+			myprintf("  ");
+		}
+		myprintf("+");
+	}
+	mask <<= 1;
+	if (mixed_map_y[row] & mask) {
+		myprintf("--");
+	} else {
+		myprintf("  ");
+	}
+
+}
+
+void print_mixed_map() {
+	int i;
+	myprintf("\n");
+	for (i = 0; i < map_size; i++) {
+		myprintf("+--");
+	}
+	myprintf("+\n|");
+
+	print_mixed_map_x(map_size - 1);
+	myprintf("  |\n+");
+	for (i = 1; i < map_size; i++) {
+		print_mixed_map_y(map_size - 1 - i);
+		myprintf("+\n|");
+		print_mixed_map_x(map_size - 1 - i);
+		myprintf("  |\n+");
+	}
+
+	for (i = 0; i < map_size; i++) {
+		myprintf("--+");
+	}
+	myprintf("\n\n");
+}
+
+char get_wall_from_mixed_map(char x, char y) {
+	char wall = 0;
+
+	if (x < map_size - 1) {
+		wall |= ((mixed_map_x[x] & (1 << y)) >> y) << 1;
+		myprintf("%d\n", ((mixed_map_x[x] & (1 << y)) >> y) << 1);
+	}
+	if (x - 1 >= 0) {
+		wall |= ((mixed_map_x[x - 1] & (1 << y)) >> y) << 3;
+		myprintf("%d\n", ((mixed_map_x[x - 1] & (1 << y)) >> y) << 3);
+	}
+
+	if (y < map_size - 1) {
+		wall |= (mixed_map_y[y] & (1 << x)) >> x;
+		myprintf("%d\n", (mixed_map_y[y] & (1 << x)) >> x);
+	}
+	if (y - 1 >= 0) {
+		wall |= ((mixed_map_y[y - 1] & (1 << x)) >> x) << 2;
+		myprintf("%d\n", ((mixed_map_y[y - 1] & (1 << x)) >> x) << 2);
+	}
+	return wall;
+
+}
+
 void initdist_map() {
 	int i, j;
 
@@ -1007,13 +1074,15 @@ void print_dist_map() {
 void iter_dist_map() {
 	unsigned char buff_x = 0, buff_y = 0, wall, dist = 0;
 	int i, j, k;
+	mix_map();
+	print_mixed_map();
 	while (dist_map[0][0] == 255) {
 		for (i = 0; i < map_size; i++) {
 			for (j = 0; j < map_size; j++) {
 				if (dist_map[i][j] == dist) {
 					buff_x = i;
 					buff_y = j;
-					wall = get_wall_from_map(buff_x, buff_y);
+					wall = get_wall_from_mixed_map(buff_x, buff_y);
 
 					if ((wall & 2) != 2) {
 						if (buff_x != (map_size - 1)) {

@@ -37,7 +37,7 @@ unsigned int wall_map_x[map_size - 1], wall_map_y[map_size - 1],
 double vel_l = 250, vel_r = 250, tar_vel_l = 300, tar_vel_r = 300, acc_l = 200,
 		acc_r = 200;
 
-float batt, diff, kp_r = 0.3, kp_l = 0.3;
+float batt, diff, kp_r = 0.14, kp_l = 0.14;
 
 extern SPC spec;
 extern SEN r_sen, cr_sen, l_sen, cl_sen;
@@ -731,50 +731,54 @@ void direction_detect() {
 }
 
 void move_left() {
-	mot_app(half_block, 305, 2000, straight, on);
+	mot_app(half_block, 290, 1800, straight, on);
 	wait_ms(100);
 	mot_onoff(off);
 	wait_ms(450);
 	mot_onoff(on);
 	wait_ms(100);
-	mot_app(l_distance, 310, 2000, left, on);
+	mot_app(l_distance, 290, 2000, left, on);
 	wait_ms(100);
 	mot_onoff(off);
 	wait_ms(450);
 	mot_onoff(on);
 	wait_ms(100);
-	mot_app2(half_block, 330, 2000, straight, on);
+	mot_app2(half_block, 300, 1800, straight, on);
 	//direction_detect();
 }
 
 void move_right() {
-	mot_app(half_block, 305, 2000, straight, on);
+	mot_app(half_block, 290, 1800, straight, on);
 	wait_ms(100);
 	mot_onoff(off);
 
 	wait_ms(450);
 	mot_onoff(on);
 	wait_ms(100);
-	mot_app(r_distance, 310, 2000, right, on);
+	mot_app(r_distance, 290, 2000, right, on);
 	wait_ms(100);
 	mot_onoff(off);
 	wait_ms(450);
 	mot_onoff(on);
 	wait_ms(100);
-	mot_app2(half_block, 330, 2000, straight, on);
+	mot_app2(half_block, 300, 1800, straight, on);
 	//direction_detect();
 
 }
 
 void move_forward() {
-	mot_app2(full_block, 410, 2000, straight, on);
+	kp_r += 0.1;
+	kp_l += 0.1;
+	mot_app2(full_block, 390, 2000, straight, on);
 	//direction_detect();
+	kp_r -= 0.1;
+	kp_l -= 0.1;
 }
 
 void move_back() {
-	mot_app(half_block, 305, 2000, straight, on);
+	mot_app(half_block, 290, 2000, straight, on);
 	wait_ms(1000);
-	mot_app(r_distance, 310, 2000, right, on);
+	mot_app(r_distance, 290, 2000, right, on);
 	wait_ms(1000);
 	mot_app(half_block, 270, 2000, back, on);
 	mot_onoff(off);
@@ -782,13 +786,13 @@ void move_back() {
 	mot_onoff(on);
 	mot_app(18, 280, 2000, straight, on);
 	wait_ms(1000);
-	mot_app(r_distance, 310, 2000, right, on);
+	mot_app(r_distance, 290, 2000, right, on);
 	wait_ms(1000);
 	mot_app(half_block, 270, 2000, back, on);
 	mot_onoff(off);
 	wait_ms(1000);
 	mot_onoff(on);
-	mot_app2(15 + half_block, 330, 2000, straight, on);
+	mot_app2(15 + half_block, 300, 2000, straight, on);
 	//direction_detect();
 }
 
@@ -1341,7 +1345,7 @@ int main(void) {
 			UX_effect(alart);
 
 			mot_onoff(on);
-			mot_app2(half_block, 310, 1500, straight, on);
+			mot_app2(half_block, 350, 1500, straight, on);
 
 			while (run_interruption != 1) {
 				iter_wall_map();
@@ -1373,6 +1377,8 @@ int main(void) {
 			sta_LED_flag = 0;
 			pos_x = 0;
 			pos_y = 0;
+			iter_dist_map();
+			generate_path();
 			break;
 
 		case map:

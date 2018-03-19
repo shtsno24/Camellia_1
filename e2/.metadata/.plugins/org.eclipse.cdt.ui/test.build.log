@@ -1,4 +1,4 @@
-16:16:49 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+18:43:10 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
 make all 
 'Scanning and building file: ../src/test.c'
 'Invoking: Scanner and Compiler'
@@ -41,5 +41,5 @@ Saving the ELF output file test.x
 
 'Build complete.'
 
-16:16:50 ビルドが完了しました(所要時間 1s.293ms)
+18:43:13 ビルドが完了しました(所要時間 2s.656ms)
 

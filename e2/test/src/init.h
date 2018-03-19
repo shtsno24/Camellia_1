@@ -85,6 +85,8 @@ void initMotor(void);
 
 void initAD(void);
 
+void initCPU(void);
+
 void initALL(void);
 
 #endif /* INIT_H_ */

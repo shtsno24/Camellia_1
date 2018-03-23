@@ -21,8 +21,8 @@
 
 char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, clt = 0,
 		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0,
-		run_interruption = 0, direction = 0, pos_x, pos_y, goal_x = 1, goal_y =
-				3, wall, path[map_size * map_size], tmp_path;
+		run_interruption = 0, direction = 0, pos_x, pos_y, wall, path[map_size
+				* map_size], tmp_path, goal_x = 6, goal_y = 0;
 
 unsigned char dist_map[map_size][map_size], a_star_dist_map[map_size][map_size];
 
@@ -37,7 +37,7 @@ unsigned int wall_map_x[map_size - 1], wall_map_y[map_size - 1],
 double vel_l = 250, vel_r = 250, tar_vel_l = 300, tar_vel_r = 300, acc_l = 200,
 		acc_r = 200;
 
-float batt, diff, kp_r = 0.16, kp_l = 0.16;
+float batt, diff, kp_r = 0.18, kp_l = 0.18;
 
 extern SPC spec;
 extern SEN r_sen, cr_sen, l_sen, cl_sen;
@@ -732,37 +732,37 @@ void direction_detect() {
 
 void move_left() {
 
-	mot_app(half_block, 280, 2000, straight, on);
+	mot_app(half_block, 330, 2000, straight, on);
 
 	wait_ms(100);
 	mot_onoff(off);
 	wait_ms(450);
 	mot_onoff(on);
 	wait_ms(100);
-	mot_app(l_distance, 290, 2000, left, on);
+	mot_app(l_distance, 310, 2000, left, on);
 	wait_ms(100);
 	mot_onoff(off);
 	wait_ms(450);
 	mot_onoff(on);
 	wait_ms(100);
-	mot_app2(half_block, 300, 1800, straight, on);
+	mot_app2(half_block, 330, 2000, straight, on);
 	//direction_detect();
 }
 
 void move_right() {
-	mot_app(half_block, 280, 2000, straight, on);
+	mot_app(half_block, 330, 2000, straight, on);
 	wait_ms(100);
 	mot_onoff(off);
 	wait_ms(450);
 	mot_onoff(on);
 	wait_ms(100);
-	mot_app(r_distance, 290, 2000, right, on);
+	mot_app(r_distance, 310, 2000, right, on);
 	wait_ms(100);
 	mot_onoff(off);
 	wait_ms(450);
 	mot_onoff(on);
 	wait_ms(100);
-	mot_app2(half_block, 300, 1800, straight, on);
+	mot_app2(half_block, 330, 1800, straight, on);
 	//direction_detect();
 
 }
@@ -770,16 +770,16 @@ void move_right() {
 void move_forward() {
 	kp_r += 0.1;
 	kp_l += 0.1;
-	mot_app2(full_block, 450, 2000, straight, on);
+	mot_app2(full_block, 470, 2000, straight, on);
 	//direction_detect();
 	kp_r -= 0.1;
 	kp_l -= 0.1;
 }
 
 void move_back() {
-	mot_app(half_block, 280, 2000, straight, on);
+	mot_app(half_block, 330, 2000, straight, on);
 	wait_ms(1000);
-	mot_app(r_distance, 290, 2000, right, on);
+	mot_app(r_distance, 310, 2000, right, on);
 	wait_ms(1000);
 	mot_app(half_block, 270, 2000, back, on);
 	mot_onoff(off);
@@ -787,31 +787,31 @@ void move_back() {
 	mot_onoff(on);
 	mot_app(18, 280, 2000, straight, on);
 	wait_ms(1000);
-	mot_app(r_distance, 290, 2000, right, on);
+	mot_app(r_distance, 310, 2000, right, on);
 	wait_ms(1000);
 	mot_app(half_block, 270, 2000, back, on);
 	mot_onoff(off);
 	wait_ms(1000);
 	mot_onoff(on);
-	mot_app2(15 + half_block, 300, 2000, straight, on);
+	mot_app2(15 + half_block, 330, 2000, straight, on);
 	//direction_detect();
 }
 
 void move_back_2() {
-	mot_app(half_block, 280, 2000, straight, on);
+	mot_app(half_block, 330, 2000, straight, on);
 	wait_ms(100);
 	mot_onoff(off);
 	wait_ms(450);
 	mot_onoff(on);
 	wait_ms(100);
-	mot_app(r_distance, 290, 2000, right, on);
-	mot_app(r_distance, 290, 2000, right, on);
+	mot_app(r_distance, 310, 2000, right, on);
+	mot_app(r_distance, 310, 2000, right, on);
 	wait_ms(100);
 	mot_onoff(off);
 	wait_ms(450);
 	mot_onoff(on);
 	wait_ms(100);
-	mot_app2(half_block, 300, 2000, straight, on);
+	mot_app2(half_block, 330, 2000, straight, on);
 	//direction_detect();
 }
 
@@ -1156,7 +1156,7 @@ void iter_a_star_dist_map() {
 				}
 			}
 		}
-		dist++;
+		dist += 1;
 	}
 
 }
@@ -1188,49 +1188,48 @@ char generate_a_star_path() {
 	dist = a_star_dist_map[x][y];
 	pri_flag = 4;
 
-	if ((wall & 1) == 0) {
-		if (y + 1 < map_size) {
-			if (a_star_dist_map[x][y + 1] <= dist) {
-				dist = a_star_dist_map[x][y + 1];
-				min_dist = 0;
-
-				if (dir == min_dist) {
-					pri_flag = dir;
-				}
-			}
-		}
-	}
-	if ((wall & 2) == 0) {
-		if (x + 1 < map_size) {
-			if (a_star_dist_map[x + 1][y] <= dist) {
-				dist = a_star_dist_map[x + 1][y];
-				min_dist = 1;
-
-				if (dir == min_dist) {
-					pri_flag = dir;
-				}
-			}
-		}
-	}
 	if ((wall & 4) == 0) {
 		if (y - 1 >= 0) {
 			if (a_star_dist_map[x][y - 1] <= dist) {
 				dist = a_star_dist_map[x][y - 1];
 				min_dist = 2;
-
-				if (dir == min_dist) {
+				if (min_dist == dir) {
 					pri_flag = dir;
 				}
 			}
 		}
 	}
+
+	if ((wall & 2) == 0) {
+		if (x + 1 < map_size) {
+			if (a_star_dist_map[x + 1][y] <= dist) {
+				dist = a_star_dist_map[x + 1][y];
+				min_dist = 1;
+				if (min_dist == dir) {
+					pri_flag = dir;
+				}
+			}
+		}
+	}
+
 	if ((wall & 8) == 0) {
 		if (x - 1 >= 0) {
 			if (a_star_dist_map[x - 1][y] <= dist) {
 				dist = a_star_dist_map[x - 1][y];
 				min_dist = 3;
+				if (min_dist == dir) {
+					pri_flag = dir;
+				}
+			}
+		}
+	}
 
-				if (dir == min_dist) {
+	if ((wall & 1) == 0) {
+		if (y + 1 < map_size) {
+			if (a_star_dist_map[x][y + 1] <= dist) {
+				dist = a_star_dist_map[x][y + 1];
+				min_dist = 0;
+				if (min_dist == dir) {
 					pri_flag = dir;
 				}
 			}
@@ -1320,7 +1319,7 @@ void iter_dist_map() {
 			}
 		}
 		print_dist_map();
-		dist++;
+		dist += 1;
 	}
 }
 
@@ -1453,10 +1452,10 @@ int main(void) {
 	mot_onoff(off);
 	PE.DRL.BIT.B7 = 0;
 
-	half_block = 92.5;
-	full_block = 178.5;
-	r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2)) + 1;
-	l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2)) - 0.5;
+	half_block = 94;
+	full_block = 180;
+	r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) + 1.01);
+	l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) - 0.5);
 
 	initwall_map();
 	initdist_map();
@@ -1511,7 +1510,7 @@ int main(void) {
 				} else if (tmp_path == 0) {
 					direction += 0;
 					move_forward();
-				} else {
+				} else if (tmp_path == 2) {
 					direction += 2;
 					move_back_2();
 				}
@@ -1525,6 +1524,7 @@ int main(void) {
 			iter_wall_map();
 			mot_app(half_block, 310, 1500, straight, on);
 			wait_ms(300);
+			mot_onoff(off);
 			sta_LED_flag = 0;
 			pos_x = 0;
 			pos_y = 0;
@@ -1612,6 +1612,7 @@ int main(void) {
 			iter_wall_map();
 			mot_app(half_block, 310, 1500, straight, on);
 			wait_ms(300);
+			mot_onoff(off);
 			sta_LED_flag = 0;
 			pos_x = 0;
 			pos_y = 0;
@@ -1637,7 +1638,7 @@ int main(void) {
 			mot_onoff(on);
 			wait_ms(100);
 			mot_app2(half_block, 330, 2000, straight, on);
-			mot_app(half_block, 295, 2000, straight, on);
+			mot_app(half_block, 330, 2000, straight, on);
 			wait_ms(100);
 			mot_onoff(off);
 
@@ -1664,9 +1665,9 @@ int main(void) {
 			UX_effect(alart);
 			mot_onoff(on);
 			wait_ms(100);
-			mot_app2(half_block, 400, 2000, straight, on);
-			mot_app2(full_block * 4, 400, 2000, straight, on);
-			mot_app(half_block, 400, 2000, straight, on);
+			mot_app2(half_block, 330, 2000, straight, on);
+			mot_app2(full_block * 14, 450, 2000, straight, on);
+			mot_app(half_block, 330, 2000, straight, on);
 			wait_ms(100);
 			mot_onoff(off);
 

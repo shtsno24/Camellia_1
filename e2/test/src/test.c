@@ -746,7 +746,7 @@ void move_left() {
 	mot_onoff(on);
 	wait_ms(100);
 	mot_app2(half_block, 330, 2000, straight, on);
-	//direction_detect();
+
 }
 
 void move_right() {
@@ -763,15 +763,14 @@ void move_right() {
 	mot_onoff(on);
 	wait_ms(100);
 	mot_app2(half_block, 330, 1800, straight, on);
-	//direction_detect();
+
 
 }
 
 void move_forward() {
 	kp_r += 0.1;
 	kp_l += 0.1;
-	mot_app2(full_block, 470, 2000, straight, on);
-	//direction_detect();
+	mot_app2(full_block, 475, 2000, straight, on);
 	kp_r -= 0.1;
 	kp_l -= 0.1;
 }
@@ -794,7 +793,7 @@ void move_back() {
 	wait_ms(1000);
 	mot_onoff(on);
 	mot_app2(15 + half_block, 330, 2000, straight, on);
-	//direction_detect();
+
 }
 
 void move_back_2() {
@@ -812,7 +811,7 @@ void move_back_2() {
 	mot_onoff(on);
 	wait_ms(100);
 	mot_app2(half_block, 330, 2000, straight, on);
-	//direction_detect();
+
 }
 
 void iter_wall_map() {
@@ -1474,8 +1473,6 @@ int main(void) {
 			myprintf("batt : %f\n", batt);
 			myprintf("sen : %d | %d | %d | %d\n", l_sen.sen, cl_sen.sen,
 					cr_sen.sen, r_sen.sen);
-			//myprintf("sen : %d | %d | %d | %d\n", l_sen.diff, cl_sen.diff,
-			//cr_sen.diff, r_sen.diff);
 			myprintf("mode : %d\n", rot_sw);
 			wait_ms(100);
 		}

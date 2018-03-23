@@ -22,7 +22,7 @@
 char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, clt = 0,
 		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0,
 		run_interruption = 0, direction = 0, pos_x, pos_y, wall, path[map_size
-				* map_size], tmp_path, goal_x = 6, goal_y = 0;
+				* map_size], tmp_path, goal_x = 7, goal_y = 0;
 
 unsigned char dist_map[map_size][map_size], a_star_dist_map[map_size][map_size];
 

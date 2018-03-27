@@ -45,30 +45,30 @@ typedef struct spc {
 } SPC;
 
 typedef struct mot {
-	int cnt;
-	int duty;
+	int cnt;//ステップ数
+	int duty;//デューティー
 
-	float vel;
-	float acc;
-	float max_vel;
-	float min_vel;
-	float max_acc;
-	float min_acc;
-	float tar_vel;
+	float vel;//現在の速度
+	float acc;//現在の設定加速度
+	float max_vel;//最大設定速度
+	float min_vel;//最小設定速度
+	float max_acc;//最大設定加速度
+	float min_acc;//最小設定加速度
+	float tar_vel;//現在の設定速度
 
-	char rot_dir_flag;
+	char rot_dir_flag;//回転方向
 	char end_flag;
 	char stop_flag;
 
 } MOT;
 
 typedef struct sen {
-	short sen;
-	short old[9];
-	short ref_wall;
-	short non_threshold;
-	short diff_threshold;
-	short diff;
+	short sen;//現在データ
+	short old[9];//過去データ
+	short ref_wall;//中央時のセンサ値
+	short non_threshold;//壁なし
+	short diff_threshold;//壁切れ
+	short diff;//センサ差分
 } SEN;
 
 void initIO(void);

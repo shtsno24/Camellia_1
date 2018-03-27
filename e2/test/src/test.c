@@ -19,7 +19,7 @@
 #define round(A)((int)(A + 0.5))
 #define map_size 16
 
-char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, clt = 0,
+char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0,
 		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0,
 		run_interruption = 0, direction = 0, pos_x, pos_y, wall, path[map_size
 				* map_size], tmp_path, goal_x = 7, goal_y = 0;
@@ -37,7 +37,8 @@ unsigned int wall_map_x[map_size - 1], wall_map_y[map_size - 1],
 double vel_l = 250, vel_r = 250, tar_vel_l = 300, tar_vel_r = 300, acc_l = 200,
 		acc_r = 200;
 
-float batt, diff, kp_r = 0.18, kp_l = 0.18;
+float batt, diff, //kp_r = 0.175, kp_l = 0.175;
+		kp_r = 0.18, kp_l = 0.18;
 
 extern SPC spec;
 extern SEN r_sen, cr_sen, l_sen, cl_sen;
@@ -82,14 +83,6 @@ enum mode {
 	astar = 0, search = 1, map = 2, test = 3, run = 4
 };
 
-void pass(void) {
-	//pass
-}
-
-float mysqrt(float x) {
-	return 0.0;
-}
-
 int get_sensor(int ch, int ad_c) {
 
 	switch (ad_c) {
@@ -133,7 +126,6 @@ int get_sensor(int ch, int ad_c) {
 		}
 		break;
 	}
-
 }
 
 void sen_LED_drv(char led, char status) {
@@ -764,7 +756,6 @@ void move_right() {
 	wait_ms(100);
 	mot_app2(half_block, 330, 1800, straight, on);
 
-
 }
 
 void move_forward() {
@@ -1234,11 +1225,11 @@ char generate_a_star_path() {
 			}
 		}
 	}
-
-	if (pri_flag != 4) {
-		min_dist = pri_flag;
-	}
-
+	/*
+	 if (pri_flag != 4) {
+	 min_dist = pri_flag;
+	 }
+	 */
 	rel_dir = min_dist - dir;
 	if (rel_dir < 0) {
 		rel_dir += 4;
@@ -1585,16 +1576,16 @@ int main(void) {
 			while (run_interruption != 1) {
 				iter_wall_map();
 
-				if (r_sen.sen <= r_sen.non_threshold) {
-					direction += 1;
-					move_right();
-
-				} else if (l_sen.sen <= l_sen.non_threshold) {
+				if (l_sen.sen <= l_sen.non_threshold) {
 					direction += 3;
 					move_left();
 				} else if (cl_sen.sen <= cl_sen.non_threshold) {
 					direction += 0;
 					move_forward();
+				} else if (r_sen.sen <= r_sen.non_threshold) {
+					direction += 1;
+					move_right();
+
 				} else {
 					direction += 2;
 					move_back();
@@ -1618,13 +1609,29 @@ int main(void) {
 			break;
 
 		case map:
+			/*
+			 sta_LED_flag = 0;
+			 direction = 0;
+			 UX_effect(alart);
+			 print_wall_map();
+			 print_searched_map();
+			 iter_dist_map();
+			 generate_path();
+			 */
 			sta_LED_flag = 0;
 			direction = 0;
 			UX_effect(alart);
-			print_wall_map();
-			print_searched_map();
-			iter_dist_map();
-			generate_path();
+			mot_onoff(on);
+			mot_app2(half_block, 330, 2000, straight, on);
+			for (k = 0; k < 4; k++) {
+				mot_app2(full_block * 13, 460, 2000, straight, on);
+				mot_app2(full_block, 330, 2000, straight, on);
+				move_right();
+				mot_app2(full_block * 5, 460, 2000, straight, on);
+				mot_app2(full_block, 330, 2000, straight, on);
+				move_right();
+			}
+			mot_app(half_block, 310, 2000, straight, on);
 			break;
 
 		case test:
@@ -1662,7 +1669,7 @@ int main(void) {
 			UX_effect(alart);
 			mot_onoff(on);
 			wait_ms(100);
-			mot_app2(half_block, 330, 2000, straight, on);
+			mot_app(half_block, 330, 2000, straight, on);
 			mot_app2(full_block * 14, 450, 2000, straight, on);
 			mot_app(half_block, 330, 2000, straight, on);
 			wait_ms(100);

@@ -22,7 +22,7 @@
 char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0,
 		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0,
 		run_interruption = 0, direction = 0, pos_x, pos_y, wall, path[map_size
-				* map_size], tmp_path, goal_x = 7, goal_y = 0;
+				* map_size], tmp_path, goal_x = 1, goal_y = 0;
 
 unsigned char dist_map[map_size][map_size], a_star_dist_map[map_size][map_size];
 
@@ -285,6 +285,7 @@ void vel_calc() {
 }
 
 void sen_cmt1() {
+	short int i;
 // write this function to interrupt_handlers.c
 	CMT1.CMCSR.BIT.CMF = 0;
 	CMT1.CMCNT = 0;
@@ -398,7 +399,7 @@ void MTU20_INT_OVF(void) {
 	 * this function operates R_motor
 	 * */
 
-	stopMTU(cst0); //stop count
+	//stopMTU(cst0); //stop count
 	r_motor.duty = (1 / r_motor.vel) * (2.55e+6); //(1/v)*(step_distance / MTU_clock_duty)
 	r_motor.cnt--;
 
@@ -421,14 +422,17 @@ void MTU20_INT_OVF(void) {
 	PE.DRL.BIT.B1 = r_motor.rot_dir_flag;
 	if (r_motor.cnt < 0 && r_motor.end_flag == 1) {
 		r_motor.stop_flag = 1;
+		stopMTU(cst0);
+	}else{
+		startMTU(cst0);
 	}
-
+/*
 	if (r_motor.stop_flag == 1) {
 		stopMTU(cst0);
 	} else {
 		startMTU(cst0);
 	}
-
+*/
 }
 
 void MTU21_INT_OVF(void) {
@@ -436,7 +440,7 @@ void MTU21_INT_OVF(void) {
 	 * this function operates L_motor
 	 */
 
-	stopMTU(cst1); //stop count
+	//stopMTU(cst1); //stop count
 	l_motor.duty = (1 / l_motor.vel) * (2.55e+6); //(1/v)*(step_distance / MTU_clock_duty)
 	l_motor.cnt--;
 
@@ -457,13 +461,17 @@ void MTU21_INT_OVF(void) {
 	PE.DRL.BIT.B5 = l_motor.rot_dir_flag;
 	if (l_motor.cnt < 0 && l_motor.end_flag == 1) {
 		l_motor.stop_flag = 1;
-
+		stopMTU(cst1);
+	}else{
+		startMTU(cst1);
 	}
+	/*
 	if (l_motor.stop_flag == 1) {
 		stopMTU(cst1);
 	} else {
 		startMTU(cst1);
 	}
+	*/
 }
 
 void buzzer_drv(char status) {
@@ -1250,6 +1258,17 @@ void initdist_map() {
 	a_star_dist_map[goal_x][goal_y] = 0;
 }
 
+void init_a_dist_map(){
+	int i, j;
+
+	for (i = 0; i < map_size; i++) {
+		for (j = 0; j < map_size; j++) {
+			a_star_dist_map[i][j] = 255;
+		}
+	}
+	a_star_dist_map[goal_x][goal_y] = 0;
+}
+
 void print_dist_map() {
 	int i, j;
 
@@ -1442,10 +1461,10 @@ int main(void) {
 	mot_onoff(off);
 	PE.DRL.BIT.B7 = 0;
 
-	half_block = 94;
+	half_block = 93.5;
 	full_block = 180;
-	r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) + 1.01);
-	l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) - 0.5);
+	r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) + 0.8);
+	l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) - 1);
 
 	initwall_map();
 	initdist_map();
@@ -1487,6 +1506,7 @@ int main(void) {
 				iter_wall_map();
 				iter_a_star_dist_map();
 				tmp_path = generate_a_star_path();
+				init_a_dist_map();
 
 				if (tmp_path == 1) {
 					direction += 1;
@@ -1669,8 +1689,8 @@ int main(void) {
 			UX_effect(alart);
 			mot_onoff(on);
 			wait_ms(100);
-			mot_app(half_block, 330, 2000, straight, on);
-			mot_app2(full_block * 14, 450, 2000, straight, on);
+			mot_app2(half_block, 330, 2000, straight, on);
+			mot_app2(full_block * 5, 450, 2000, straight, on);
 			mot_app(half_block, 330, 2000, straight, on);
 			wait_ms(100);
 			mot_onoff(off);

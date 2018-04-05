@@ -19,8 +19,8 @@
 #define round(A)((int)(A + 0.5))
 #define map_size 16
 
-char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0,
-		stop_l = 0, stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0,
+char status, dist_flag_l = 0, dist_flag_r = 0, end_l = 0, end_r = 0, stop_l = 0,
+		stop_r = 0, cnt_ctl = 0, rot_sw = 0, sta_LED_flag = 0,
 		run_interruption = 0, direction = 0, pos_x, pos_y, wall, path[map_size
 				* map_size], tmp_path, goal_x = 1, goal_y = 0;
 
@@ -38,7 +38,7 @@ double vel_l = 250, vel_r = 250, tar_vel_l = 300, tar_vel_r = 300, acc_l = 200,
 		acc_r = 200;
 
 float batt, diff, //kp_r = 0.175, kp_l = 0.175;
-		kp_r = 0.18, kp_l = 0.18;
+		kp_r = 0.19, kp_l = 0.19;
 
 extern SPC spec;
 extern SEN r_sen, cr_sen, l_sen, cl_sen;
@@ -423,16 +423,16 @@ void MTU20_INT_OVF(void) {
 	if (r_motor.cnt < 0 && r_motor.end_flag == 1) {
 		r_motor.stop_flag = 1;
 		stopMTU(cst0);
-	}else{
-		startMTU(cst0);
-	}
-/*
-	if (r_motor.stop_flag == 1) {
-		stopMTU(cst0);
 	} else {
 		startMTU(cst0);
 	}
-*/
+	/*
+	 if (r_motor.stop_flag == 1) {
+	 stopMTU(cst0);
+	 } else {
+	 startMTU(cst0);
+	 }
+	 */
 }
 
 void MTU21_INT_OVF(void) {
@@ -462,16 +462,16 @@ void MTU21_INT_OVF(void) {
 	if (l_motor.cnt < 0 && l_motor.end_flag == 1) {
 		l_motor.stop_flag = 1;
 		stopMTU(cst1);
-	}else{
-		startMTU(cst1);
-	}
-	/*
-	if (l_motor.stop_flag == 1) {
-		stopMTU(cst1);
 	} else {
 		startMTU(cst1);
 	}
-	*/
+	/*
+	 if (l_motor.stop_flag == 1) {
+	 stopMTU(cst1);
+	 } else {
+	 startMTU(cst1);
+	 }
+	 */
 }
 
 void buzzer_drv(char status) {
@@ -731,9 +731,9 @@ void direction_detect() {
 }
 
 void move_left() {
-
+	kp_r -= 0.1;
+	kp_l -= 0.1;
 	mot_app(half_block, 330, 2000, straight, on);
-
 	wait_ms(100);
 	mot_onoff(off);
 	wait_ms(450);
@@ -746,10 +746,13 @@ void move_left() {
 	mot_onoff(on);
 	wait_ms(100);
 	mot_app2(half_block, 330, 2000, straight, on);
-
+	kp_r += 0.1;
+	kp_l += 0.1;
 }
 
 void move_right() {
+	kp_r -= 0.1;
+	kp_l -= 0.1;
 	mot_app(half_block, 330, 2000, straight, on);
 	wait_ms(100);
 	mot_onoff(off);
@@ -763,13 +766,15 @@ void move_right() {
 	mot_onoff(on);
 	wait_ms(100);
 	mot_app2(half_block, 330, 1800, straight, on);
+	kp_r += 0.1;
+	kp_l += 0.1;
 
 }
 
 void move_forward() {
 	kp_r += 0.1;
 	kp_l += 0.1;
-	mot_app2(full_block, 475, 2000, straight, on);
+	mot_app2(full_block, 480, 2000, straight, on);
 	kp_r -= 0.1;
 	kp_l -= 0.1;
 }
@@ -1233,11 +1238,11 @@ char generate_a_star_path() {
 			}
 		}
 	}
-	/*
-	 if (pri_flag != 4) {
-	 min_dist = pri_flag;
-	 }
-	 */
+
+	if (pri_flag != 4) {
+		min_dist = pri_flag;
+	}
+
 	rel_dir = min_dist - dir;
 	if (rel_dir < 0) {
 		rel_dir += 4;
@@ -1258,7 +1263,19 @@ void initdist_map() {
 	a_star_dist_map[goal_x][goal_y] = 0;
 }
 
-void init_a_dist_map(){
+void init_dist_map() {
+	int i, j;
+
+	for (i = 0; i < map_size; i++) {
+		for (j = 0; j < map_size; j++) {
+			dist_map[i][j] = 255;
+		}
+	}
+	dist_map[goal_x][goal_y] = 0;
+
+}
+
+void init_a_dist_map() {
 	int i, j;
 
 	for (i = 0; i < map_size; i++) {
@@ -1463,7 +1480,7 @@ int main(void) {
 
 	half_block = 93.5;
 	full_block = 180;
-	r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) + 0.8);
+	r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) + 0.5);
 	l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) - 1);
 
 	initwall_map();
@@ -1489,6 +1506,7 @@ int main(void) {
 		wait_ms(100);
 		sta_LED_drv(Rst_status_LED, off);
 		switch (rot_sw) {
+
 		case astar:
 			sta_LED_flag = 0;
 			pos_x = 0;
@@ -1520,7 +1538,11 @@ int main(void) {
 					move_forward();
 				} else if (tmp_path == 2) {
 					direction += 2;
-					move_back_2();
+					if (wall == 7 || wall == 11 || wall == 13 || wall == 14) {
+						move_back();
+					} else {
+						move_back_2();
+					}
 				}
 				direction %= 4;
 
@@ -1536,6 +1558,8 @@ int main(void) {
 			sta_LED_flag = 0;
 			pos_x = 0;
 			pos_y = 0;
+			initpath();
+			init_dist_map();
 			iter_dist_map();
 			generate_path();
 			break;
@@ -1567,7 +1591,7 @@ int main(void) {
 					move_forward();
 				} else {
 					direction += 2;
-					move_back();
+					move_back_2();
 				}
 				direction %= 4;
 
@@ -1624,36 +1648,40 @@ int main(void) {
 			sta_LED_flag = 0;
 			pos_x = 0;
 			pos_y = 0;
+			init_dist_map();
 			iter_dist_map();
 			generate_path();
 			break;
 
 		case map:
+
+			sta_LED_flag = 0;
+			direction = 0;
+			UX_effect(alart);
+			print_wall_map();
+			print_searched_map();
+			initpath();
+			iter_dist_map();
+			generate_path();
+
 			/*
 			 sta_LED_flag = 0;
 			 direction = 0;
 			 UX_effect(alart);
-			 print_wall_map();
-			 print_searched_map();
-			 iter_dist_map();
-			 generate_path();
-			 */
-			sta_LED_flag = 0;
-			direction = 0;
-			UX_effect(alart);
-			mot_onoff(on);
-			mot_app2(half_block, 330, 2000, straight, on);
-			for (k = 0; k < 4; k++) {
-				mot_app2(full_block * 13, 460, 2000, straight, on);
-				mot_app2(full_block, 330, 2000, straight, on);
-				move_right();
-				mot_app2(full_block * 5, 460, 2000, straight, on);
-				mot_app2(full_block, 330, 2000, straight, on);
-				move_right();
-			}
-			mot_app(half_block, 310, 2000, straight, on);
-			break;
+			 mot_onoff(on);
+			 mot_app2(half_block, 330, 2000, straight, on);
+			 for (k = 0; k < 4; k++) {
+			 mot_app2(full_block * 13, 460, 2000, straight, on);
+			 mot_app2(full_block, 330, 2000, straight, on);
+			 move_right();
+			 mot_app2(full_block * 5, 460, 2000, straight, on);
+			 mot_app2(full_block, 330, 2000, straight, on);
+			 move_right();
+			 }
+			 mot_app(half_block, 310, 2000, straight, on);
 
+			 */
+			break;
 		case test:
 
 			sta_LED_flag = 1;
@@ -1690,7 +1718,7 @@ int main(void) {
 			mot_onoff(on);
 			wait_ms(100);
 			mot_app2(half_block, 330, 2000, straight, on);
-			mot_app2(full_block * 5, 450, 2000, straight, on);
+			mot_app2(full_block * 5, 480, 2000, straight, on);
 			mot_app(half_block, 330, 2000, straight, on);
 			wait_ms(100);
 			mot_onoff(off);

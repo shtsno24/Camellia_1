@@ -100,8 +100,8 @@ void initSEN(void) {
 	cl_sen.diff_threshold = 434;
 	l_sen.diff_threshold = 4;
 
-	r_sen.ref_wall = 390;
-	l_sen.ref_wall = 235;
+	r_sen.ref_wall = 421;
+	l_sen.ref_wall = 240;
 	cr_sen.ref_wall = 802 - 400;
 	cl_sen.ref_wall = 948 - 400;
 

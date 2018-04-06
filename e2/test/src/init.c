@@ -95,10 +95,10 @@ void initSEN(void) {
 	cl_sen.non_threshold = 110;
 	l_sen.non_threshold = 110;
 
-	r_sen.diff_threshold = 4;
+	r_sen.diff_threshold = 2;
 	cr_sen.diff_threshold = 657;
 	cl_sen.diff_threshold = 434;
-	l_sen.diff_threshold = 4;
+	l_sen.diff_threshold = 2;
 
 	r_sen.ref_wall = 421;
 	l_sen.ref_wall = 240;

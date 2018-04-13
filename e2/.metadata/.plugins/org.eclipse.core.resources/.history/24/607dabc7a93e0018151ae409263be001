@@ -1,0 +1,14 @@
+/*
+ * util.c
+ *
+ *  Created on: 2018/04/13
+ *      Author: shts
+ */
+
+
+#include "iodefine.h"
+#include "util.h"
+
+SPC spec;
+SEN r_sen, cr_sen, l_sen, cl_sen;
+MOT r_motor, l_motor;

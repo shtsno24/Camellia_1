@@ -1,0 +1,13 @@
+/*
+ * util.c
+ *
+ *  Created on: 2018/04/13
+ *      Author: shts
+ */
+
+
+#include "iodefine.h"
+#include "util.h"
+
+SPC spec;
+

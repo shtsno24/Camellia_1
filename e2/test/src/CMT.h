@@ -8,6 +8,15 @@
 #ifndef CMT_H_
 #define CMT_H_
 
+typedef struct cmt_01 {
+	int count_cmt_0;
+	int count_cmt_1;
+} CMT_01;
 
+void interrupt_cmt0(void);
+
+void interrupt_cmt1(void);
+
+void wait_ms(int);
 
 #endif /* CMT_H_ */

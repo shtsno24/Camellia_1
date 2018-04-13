@@ -7033,3 +7033,12 @@ C Model Exception: C Model Status [エレメント init.c  が存在しません
 	at org.eclipse.jface.text.reconciler.AbstractReconciler$BackgroundThread.run(AbstractReconciler.java:206)
 !SUBENTRY 1 org.eclipse.cdt.core 4 969 2018-04-06 13:55:01.432
 !MESSAGE エレメント init.c  が存在しません。
+!SESSION 2018-04-13 08:14:58.468 -----------------------------------------------
+eclipse.buildId=v4.3.0.007
+java.version=1.8.0_40
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=ja_JP
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.cdt.codan.core.cxx 4 1 2018-04-13 18:11:06.260
+!MESSAGE Unsupported statement type: CASTCaseStatement.

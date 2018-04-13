@@ -1,0 +1,100 @@
+/*
+ * util.c
+ *
+ *  Created on: 2018/04/13
+ *      Author: shts
+ */
+
+
+#include "iodefine.h"
+#include "util.h"
+
+#define round(A)((int)(A + 0.5))
+
+SPC spec;
+
+void init_Spec() {
+	spec.tread = 90.0;
+	spec.tire_dim = 90.0;
+	spec.step_dist = 0.408407;
+	spec.vel_min = 200;
+	spec.tar_vel_min = 250;
+	/*
+	 spec.sen_min_CR = 29;
+	 spec.sen_min_R = 28;
+	 spec.sen_min_CL = 80;
+	 spec.sen_min_L = 20;
+
+	 spec.sen_max_CR = 230;
+	 spec.sen_max_R = 871;
+	 spec.sen_max_CL = 800;
+	 spec.sen_max_L = 990;
+
+	 spec.sen_ref_R = 30;
+	 spec.sen_ref_L = 12;
+	 spec.sen_ref_wall_R = 15;
+	 spec.sen_ref_wall_L = 10;
+	 spec.sen_diff_threshold = 5;
+
+	 spec.sen_ref_non_CR = 10;
+	 spec.sen_ref_non_R = 10;
+	 spec.sen_ref_non_CL = 20;
+	 spec.sen_ref_non_L = 10;
+	 */
+	spec.pwm_base_clock = 6250 - 1; //(interrupt duty : 1ms(@6.25MHz))
+	spec.pwm_half_clock = round((6250 - 1) / 2);
+}
+
+void init_IO(void) {
+	PFC.PEIORL.BIT.B0 = 1; //R_Clock
+	PFC.PEIORL.BIT.B1 = 1; //R_CW/CCW
+	PFC.PEIORL.BIT.B2 = 1; //reset_motor
+	PFC.PEIORL.BIT.B3 = 1; //excitation_enable
+	PFC.PEIORL.BIT.B4 = 1; //L_Clock
+	PFC.PEIORL.BIT.B5 = 1; //L_CW/CCW
+	PFC.PEIORL.BIT.B6 = 1; //LED_yellow
+	PFC.PEIORL.BIT.B7 = 1; //buzzer
+	PFC.PEIORL.BIT.B8 = 1; //LED_red
+	PFC.PEIORL.BIT.B9 = 1; //sensor_right
+	PFC.PEIORL.BIT.B10 = 1; //rotary_encoder_LED
+	PFC.PEIORL.BIT.B11 = 1; //sensor_center_right
+	PFC.PEIORL.BIT.B12 = 1; //sensor_left
+	PFC.PEIORL.BIT.B13 = 1; //sensor_center_left
+	PFC.PEIORL.BIT.B14 = 0; //rotary_encoder_a
+	PFC.PEIORL.BIT.B15 = 0; //rotary_encoder_b
+
+	PFC.PBIORL.BIT.B5 = 0; //select_switch
+	/*
+	 PFC.PECRL4.BIT.PE13MD = 1; //sensor_center_left
+	 PFC.PECRL4.BIT.PE12MD = 1; //sensor_left
+	 PFC.PECRL3.BIT.PE11MD = 1; //sensor_center_right
+	 PFC.PECRL3.BIT.PE10MD = 0; //I/O
+	 PFC.PECRL3.BIT.PE9MD = 1; //sensor_right
+	 */
+	PFC.PECRL4.BIT.PE13MD = 0; //sensor_center_left
+	PFC.PECRL4.BIT.PE12MD = 0; //sensor_left
+	PFC.PECRL3.BIT.PE11MD = 0; //sensor_center_right
+	PFC.PECRL3.BIT.PE10MD = 0; //green_LED
+	PFC.PECRL3.BIT.PE9MD = 0; //sensor_right
+	PFC.PECRL3.BIT.PE8MD = 0; //red_LED
+	PFC.PECRL2.BIT.PE7MD = 0; //buzzer
+	PFC.PECRL2.BIT.PE6MD = 0; //yellow_LED
+	PFC.PECRL2.BIT.PE5MD = 0; //L_CW/CCW
+	PFC.PECRL2.BIT.PE4MD = 1; //L_motor clock
+	PFC.PECRL1.BIT.PE3MD = 0; //excitation_enable
+	PFC.PECRL1.BIT.PE2MD = 0; //reset_motor
+	PFC.PECRL1.BIT.PE1MD = 0; //R_CW/CCW
+	PFC.PECRL1.BIT.PE0MD = 1; //R_motor clock
+}
+
+void init_CPU(void) {
+	CPG.FRQCR.BIT.IFC = 1;                //Iφ / 2 = 50Mhz(初期値/4)
+	CPG.FRQCR.BIT.BFC = 3;        // Bφ / 4 = 25MHz
+	CPG.FRQCR.BIT._PFC = 3;    // Pφ / 4 = 25MHz
+	CPG.FRQCR.BIT.MPFC = 3;    // MPφ / 4 = 25MHz
+}
+
+void init_Buzzer(void) {
+	PE.DRL.BIT.B7 = 0;
+}
+

@@ -14,6 +14,10 @@
 #include "iodefine.h"
 #include "serial.h"
 #include "init.h"
+#include "util.h"
+#include "LED.h"
+#include "CMT.h"
+#include "sensor.h"
 #include "math.h"
 
 #define round(A)((int)(A + 0.5))
@@ -43,25 +47,28 @@ float batt, diff, //kp_r = 0.175, kp_l = 0.175;
 extern SPC spec;
 extern SEN r_sen, cr_sen, l_sen, cl_sen;
 extern MOT r_motor, l_motor;
+extern SW Switch;
+extern CMT_01 tim;
 
-enum AD_C {
-	ad_0 = 0, ad_1 = 1
-};
-enum sensor {
-	CR_sen = 0, R_sen, CL_sen, L_sen //センサの順番通り
-};
 
-enum status_LED {
-	Red = 0, Yerrow = 1, Green = 2, Rst_status_LED = 3, ALL_status_LED
-};
+//enum AD_C {
+//	ad_0 = 0, ad_1 = 1
+//};
+//enum sensor {
+//	CR_sen = 0, R_sen, CL_sen, L_sen //センサの順番通り
+//};
 
-enum sensor_LED {
-	CR_LED = 0, R_LED = 1, CL_LED = 2, L_LED = 3
-};
+//enum status_LED {
+//	Red = 0, Yerrow = 1, Green = 2, Rst_status_LED = 3, ALL_status_LED
+//};
+//
+//enum sensor_LED {
+//	CR_LED = 0, R_LED = 1, CL_LED = 2, L_LED = 3
+//};
 
-enum on_off {
-	off = 0, on = 1
-};
+//enum on_off {
+//	off = 0, on = 1
+//};
 
 enum cst {
 	cst0 = 0, cst1, cst2, cst3, cst_all
@@ -75,125 +82,118 @@ enum motor {
 	R_motor = 0, L_motor = 1
 };
 
-enum ux {
-	error = 0, click = 1, alart = 2
-};
+//enum ux {
+//	error = 0, click = 1, alart = 2
+//};
 
 enum mode {
 	astar = 0, search = 1, map = 2, test = 3, run = 4
 };
 
-int get_sensor(int ch, int ad_c) {
+//int get_Sensor(int ch, int ad_c) {
+//
+//	switch (ad_c) {
+//	case ad_0:
+//		AD0.ADCR.BIT.ADST = 0;		//AD停止
+//		AD0.ADCSR.BIT.CH = ch;		//チャンネル選択
+//		AD0.ADCR.BIT.ADST = 1;		//AD再開
+//		while (AD0.ADCSR.BIT.ADF == 0)
+//			;
+//		AD0.ADCSR.BIT.ADF = 0;
+//		if (ch == CR_LED) {
+//			return AD0.ADDR0 >> 6;
+//		} else if (ch == R_LED) {
+//			return AD0.ADDR1 >> 6;
+//		} else if (ch == CL_LED) {
+//			return AD0.ADDR2 >> 6;
+//		} else if (ch == L_LED) {
+//			return AD0.ADDR3 >> 6;
+//		} else {
+//			return -1;
+//		}
+//		break;
+//
+//	case ad_1:
+//		AD1.ADCR.BIT.ADST = 0;		//AD停止
+//		AD1.ADCSR.BIT.CH = ch;		//チャンネル選択
+//		AD1.ADCR.BIT.ADST = 1;		//AD再開
+//		while (AD1.ADCSR.BIT.ADF == 0)
+//			;
+//		AD1.ADCSR.BIT.ADF = 0;
+//		if (ch == 0) {
+//			return AD1.ADDR4 >> 6;
+//		} else if (ch == 1) {
+//			return AD1.ADDR5 >> 6;
+//		} else if (ch == 2) {
+//			return AD1.ADDR6 >> 6;
+//		} else if (ch == 3) {
+//			return AD1.ADDR7 >> 6;
+//		} else {
+//			return -1;
+//		}
+//		break;
+//	}
+//}
 
-	switch (ad_c) {
-	case ad_0:
-		AD0.ADCR.BIT.ADST = 0;		//AD停止
-		AD0.ADCSR.BIT.CH = ch;		//チャンネル選択
-		AD0.ADCR.BIT.ADST = 1;		//AD再開
-		while (AD0.ADCSR.BIT.ADF == 0)
-			;
-		AD0.ADCSR.BIT.ADF = 0;
-		if (ch == CR_LED) {
-			return AD0.ADDR0 >> 6;
-		} else if (ch == R_LED) {
-			return AD0.ADDR1 >> 6;
-		} else if (ch == CL_LED) {
-			return AD0.ADDR2 >> 6;
-		} else if (ch == L_LED) {
-			return AD0.ADDR3 >> 6;
-		} else {
-			return -1;
-		}
-		break;
+//void drv_Sensor_LED(char led, char status) {
+//	/*
+//	 PE9 : sensor_right
+//	 PE11 : sensor_center_right
+//	 PE13 : sensor_center_left
+//	 PE12 : sensor_left
+//	 */
+//	switch (led) {
+//	case R_LED:
+//		PE.DRL.BIT.B9 = status;
+//		break;
+//	case CR_LED:
+//		PE.DRL.BIT.B11 = status;
+//		break;
+//	case CL_LED:
+//		PE.DRL.BIT.B13 = status;
+//		break;
+//	case L_LED:
+//		PE.DRL.BIT.B12 = status;
+//		break;
+//	}
+//}
+//
+//void sta_LED_drv(char led, char status) {
+//	switch (led) {
+//	case Red:
+//		PE.DRL.BIT.B8 = status;
+//		break;
+//	case Yerrow:
+//		PE.DRL.BIT.B6 = status;
+//		break;
+//	case Green:
+//		PE.DRL.BIT.B10 = status;
+//		break;
+//	case Rst_status_LED:
+//		PE.DRL.BIT.B8 = 0;
+//		PE.DRL.BIT.B6 = 0;
+//		PE.DRL.BIT.B10 = 0;
+//		break;
+//	}
+//}
 
-	case ad_1:
-		AD1.ADCR.BIT.ADST = 0;		//AD停止
-		AD1.ADCSR.BIT.CH = ch;		//チャンネル選択
-		AD1.ADCR.BIT.ADST = 1;		//AD再開
-		while (AD1.ADCSR.BIT.ADF == 0)
-			;
-		AD1.ADCSR.BIT.ADF = 0;
-		if (ch == 0) {
-			return AD1.ADDR4 >> 6;
-		} else if (ch == 1) {
-			return AD1.ADDR5 >> 6;
-		} else if (ch == 2) {
-			return AD1.ADDR6 >> 6;
-		} else if (ch == 3) {
-			return AD1.ADDR7 >> 6;
-		} else {
-			return -1;
-		}
-		break;
-	}
-}
-
-void sen_LED_drv(char led, char status) {
-	/*
-	 PE9 : sensor_right
-	 PE11 : sensor_center_right
-	 PE13 : sensor_center_left
-	 PE12 : sensor_left
-	 */
-	switch (led) {
-	case R_LED:
-		PE.DRL.BIT.B9 = status;
-		break;
-	case CR_LED:
-		PE.DRL.BIT.B11 = status;
-		break;
-	case CL_LED:
-		PE.DRL.BIT.B13 = status;
-		break;
-	case L_LED:
-		PE.DRL.BIT.B12 = status;
-		break;
-	}
-}
-
-void sta_LED_drv(char led, char status) {
-	switch (led) {
-	case Red:
-		PE.DRL.BIT.B8 = status;
-		break;
-	case Yerrow:
-		PE.DRL.BIT.B6 = status;
-		break;
-	case Green:
-		PE.DRL.BIT.B10 = status;
-		break;
-	case Rst_status_LED:
-		PE.DRL.BIT.B8 = 0;
-		PE.DRL.BIT.B6 = 0;
-		PE.DRL.BIT.B10 = 0;
-		break;
-	}
-}
-
-void interrupt_cmt0() {
+//void interrupt_cmt0() {
 // write this function to interrupt_handlers.c
-	CMT0.CMCSR.BIT.CMF = 0;
-	++count_cmt_0;
-}
-void interrupt_cmt1() {
+//	CMT0.CMCSR.BIT.CMF = 0;
+//	++count_cmt_0;
+//}
+//void interrupt_cmt1() {
 // write this function to interrupt_handlers.c
-	CMT1.CMCSR.BIT.CMF = 0;
-	++count_cmt_1;
-}
-
-void wait_h_ms(int t) {
-	count_cmt_1 = 0;
-	CMT1.CMCNT = 0;
-	while (count_cmt_1 < t)
-		;
-}
-
-void wait_ms(int t) {
-	count_cmt_0 = 0;
-	CMT0.CMCNT = 0;
-	while (count_cmt_0 < t)
-		;
-}
+//	CMT1.CMCSR.BIT.CMF = 0;
+//	++count_cmt_1;
+//}
+//
+//void wait_ms(int t) {
+//	count_cmt_0 = 0;
+//	CMT0.CMCNT = 0;
+//	while (count_cmt_0 < t)
+//		;
+//}
 
 void diff_calc(void) {
 	short ref_boost_L, ref_boost_R;
@@ -214,9 +214,9 @@ void diff_calc(void) {
 			|| cl_sen.ref_wall < cl_sen.sen) {
 		diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
 		if (sta_LED_flag == 1) {
-			sta_LED_drv(Green, on);
-			sta_LED_drv(Yerrow, on);
-			sta_LED_drv(Red, on);
+			drv_Status_LED(Green, on);
+			drv_Status_LED(Yerrow, on);
+			drv_Status_LED(Red, on);
 		}
 		return;
 	} else {
@@ -226,9 +226,9 @@ void diff_calc(void) {
 					- (r_sen.sen - r_sen.ref_wall));
 
 			if (sta_LED_flag == 1) {
-				sta_LED_drv(Green, on);
-				sta_LED_drv(Yerrow, off);
-				sta_LED_drv(Red, off);
+				drv_Status_LED(Green, on);
+				drv_Status_LED(Yerrow, off);
+				drv_Status_LED(Red, off);
 			}
 
 		} else if ((r_sen.sen >= r_sen.non_threshold + ref_boost_R)
@@ -236,9 +236,9 @@ void diff_calc(void) {
 			diff = (float) (-2 * (r_sen.sen - r_sen.ref_wall));
 
 			if (sta_LED_flag == 1) {
-				sta_LED_drv(Green, off);
-				sta_LED_drv(Yerrow, on);
-				sta_LED_drv(Red, off);
+				drv_Status_LED(Green, off);
+				drv_Status_LED(Yerrow, on);
+				drv_Status_LED(Red, off);
 			}
 
 		} else if ((r_sen.sen < r_sen.non_threshold + ref_boost_R)
@@ -246,18 +246,18 @@ void diff_calc(void) {
 			diff = (float) (2 * (l_sen.sen - l_sen.ref_wall));
 
 			if (sta_LED_flag == 1) {
-				sta_LED_drv(Green, off);
-				sta_LED_drv(Yerrow, off);
-				sta_LED_drv(Red, on);
+				drv_Status_LED(Green, off);
+				drv_Status_LED(Yerrow, off);
+				drv_Status_LED(Red, on);
 			}
 
 		} else {
 			diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
 
 			if (sta_LED_flag == 1) {
-				sta_LED_drv(Green, off);
-				sta_LED_drv(Yerrow, off);
-				sta_LED_drv(Red, off);
+				drv_Status_LED(Green, off);
+				drv_Status_LED(Yerrow, off);
+				drv_Status_LED(Red, off);
 			}
 
 		}
@@ -290,34 +290,34 @@ void sen_cmt1() {
 	CMT1.CMCSR.BIT.CMF = 0;
 	CMT1.CMCNT = 0;
 
-	sen_LED_drv(R_LED, on);
+	drv_Sensor_LED(R_LED, on);
 	for (i = 0; i < 309; i++)
 		;
-	r_sen.sen = get_sensor(R_sen, ad_0); //R sensor
-	sen_LED_drv(R_LED, off);
+	r_sen.sen = get_Sensor(R_sen, ad_0); //R sensor
+	drv_Sensor_LED(R_LED, off);
 
-	sen_LED_drv(CR_LED, on);
+	drv_Sensor_LED(CR_LED, on);
 	for (i = 0; i < 309; i++)
 		;
-	cr_sen.sen = get_sensor(CR_sen, ad_0);		//CR sensor
-	sen_LED_drv(CR_LED, off);
+	cr_sen.sen = get_Sensor(CR_sen, ad_0);		//CR sensor
+	drv_Sensor_LED(CR_LED, off);
 
-	sen_LED_drv(CL_LED, on);
+	drv_Sensor_LED(CL_LED, on);
 	for (i = 0; i < 309; i++)
 		;
-	cl_sen.sen = get_sensor(CL_sen, ad_0);		//CL sensor
-	sen_LED_drv(CL_LED, off);
+	cl_sen.sen = get_Sensor(CL_sen, ad_0);		//CL sensor
+	drv_Sensor_LED(CL_LED, off);
 
-	sen_LED_drv(L_LED, on);
+	drv_Sensor_LED(L_LED, on);
 	for (i = 0; i < 309; i++)
 		;
-	l_sen.sen = get_sensor(L_sen, ad_0);		//L sensor
-	sen_LED_drv(L_LED, off);
+	l_sen.sen = get_Sensor(L_sen, ad_0);		//L sensor
+	drv_Sensor_LED(L_LED, off);
 
-	cr_sen.sen -= get_sensor(CR_sen, ad_0);		//CR sensor
-	cl_sen.sen -= get_sensor(CL_sen, ad_0);		//CL sensor
-	l_sen.sen -= get_sensor(L_sen, ad_0);		//L sensor
-	r_sen.sen -= get_sensor(R_sen, ad_0);		//R sensor
+	cr_sen.sen -= get_Sensor(CR_sen, ad_0);		//CR sensor
+	cl_sen.sen -= get_Sensor(CL_sen, ad_0);		//CL sensor
+	l_sen.sen -= get_Sensor(L_sen, ad_0);		//L sensor
+	r_sen.sen -= get_Sensor(R_sen, ad_0);		//R sensor
 
 	cr_sen.diff = cr_sen.sen - cr_sen.old[8];
 	r_sen.diff = r_sen.sen - r_sen.old[8];
@@ -474,43 +474,43 @@ void MTU21_INT_OVF(void) {
 	 */
 }
 
-void buzzer_drv(char status) {
-	PE.DRL.BIT.B7 = status;
-}
+//void drv_Buzzer(char status) {
+//	PE.DRL.BIT.B7 = status;
+//}
 
-void UX_effect(char pattern) {
-	switch (pattern) {
-	case error:
-		sta_LED_drv(Red, on);
-		buzzer_drv(on);
-		wait_ms(25);
-		sta_LED_drv(Red, off);
-		buzzer_drv(off);
-		wait_ms(25);
-		break;
+//void UX_effect(char pattern) {
+//	switch (pattern) {
+//	case error:
+//		sta_LED_drv(Red, on);
+//		drv_Buzzer(on);
+//		wait_ms(25);
+//		sta_LED_drv(Red, off);
+//		drv_Buzzer(off);
+//		wait_ms(25);
+//		break;
+//
+//	case click:
+//		drv_Buzzer(on);
+//		wait_ms(25);
+//		drv_Buzzer(off);
+//		break;
+//
+//	case alart:
+//		drv_Buzzer(on);
+//		sta_LED_drv(Red, on);
+//		wait_ms(750);
+//		sta_LED_drv(Red, off);
+//		drv_Buzzer(off);
+//		break;
+//	}
+//}
 
-	case click:
-		buzzer_drv(on);
-		wait_ms(25);
-		buzzer_drv(off);
-		break;
-
-	case alart:
-		buzzer_drv(on);
-		sta_LED_drv(Red, on);
-		wait_ms(750);
-		sta_LED_drv(Red, off);
-		buzzer_drv(off);
-		break;
-	}
-}
-
-float batt_vol(void) {
-	float vol_ad, voltage;
-	vol_ad = (float) get_sensor(3, ad_1) / 1024.0 * 5.0;
-	voltage = vol_ad * ((100.0 + 51.0) / 51.0);
-	return voltage;
-}
+//float get_Battery_Voltage(void) {
+//	float vol_ad, voltage;
+//	vol_ad = (float) get_Sensor(3, ad_1) / 1024.0 * 5.0;
+//	voltage = vol_ad * ((100.0 + 51.0) / 51.0);
+//	return voltage;
+//}
 
 void mot_drv(int dist, int t_vel, int t_acc, char rot_dir_flag, int end_flag,
 		int ch) {
@@ -632,7 +632,7 @@ void sen_calibration() {
 	l_sen.ref_wall = l_sen.sen;
 	while (PB.DR.BIT.B5 != 0) {
 		//remove walls
-		sta_LED_drv(Green, on);
+		drv_Status_LED(Green, on);
 	}
 
 	UX_effect(alart);
@@ -647,52 +647,52 @@ void sen_calibration() {
 	cl_sen.non_threshold /= 2;
 
 	while (PB.DR.BIT.B5 != 0) {
-		sta_LED_drv(Yerrow, on);
+		drv_Status_LED(Yerrow, on);
 	}
 
 	myprintf("non_wall : %d | %d | %d | %d\n", l_sen.non_threshold,
 			cl_sen.non_threshold, cr_sen.non_threshold, r_sen.non_threshold);
 	UX_effect(alart);
-	sta_LED_drv(Rst_status_LED, off);
+	drv_Status_LED(Rst_status_LED, off);
 }
 
-void Rotate_detect(void) {
-	int now = PE.DRL.BIT.B14;
-	now = now << 1;
-	now += PE.DRL.BIT.B15;
-
-	if (now == 3) {
-		now = 2;
-	} else if (now == 2) {
-		now = 3;
-	}
-
-	if (old == 0 && now == 3) {
-		rot -= 1;
-		UX_effect(click);
-	} else if (old == 3 && now == 0) {
-		rot += 1;
-		UX_effect(click);
-	} else if (now > old) {
-		rot += 1;
-		UX_effect(click);
-	} else if (now < old) {
-		rot -= 1;
-		UX_effect(click);
-	} else {
-		rot += 0;
-	}
-	old = now;
-
-}
-
-void mode_selector() {
-	rot_sw = (char) (rot % 5);
-	Rotate_detect();
-	sta_LED_drv(Red, (rot_sw + 1) & 1);
-	sta_LED_drv(Yerrow, ((rot_sw + 1) & 2) >> 1);
-	sta_LED_drv(Green, ((rot_sw + 1) & 4) >> 2);
-}
+//void Rotate_detect(void) {
+//	int now = PE.DRL.BIT.B14;
+//	now = now << 1;
+//	now += PE.DRL.BIT.B15;
+//
+//	if (now == 3) {
+//		now = 2;
+//	} else if (now == 2) {
+//		now = 3;
+//	}
+//
+//	if (old == 0 && now == 3) {
+//		rot -= 1;
+//		UX_effect(click);
+//	} else if (old == 3 && now == 0) {
+//		rot += 1;
+//		UX_effect(click);
+//	} else if (now > old) {
+//		rot += 1;
+//		UX_effect(click);
+//	} else if (now < old) {
+//		rot -= 1;
+//		UX_effect(click);
+//	} else {
+//		rot += 0;
+//	}
+//	old = now;
+//
+//}
+//
+//void select_Mode() {
+//	rot_sw = (char) (rot % 5);
+//	Rotate_detect();
+//	sta_LED_drv(Red, (rot_sw + 1) & 1);
+//	sta_LED_drv(Yerrow, ((rot_sw + 1) & 2) >> 1);
+//	sta_LED_drv(Green, ((rot_sw + 1) & 4) >> 2);
+//}
 
 void direction_detect() {
 	if (direction == 0) {
@@ -724,9 +724,9 @@ void direction_detect() {
 		 sta_LED_drv(Green, off);
 		 */
 	}
-	sta_LED_drv(Red, pos_y & 1);
-	sta_LED_drv(Yerrow, (pos_x & 1) >> 0);
-	sta_LED_drv(Green, (pos_x & 2) >> 1);
+	drv_Status_LED(Red, pos_y & 1);
+	drv_Status_LED(Yerrow, (pos_x & 1) >> 0);
+	drv_Status_LED(Green, (pos_x & 2) >> 1);
 
 }
 
@@ -1487,16 +1487,16 @@ int main(void) {
 	initdist_map();
 
 	while (1) {
-		while (batt_vol() < 11.3) {
+		while (get_Battery_Voltage() < 11.3) {
 			myprintf("Low_battery\n");
 			UX_effect(error);
 		}
 
-		sta_LED_drv(Red, off);
+		drv_Status_LED(Red, off);
 
 		while (PB.DR.BIT.B5 != 0) {
-			batt = batt_vol();
-			mode_selector();
+			batt = get_Battery_Voltage();
+			select_Mode();
 			myprintf("batt : %f\n", batt);
 			myprintf("sen : %d | %d | %d | %d\n", l_sen.sen, cl_sen.sen,
 					cr_sen.sen, r_sen.sen);
@@ -1504,7 +1504,7 @@ int main(void) {
 			wait_ms(100);
 		}
 		wait_ms(100);
-		sta_LED_drv(Rst_status_LED, off);
+		drv_Status_LED(Rst_status_LED, off);
 		switch (rot_sw) {
 
 		case astar:

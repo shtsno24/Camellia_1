@@ -13,7 +13,8 @@
 #include <machine.h>
 #include "vect.h"
 #include "init.h"
-
+#include "util.h"
+#include "CMT.h"
 
 #pragma section IntPRG
 // 4 Illegal code

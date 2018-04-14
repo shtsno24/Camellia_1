@@ -1,36 +1,6 @@
-09:16:05 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
+10:59:22 **** プロジェクト test に対する構成 Release の 逐次ビルド ****
 make all 
-'Scanning and building file: ../src/MTU.c'
-'Invoking: Scanner and Compiler'
-scandep1 -MM -MP -MF"src/MTU.d" -MT"src/MTU.obj" -MT"src/MTU.d"   -I"C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include" -D_SH   -D_SH2=1  -D_BIG=1 -D__STDC_VERSION__=199409L  -D__HITACHI__=1 -D__HITACHI_VERSION__=0x0904 -D_SH=1 -D__RENESAS__=1 -D__RENESAS_VERSION__=0x0904 -U_WIN32 -UWIN32 -U__WIN32__ -U__GNUC__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__   -E -quiet -I. -C "../src/MTU.c"
-shc -lang=c -object="src/MTU.obj"  -include="C:\PROGRA~2\Renesas\Hew\Tools\Renesas\Sh\9_4_3/include"  -gbr=auto -opt_range=all -infinite_loop=0 -global_alloc=1 -global_volatile=0 -struct_alloc=1 -del_vacant_loop=0 -macsave=1 -cpu=sh2 -optimize=0 -nologo -chgincpath -errorpath  -define=_SH   "../src/MTU.c"
-C:\D\mice\Camellia_1\e2\test\src\iodefine.h(12) : C1405 (W) Illegal #pragma syntax
-../src/MTU.c(146) : C2225 (E) Undeclared name "r_motor"
-../src/MTU.c(146) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(146) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(146) : C2220 (E) Modifiable lvalue required for "="
-../src/MTU.c(147) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(154) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(158) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(159) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(165) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(166) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(166) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(167) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(181) : C2225 (E) Undeclared name "l_motor"
-../src/MTU.c(181) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(181) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(181) : C2220 (E) Modifiable lvalue required for "="
-../src/MTU.c(182) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(188) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(192) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(193) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(198) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(199) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(199) : C2203 (E) Illegal member reference for "."
-../src/MTU.c(200) : C2203 (E) Illegal member reference for "."
-src/subdir.mk:61: recipe for target 'src/MTU.obj' failed
-make: *** [src/MTU.obj] Error 1
+'Build complete.'
 
-09:16:05 Build Failed. 26 errors, 1 warnings. (took 514ms)
+10:59:23 ビルドが完了しました(所要時間 296ms)
 

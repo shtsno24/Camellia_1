@@ -11,12 +11,13 @@
 #include "CMT.h"
 #include "sensor.h"
 #include "MTU.h"
+#include "motor.h"
 
 #define round(A)((int)(A + 0.5))
 
 //SPC spec;
 extern SEN r_sen, cr_sen, l_sen, cl_sen;
-MOT r_motor, l_motor;
+extern MOT r_motor, l_motor;
 
 //void init_IO(void) {
 //	PFC.PEIORL.BIT.B0 = 1; //R_Clock
@@ -116,32 +117,32 @@ MOT r_motor, l_motor;
 //	}
 //}
 
-void initMOT(void) {
-	r_motor.min_acc = 0.0;
-	l_motor.min_acc = 0.0;
-	r_motor.max_acc = 1e+5;
-	l_motor.max_acc = 1e+5;
-	r_motor.acc = 0.0;
-	l_motor.acc = 0.0;
-
-	r_motor.min_vel = 240.0;
-	l_motor.min_vel = 240.0;
-	r_motor.max_vel = 2000.0;
-	l_motor.max_vel = 2000.0;
-	r_motor.vel = 300.0;
-	l_motor.vel = 300.0;
-
-	r_motor.cnt = 0.0;
-	l_motor.cnt = 0.0;
-
-	r_motor.end_flag = 0.0;
-	l_motor.end_flag = 0.0;
-	r_motor.stop_flag = 0.0;
-	l_motor.stop_flag = 0.0;
-
-	r_motor.rot_dir_flag = 0;
-	l_motor.rot_dir_flag = 1;
-}
+//void initMOT(void) {
+//	r_motor.min_acc = 0.0;
+//	l_motor.min_acc = 0.0;
+//	r_motor.max_acc = 1e+5;
+//	l_motor.max_acc = 1e+5;
+//	r_motor.acc = 0.0;
+//	l_motor.acc = 0.0;
+//
+//	r_motor.min_vel = 240.0;
+//	l_motor.min_vel = 240.0;
+//	r_motor.max_vel = 2000.0;
+//	l_motor.max_vel = 2000.0;
+//	r_motor.vel = 300.0;
+//	l_motor.vel = 300.0;
+//
+//	r_motor.cnt = 0.0;
+//	l_motor.cnt = 0.0;
+//
+//	r_motor.end_flag = 0.0;
+//	l_motor.end_flag = 0.0;
+//	r_motor.stop_flag = 0.0;
+//	l_motor.stop_flag = 0.0;
+//
+//	r_motor.rot_dir_flag = 0;
+//	l_motor.rot_dir_flag = 1;
+//}
 
 //void initCMT(void) {	//CMT割込の設定
 //	STB.CR4.BIT._CMT = 0;		//CMTスタンバイ解除
@@ -267,19 +268,19 @@ void initMOT(void) {
 //	 */
 //}
 
-void initMOTOR(void) {
-	PE.DRL.BIT.B2 = 0; //reset (0 : off, 1 : on)
-	PE.DRL.BIT.B3 = 0; //excitation_enable (1 : on, 0 : off)
-
-	PE.DRL.BIT.B1 = 0; //R_CW/CCW(0 : forward, 1 : backward)
-	PE.DRL.BIT.B5 = 1; //L_CW/CCW(1 : forward, 0 : backward)
-
-	PE.DRL.BIT.B0 = 1; //R_Clock
-	PE.DRL.BIT.B4 = 1; //L_Clock
-
-	PE.DRL.BIT.B2 = 0; //reset(0 : off, 1 : on)
-	PE.DRL.BIT.B3 = 1; //excitation_enable (1 : on, 0 : off)
-}
+//void initMOTOR(void) {
+//	PE.DRL.BIT.B2 = 0; //reset (0 : off, 1 : on)
+//	PE.DRL.BIT.B3 = 0; //excitation_enable (1 : on, 0 : off)
+//
+//	PE.DRL.BIT.B1 = 0; //R_CW/CCW(0 : forward, 1 : backward)
+//	PE.DRL.BIT.B5 = 1; //L_CW/CCW(1 : forward, 0 : backward)
+//
+//	PE.DRL.BIT.B0 = 1; //R_Clock
+//	PE.DRL.BIT.B4 = 1; //L_Clock
+//
+//	PE.DRL.BIT.B2 = 0; //reset(0 : off, 1 : on)
+//	PE.DRL.BIT.B3 = 1; //excitation_enable (1 : on, 0 : off)
+//}
 
 //void initAD(void) {
 //
@@ -329,11 +330,10 @@ void initALL(void) {
 	init_Spec();
 	init_Buzzer();
 	init_Sensor();
-	initMOT();
+	init_Motor();
 	init_CMT();
 	init_LED();
 	//initMTU_S();
 	init_MTU();
-	initMOTOR();
 	init_ADC();
 }

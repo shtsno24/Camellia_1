@@ -16,7 +16,6 @@
 SPC spec;
 SW Switch;
 
-
 void init_Spec() {
 	spec.tread = 90.0;
 	spec.tire_dim = 90.0;
@@ -25,6 +24,15 @@ void init_Spec() {
 	spec.tar_vel_min = 250;
 	spec.pwm_base_clock = 6250 - 1; //(interrupt duty : 1ms(@6.25MHz))
 	spec.pwm_half_clock = round((6250 - 1) / 2);
+	spec.r_distance = ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) - 1);
+	spec.l_distance = ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) + 0.5);
+	spec.full_block = 180;
+	spec.half_block = 93.5;
+	spec.kp_l = 0.19;
+	spec.kp_r = 0.19;
+	spec.cnt_ctl = 0;
+	spec.diff = 0.0;
+	spec.sta_LED_flag = 0;
 }
 
 void init_IO(void) {
@@ -103,7 +111,6 @@ void UX_effect(char pattern) {
 		break;
 	}
 }
-
 
 void init_Switch(void) {
 	Switch.rot_sw = 0;

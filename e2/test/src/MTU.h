@@ -18,4 +18,8 @@ void stop_MTU(char);
 
 void start_MTU(char);
 
+void change_Duty_MTU20(void);
+
+void change_Duty_MTU21(void);
+
 #endif /* MTU_H_ */

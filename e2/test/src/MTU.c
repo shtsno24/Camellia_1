@@ -7,10 +7,12 @@
 #include "iodefine.h"
 #include "util.h"
 #include "MTU.h"
+#include "motor.h"
 
 #define round(A)((int)(A + 0.5))
 
 extern SPC spec;
+extern MOT r_motor,l_motor;
 
 void init_MTU(void) {
 

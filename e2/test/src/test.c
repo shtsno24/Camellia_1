@@ -19,6 +19,7 @@
 #include "CMT.h"
 #include "sensor.h"
 #include "MTU.h"
+#include "motor.h"
 #include "math.h"
 
 #define round(A)((int)(A + 0.5))
@@ -75,13 +76,13 @@ extern CMT_01 tim;
 //	cst0 = 0, cst1, cst2, cst3, cst_all
 //};
 
-enum turn {
-	back = 0, left = 1, right = 2, straight = 3,
-};
+//enum turn {
+//	back = 0, left = 1, right = 2, straight = 3,
+//};
 
-enum motor {
-	R_motor = 0, L_motor = 1
-};
+//enum motor {
+//	R_motor = 0, L_motor = 1
+//};
 
 //enum ux {
 //	error = 0, click = 1, alart = 2
@@ -196,152 +197,152 @@ enum mode {
 //		;
 //}
 
-void diff_calc(void) {
-	short ref_boost_L, ref_boost_R;
+//void diff_calc(void) {
+//	short ref_boost_L, ref_boost_R;
+//
+//	if (abs(r_sen.diff) > r_sen.diff_threshold) {
+//		ref_boost_R = 450;  //変化量が一定以上なら、閾値を引き上げる
+//	} else {
+//		ref_boost_R = 0; //変化量が一定以下なら、設定通りの閾値
+//	}
+//
+//	if (abs(l_sen.diff) > l_sen.diff_threshold) {
+//		ref_boost_L = 450;  //変化量が一定以上なら、閾値を引き上げる
+//	} else {
+//		ref_boost_L = 0; //変化量が一定以下なら、設定通りの閾値
+//	}
+//
+//	if (cnt_ctl == 1 || cr_sen.ref_wall < cr_sen.sen
+//			|| cl_sen.ref_wall < cl_sen.sen) {
+//		diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
+//		if (sta_LED_flag == 1) {
+//			drv_Status_LED(Green, on);
+//			drv_Status_LED(Yerrow, on);
+//			drv_Status_LED(Red, on);
+//		}
+//		return;
+//	} else {
+//		if ((r_sen.sen >= r_sen.non_threshold + ref_boost_R)
+//				&& (l_sen.sen >= l_sen.non_threshold + ref_boost_L)) {
+//			diff = (float) ((l_sen.sen - l_sen.ref_wall)
+//					- (r_sen.sen - r_sen.ref_wall));
+//
+//			if (sta_LED_flag == 1) {
+//				drv_Status_LED(Green, on);
+//				drv_Status_LED(Yerrow, off);
+//				drv_Status_LED(Red, off);
+//			}
+//
+//		} else if ((r_sen.sen >= r_sen.non_threshold + ref_boost_R)
+//				&& (l_sen.sen < l_sen.non_threshold + ref_boost_L)) {
+//			diff = (float) (-2 * (r_sen.sen - r_sen.ref_wall));
+//
+//			if (sta_LED_flag == 1) {
+//				drv_Status_LED(Green, off);
+//				drv_Status_LED(Yerrow, on);
+//				drv_Status_LED(Red, off);
+//			}
+//
+//		} else if ((r_sen.sen < r_sen.non_threshold + ref_boost_R)
+//				&& (l_sen.sen >= l_sen.non_threshold + ref_boost_L)) {
+//			diff = (float) (2 * (l_sen.sen - l_sen.ref_wall));
+//
+//			if (sta_LED_flag == 1) {
+//				drv_Status_LED(Green, off);
+//				drv_Status_LED(Yerrow, off);
+//				drv_Status_LED(Red, on);
+//			}
+//
+//		} else {
+//			diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
+//
+//			if (sta_LED_flag == 1) {
+//				drv_Status_LED(Green, off);
+//				drv_Status_LED(Yerrow, off);
+//				drv_Status_LED(Red, off);
+//			}
+//
+//		}
+//	}
+//
+//}
+//
+//void vel_calc() {
+//
+//	if (l_motor.tar_vel + kp_l * diff > l_motor.vel) {
+//		l_motor.vel = l_motor.vel + (l_motor.acc * 0.001);
+//
+//	} else if (l_motor.tar_vel + kp_l * diff <= l_motor.vel) {
+//		l_motor.vel = l_motor.vel - (l_motor.acc * 0.001);
+//	}
+//
+//	if (r_motor.tar_vel - kp_r * diff > r_motor.vel) {
+//		r_motor.vel = r_motor.vel + (r_motor.acc * 0.001);
+//
+//	} else if (r_motor.tar_vel - kp_r * diff <= r_motor.vel) {
+//		r_motor.vel = r_motor.vel - (r_motor.acc * 0.001);
+//
+//	}
+//
+//}
 
-	if (abs(r_sen.diff) > r_sen.diff_threshold) {
-		ref_boost_R = 450;  //変化量が一定以上なら、閾値を引き上げる
-	} else {
-		ref_boost_R = 0; //変化量が一定以下なら、設定通りの閾値
-	}
-
-	if (abs(l_sen.diff) > l_sen.diff_threshold) {
-		ref_boost_L = 450;  //変化量が一定以上なら、閾値を引き上げる
-	} else {
-		ref_boost_L = 0; //変化量が一定以下なら、設定通りの閾値
-	}
-
-	if (cnt_ctl == 1 || cr_sen.ref_wall < cr_sen.sen
-			|| cl_sen.ref_wall < cl_sen.sen) {
-		diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
-		if (sta_LED_flag == 1) {
-			drv_Status_LED(Green, on);
-			drv_Status_LED(Yerrow, on);
-			drv_Status_LED(Red, on);
-		}
-		return;
-	} else {
-		if ((r_sen.sen >= r_sen.non_threshold + ref_boost_R)
-				&& (l_sen.sen >= l_sen.non_threshold + ref_boost_L)) {
-			diff = (float) ((l_sen.sen - l_sen.ref_wall)
-					- (r_sen.sen - r_sen.ref_wall));
-
-			if (sta_LED_flag == 1) {
-				drv_Status_LED(Green, on);
-				drv_Status_LED(Yerrow, off);
-				drv_Status_LED(Red, off);
-			}
-
-		} else if ((r_sen.sen >= r_sen.non_threshold + ref_boost_R)
-				&& (l_sen.sen < l_sen.non_threshold + ref_boost_L)) {
-			diff = (float) (-2 * (r_sen.sen - r_sen.ref_wall));
-
-			if (sta_LED_flag == 1) {
-				drv_Status_LED(Green, off);
-				drv_Status_LED(Yerrow, on);
-				drv_Status_LED(Red, off);
-			}
-
-		} else if ((r_sen.sen < r_sen.non_threshold + ref_boost_R)
-				&& (l_sen.sen >= l_sen.non_threshold + ref_boost_L)) {
-			diff = (float) (2 * (l_sen.sen - l_sen.ref_wall));
-
-			if (sta_LED_flag == 1) {
-				drv_Status_LED(Green, off);
-				drv_Status_LED(Yerrow, off);
-				drv_Status_LED(Red, on);
-			}
-
-		} else {
-			diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
-
-			if (sta_LED_flag == 1) {
-				drv_Status_LED(Green, off);
-				drv_Status_LED(Yerrow, off);
-				drv_Status_LED(Red, off);
-			}
-
-		}
-	}
-
-}
-
-void vel_calc() {
-
-	if (l_motor.tar_vel + kp_l * diff > l_motor.vel) {
-		l_motor.vel = l_motor.vel + (l_motor.acc * 0.001);
-
-	} else if (l_motor.tar_vel + kp_l * diff <= l_motor.vel) {
-		l_motor.vel = l_motor.vel - (l_motor.acc * 0.001);
-	}
-
-	if (r_motor.tar_vel - kp_r * diff > r_motor.vel) {
-		r_motor.vel = r_motor.vel + (r_motor.acc * 0.001);
-
-	} else if (r_motor.tar_vel - kp_r * diff <= r_motor.vel) {
-		r_motor.vel = r_motor.vel - (r_motor.acc * 0.001);
-
-	}
-
-}
-
-void sen_cmt1() {
-	short int i;
-// write this function to interrupt_handlers.c
-	CMT1.CMCSR.BIT.CMF = 0;
-	CMT1.CMCNT = 0;
-
-	drv_Sensor_LED(R_LED, on);
-	for (i = 0; i < 309; i++)
-		;
-	r_sen.sen = get_Sensor(R_sen, ad_0); //R sensor
-	drv_Sensor_LED(R_LED, off);
-
-	drv_Sensor_LED(CR_LED, on);
-	for (i = 0; i < 309; i++)
-		;
-	cr_sen.sen = get_Sensor(CR_sen, ad_0);		//CR sensor
-	drv_Sensor_LED(CR_LED, off);
-
-	drv_Sensor_LED(CL_LED, on);
-	for (i = 0; i < 309; i++)
-		;
-	cl_sen.sen = get_Sensor(CL_sen, ad_0);		//CL sensor
-	drv_Sensor_LED(CL_LED, off);
-
-	drv_Sensor_LED(L_LED, on);
-	for (i = 0; i < 309; i++)
-		;
-	l_sen.sen = get_Sensor(L_sen, ad_0);		//L sensor
-	drv_Sensor_LED(L_LED, off);
-
-	cr_sen.sen -= get_Sensor(CR_sen, ad_0);		//CR sensor
-	cl_sen.sen -= get_Sensor(CL_sen, ad_0);		//CL sensor
-	l_sen.sen -= get_Sensor(L_sen, ad_0);		//L sensor
-	r_sen.sen -= get_Sensor(R_sen, ad_0);		//R sensor
-
-	cr_sen.diff = cr_sen.sen - cr_sen.old[8];
-	r_sen.diff = r_sen.sen - r_sen.old[8];
-	cl_sen.diff = cl_sen.sen - cl_sen.old[8];
-	l_sen.diff = l_sen.sen - l_sen.old[8];
-
-	for (i = 8; i > 0; i--) {
-		r_sen.old[i] = r_sen.old[i - 1];
-		cr_sen.old[i] = cr_sen.old[i - 1];
-		l_sen.old[i] = l_sen.old[i - 1];
-		cl_sen.old[i] = cl_sen.old[i - 1];
-	}
-
-	cr_sen.old[0] = cr_sen.sen;		//CR sensor
-	r_sen.old[0] = r_sen.sen;		//R sensor
-	cl_sen.old[0] = cl_sen.sen;		//CL sensor
-	l_sen.old[0] = l_sen.sen;		//L sensor
-
-	diff_calc();
-
-	vel_calc();
-
-}
+//void sen_cmt1() {
+//	short int i;
+//// write this function to interrupt_handlers.c
+//	CMT1.CMCSR.BIT.CMF = 0;
+//	CMT1.CMCNT = 0;
+//
+//	drv_Sensor_LED(R_LED, on);
+//	for (i = 0; i < 309; i++)
+//		;
+//	r_sen.sen = get_Sensor(R_sen, ad_0); //R sensor
+//	drv_Sensor_LED(R_LED, off);
+//
+//	drv_Sensor_LED(CR_LED, on);
+//	for (i = 0; i < 309; i++)
+//		;
+//	cr_sen.sen = get_Sensor(CR_sen, ad_0);		//CR sensor
+//	drv_Sensor_LED(CR_LED, off);
+//
+//	drv_Sensor_LED(CL_LED, on);
+//	for (i = 0; i < 309; i++)
+//		;
+//	cl_sen.sen = get_Sensor(CL_sen, ad_0);		//CL sensor
+//	drv_Sensor_LED(CL_LED, off);
+//
+//	drv_Sensor_LED(L_LED, on);
+//	for (i = 0; i < 309; i++)
+//		;
+//	l_sen.sen = get_Sensor(L_sen, ad_0);		//L sensor
+//	drv_Sensor_LED(L_LED, off);
+//
+//	cr_sen.sen -= get_Sensor(CR_sen, ad_0);		//CR sensor
+//	cl_sen.sen -= get_Sensor(CL_sen, ad_0);		//CL sensor
+//	l_sen.sen -= get_Sensor(L_sen, ad_0);		//L sensor
+//	r_sen.sen -= get_Sensor(R_sen, ad_0);		//R sensor
+//
+//	cr_sen.diff = cr_sen.sen - cr_sen.old[8];
+//	r_sen.diff = r_sen.sen - r_sen.old[8];
+//	cl_sen.diff = cl_sen.sen - cl_sen.old[8];
+//	l_sen.diff = l_sen.sen - l_sen.old[8];
+//
+//	for (i = 8; i > 0; i--) {
+//		r_sen.old[i] = r_sen.old[i - 1];
+//		cr_sen.old[i] = cr_sen.old[i - 1];
+//		l_sen.old[i] = l_sen.old[i - 1];
+//		cl_sen.old[i] = cl_sen.old[i - 1];
+//	}
+//
+//	cr_sen.old[0] = cr_sen.sen;		//CR sensor
+//	r_sen.old[0] = r_sen.sen;		//R sensor
+//	cl_sen.old[0] = cl_sen.sen;		//CL sensor
+//	l_sen.old[0] = l_sen.sen;		//L sensor
+//
+//	diff_calc();
+//
+//	vel_calc();
+//
+//}
 
 //void stopMTU(int cst) {
 ////stop MTU2's timer
@@ -369,7 +370,7 @@ void sen_cmt1() {
 //	}
 //}
 //
-//void startMTU(int cst) {
+//void start_MTU(int cst) {
 ////start MTU2's timer
 //	switch (cst) {
 //	case cst0:
@@ -425,7 +426,7 @@ void sen_cmt1() {
 //		r_motor.stop_flag = 1;
 //		stopMTU(cst0);
 //	} else {
-//		startMTU(cst0);
+//		start_MTU(cst0);
 //	}
 //
 //}
@@ -458,7 +459,7 @@ void sen_cmt1() {
 //		l_motor.stop_flag = 1;
 //		stopMTU(cst1);
 //	} else {
-//		startMTU(cst1);
+//		start_MTU(cst1);
 //	}
 //
 //}
@@ -501,115 +502,115 @@ void sen_cmt1() {
 //	return voltage;
 //}
 
-void mot_drv(int dist, int t_vel, int t_acc, char rot_dir_flag, int end_flag,
-		int ch) {
-	/*
-	 rot_dir
-	 1 : forward
-	 0 : backward
-	 */
+//void drv_Motor(int dist, int t_vel, int t_acc, char rot_dir_flag, int end_flag,
+//		int ch) {
+//	/*
+//	 rot_dir
+//	 1 : forward
+//	 0 : backward
+//	 */
+//
+//	if (t_acc > r_motor.max_acc) {
+//		t_acc = r_motor.max_acc;
+//	} else if (t_acc < r_motor.min_acc) {
+//		t_acc = r_motor.min_acc;
+//	}
+//
+//	if (t_vel > r_motor.max_vel) {
+//		t_vel = r_motor.max_vel;
+//	} else if (t_vel < r_motor.min_vel) {
+//		t_vel = r_motor.min_vel;
+//	}
+//	PE.DRL.BIT.B2 = 1; //reset(0 : off, 1 : on)
+//	switch (ch) {
+//	case R_motor:
+//		r_motor.stop_flag = 0;
+//		r_motor.cnt = dist / spec.step_dist;
+//		r_motor.tar_vel = t_vel;
+//		r_motor.acc = t_acc;
+//		r_motor.rot_dir_flag = !rot_dir_flag; //R_CW/CCW(0 : forward, 1 : backward)
+//		r_motor.end_flag = end_flag;
+//		start_MTU(cst0);
+//		break;
+//	case L_motor:
+//		l_motor.stop_flag = 0;
+//		l_motor.cnt = dist / spec.step_dist;
+//		l_motor.tar_vel = t_vel;
+//		l_motor.acc = t_acc;
+//		l_motor.rot_dir_flag = rot_dir_flag; //L_CW/CCW(1 : forward, 0 : backward)
+//		l_motor.end_flag = end_flag;
+//		start_MTU(cst1);
+//		break;
+//	}
+//
+//	PE.DRL.BIT.B2 = 0; //reset(0 : off, 1 : on)
+//}
 
-	if (t_acc > r_motor.max_acc) {
-		t_acc = r_motor.max_acc;
-	} else if (t_acc < r_motor.min_acc) {
-		t_acc = r_motor.min_acc;
-	}
+//void switch_Motor(char sw) {
+//	if (sw == on) {
+//		PE.DRL.BIT.B3 = 1;
+//	} else {
+//		PE.DRL.BIT.B3 = 0;
+//	}
+//}
 
-	if (t_vel > r_motor.max_vel) {
-		t_vel = r_motor.max_vel;
-	} else if (t_vel < r_motor.min_vel) {
-		t_vel = r_motor.min_vel;
-	}
-	PE.DRL.BIT.B2 = 1; //reset(0 : off, 1 : on)
-	switch (ch) {
-	case R_motor:
-		r_motor.stop_flag = 0;
-		r_motor.cnt = dist / spec.step_dist;
-		r_motor.tar_vel = t_vel;
-		r_motor.acc = t_acc;
-		r_motor.rot_dir_flag = !rot_dir_flag; //R_CW/CCW(0 : forward, 1 : backward)
-		r_motor.end_flag = end_flag;
-		startMTU(cst0);
-		break;
-	case L_motor:
-		l_motor.stop_flag = 0;
-		l_motor.cnt = dist / spec.step_dist;
-		l_motor.tar_vel = t_vel;
-		l_motor.acc = t_acc;
-		l_motor.rot_dir_flag = rot_dir_flag; //L_CW/CCW(1 : forward, 0 : backward)
-		l_motor.end_flag = end_flag;
-		startMTU(cst1);
-		break;
-	}
-
-	PE.DRL.BIT.B2 = 0; //reset(0 : off, 1 : on)
-}
-
-void mot_onoff(char sw) {
-	if (sw == on) {
-		PE.DRL.BIT.B3 = 1;
-	} else {
-		PE.DRL.BIT.B3 = 0;
-	}
-}
-
-void mot_app(int dist, int t_vel, int t_acc, char move_flag, char end_flag) {
-
-	if (move_flag == straight) {
-		cnt_ctl = 0;
-	} else {
-		cnt_ctl = 1;
-	}
-
-	if (t_vel * t_vel - r_motor.vel * r_motor.vel > t_acc * dist / 2) {
-		t_vel = sqrt(r_motor.vel * r_motor.vel + t_acc * dist);
-	}
-
-	mot_drv(dist / 4 * 3, t_vel, t_acc, move_flag & 1, end_flag, R_motor);
-	mot_drv(dist / 4 * 3, t_vel, t_acc, (move_flag & 2) >> 1, end_flag,
-			L_motor);
-
-	while (1) {
-		if (l_motor.stop_flag == 1 || r_motor.stop_flag == 1) {
-			break;
-		}
-	}
-
-	mot_drv(dist / 4, r_motor.min_vel, t_acc, move_flag & 1, end_flag, R_motor);
-	mot_drv(dist / 4, l_motor.min_vel, t_acc, (move_flag & 2) >> 1, end_flag,
-			L_motor);
-
-	while (1) {
-		if (l_motor.stop_flag == 1 || r_motor.stop_flag == 1) {
-			break;
-		}
-	}
-	cnt_ctl = 0;
-}
-
-void mot_app2(int dist, int t_vel, int t_acc, char move_flag, char end_flag) {
-
-	if (move_flag == straight) {
-		cnt_ctl = 0;
-	} else {
-		cnt_ctl = 1;
-	}
-
-	if (t_vel * t_vel - r_motor.vel * r_motor.vel > t_acc * dist / 2) {
-		t_vel = sqrt(r_motor.vel * r_motor.vel + t_acc * dist);
-	}
-
-	mot_drv(dist, t_vel, t_acc, move_flag & 1, end_flag, R_motor);
-	mot_drv(dist, t_vel, t_acc, (move_flag & 2) >> 1, end_flag, L_motor);
-
-	while (1) {
-		if (l_motor.stop_flag == 1 || r_motor.stop_flag == 1) {
-			break;
-		}
-	}
-
-	cnt_ctl = 0;
-}
+//void mot_app(int dist, int t_vel, int t_acc, char move_flag, char end_flag) {
+//
+//	if (move_flag == straight) {
+//		cnt_ctl = 0;
+//	} else {
+//		cnt_ctl = 1;
+//	}
+//
+//	if (t_vel * t_vel - r_motor.vel * r_motor.vel > t_acc * dist / 2) {
+//		t_vel = sqrt(r_motor.vel * r_motor.vel + t_acc * dist);
+//	}
+//
+//	drv_Motor(dist / 4 * 3, t_vel, t_acc, move_flag & 1, end_flag, R_motor);
+//	drv_Motor(dist / 4 * 3, t_vel, t_acc, (move_flag & 2) >> 1, end_flag,
+//			L_motor);
+//
+//	while (1) {
+//		if (l_motor.stop_flag == 1 || r_motor.stop_flag == 1) {
+//			break;
+//		}
+//	}
+//
+//	drv_Motor(dist / 4, r_motor.min_vel, t_acc, move_flag & 1, end_flag, R_motor);
+//	drv_Motor(dist / 4, l_motor.min_vel, t_acc, (move_flag & 2) >> 1, end_flag,
+//			L_motor);
+//
+//	while (1) {
+//		if (l_motor.stop_flag == 1 || r_motor.stop_flag == 1) {
+//			break;
+//		}
+//	}
+//	cnt_ctl = 0;
+//}
+//
+//void mot_app2(int dist, int t_vel, int t_acc, char move_flag, char end_flag) {
+//
+//	if (move_flag == straight) {
+//		cnt_ctl = 0;
+//	} else {
+//		cnt_ctl = 1;
+//	}
+//
+//	if (t_vel * t_vel - r_motor.vel * r_motor.vel > t_acc * dist / 2) {
+//		t_vel = sqrt(r_motor.vel * r_motor.vel + t_acc * dist);
+//	}
+//
+//	drv_Motor(dist, t_vel, t_acc, move_flag & 1, end_flag, R_motor);
+//	drv_Motor(dist, t_vel, t_acc, (move_flag & 2) >> 1, end_flag, L_motor);
+//
+//	while (1) {
+//		if (l_motor.stop_flag == 1 || r_motor.stop_flag == 1) {
+//			break;
+//		}
+//	}
+//
+//	cnt_ctl = 0;
+//}
 
 void sen_calibration() {
 
@@ -719,93 +720,93 @@ void direction_detect() {
 
 }
 
-void move_left() {
-	kp_r -= 0.1;
-	kp_l -= 0.1;
-	mot_app(half_block, 330, 2000, straight, on);
-	wait_ms(100);
-	mot_onoff(off);
-	wait_ms(450);
-	mot_onoff(on);
-	wait_ms(100);
-	mot_app(l_distance, 310, 2000, left, on);
-	wait_ms(100);
-	mot_onoff(off);
-	wait_ms(450);
-	mot_onoff(on);
-	wait_ms(100);
-	mot_app2(half_block, 330, 2000, straight, on);
-	kp_r += 0.1;
-	kp_l += 0.1;
-}
-
-void move_right() {
-	kp_r -= 0.1;
-	kp_l -= 0.1;
-	mot_app(half_block, 330, 2000, straight, on);
-	wait_ms(100);
-	mot_onoff(off);
-	wait_ms(450);
-	mot_onoff(on);
-	wait_ms(100);
-	mot_app(r_distance, 310, 2000, right, on);
-	wait_ms(100);
-	mot_onoff(off);
-	wait_ms(450);
-	mot_onoff(on);
-	wait_ms(100);
-	mot_app2(half_block, 330, 1800, straight, on);
-	kp_r += 0.1;
-	kp_l += 0.1;
-
-}
-
-void move_forward() {
-	kp_r += 0.1;
-	kp_l += 0.1;
-	mot_app2(full_block, 480, 2000, straight, on);
-	kp_r -= 0.1;
-	kp_l -= 0.1;
-}
-
-void move_back() {
-	mot_app(half_block, 330, 2000, straight, on);
-	wait_ms(1000);
-	mot_app(r_distance, 310, 2000, right, on);
-	wait_ms(1000);
-	mot_app(half_block, 270, 2000, back, on);
-	mot_onoff(off);
-	wait_ms(1000);
-	mot_onoff(on);
-	mot_app(18, 280, 2000, straight, on);
-	wait_ms(1000);
-	mot_app(r_distance, 310, 2000, right, on);
-	wait_ms(1000);
-	mot_app(half_block, 270, 2000, back, on);
-	mot_onoff(off);
-	wait_ms(1000);
-	mot_onoff(on);
-	mot_app2(15 + half_block, 330, 2000, straight, on);
-
-}
-
-void move_back_2() {
-	mot_app(half_block, 330, 2000, straight, on);
-	wait_ms(100);
-	mot_onoff(off);
-	wait_ms(450);
-	mot_onoff(on);
-	wait_ms(100);
-	mot_app(r_distance, 310, 2000, right, on);
-	mot_app(r_distance, 310, 2000, right, on);
-	wait_ms(100);
-	mot_onoff(off);
-	wait_ms(450);
-	mot_onoff(on);
-	wait_ms(100);
-	mot_app2(half_block, 330, 2000, straight, on);
-
-}
+//void move_Left() {
+//	kp_r -= 0.1;
+//	kp_l -= 0.1;
+//	mot_app(half_block, 330, 2000, straight, on);
+//	wait_ms(100);
+//	switch_Motor(off);
+//	wait_ms(450);
+//	switch_Motor(on);
+//	wait_ms(100);
+//	mot_app(l_distance, 310, 2000, left, on);
+//	wait_ms(100);
+//	switch_Motor(off);
+//	wait_ms(450);
+//	switch_Motor(on);
+//	wait_ms(100);
+//	mot_app2(half_block, 330, 2000, straight, on);
+//	kp_r += 0.1;
+//	kp_l += 0.1;
+//}
+//
+//void move_Right() {
+//	kp_r -= 0.1;
+//	kp_l -= 0.1;
+//	mot_app(half_block, 330, 2000, straight, on);
+//	wait_ms(100);
+//	switch_Motor(off);
+//	wait_ms(450);
+//	switch_Motor(on);
+//	wait_ms(100);
+//	mot_app(r_distance, 310, 2000, right, on);
+//	wait_ms(100);
+//	switch_Motor(off);
+//	wait_ms(450);
+//	switch_Motor(on);
+//	wait_ms(100);
+//	mot_app2(half_block, 330, 1800, straight, on);
+//	kp_r += 0.1;
+//	kp_l += 0.1;
+//
+//}
+//
+//void move_Forward() {
+//	kp_r += 0.1;
+//	kp_l += 0.1;
+//	mot_app2(full_block, 480, 2000, straight, on);
+//	kp_r -= 0.1;
+//	kp_l -= 0.1;
+//}
+//
+//void move_Backward() {
+//	mot_app(half_block, 330, 2000, straight, on);
+//	wait_ms(1000);
+//	mot_app(r_distance, 310, 2000, right, on);
+//	wait_ms(1000);
+//	mot_app(half_block, 270, 2000, back, on);
+//	switch_Motor(off);
+//	wait_ms(1000);
+//	switch_Motor(on);
+//	mot_app(18, 280, 2000, straight, on);
+//	wait_ms(1000);
+//	mot_app(r_distance, 310, 2000, right, on);
+//	wait_ms(1000);
+//	mot_app(half_block, 270, 2000, back, on);
+//	switch_Motor(off);
+//	wait_ms(1000);
+//	switch_Motor(on);
+//	mot_app2(15 + half_block, 330, 2000, straight, on);
+//
+//}
+//
+//void move_Backward_2() {
+//	mot_app(half_block, 330, 2000, straight, on);
+//	wait_ms(100);
+//	switch_Motor(off);
+//	wait_ms(450);
+//	switch_Motor(on);
+//	wait_ms(100);
+//	mot_app(r_distance, 310, 2000, right, on);
+//	mot_app(r_distance, 310, 2000, right, on);
+//	wait_ms(100);
+//	switch_Motor(off);
+//	wait_ms(450);
+//	switch_Motor(on);
+//	wait_ms(100);
+//	mot_app2(half_block, 330, 2000, straight, on);
+//
+//}
 
 void iter_wall_map() {
 	/*
@@ -1464,7 +1465,7 @@ int main(void) {
 	init_sci1();
 	initALL();
 	initpath();
-	mot_onoff(off);
+	switch_Motor(off);
 	PE.DRL.BIT.B7 = 0;
 
 	half_block = 93.5;
@@ -1505,7 +1506,7 @@ int main(void) {
 			UX_effect(alart);
 			route_index = 1;
 
-			mot_onoff(on);
+			switch_Motor(on);
 			mot_app2(half_block, 350, 1500, straight, on);
 
 			while (run_interruption != 1) {
@@ -1517,20 +1518,20 @@ int main(void) {
 
 				if (tmp_path == 1) {
 					direction += 1;
-					move_right();
+					move_Right();
 
 				} else if (tmp_path == 3) {
 					direction += 3;
-					move_left();
+					move_Left();
 				} else if (tmp_path == 0) {
 					direction += 0;
-					move_forward();
+					move_Forward();
 				} else if (tmp_path == 2) {
 					direction += 2;
 					if (wall == 7 || wall == 11 || wall == 13 || wall == 14) {
-						move_back();
+						move_Backward();
 					} else {
-						move_back_2();
+						move_Backward_2();
 					}
 				}
 				direction %= 4;
@@ -1543,7 +1544,7 @@ int main(void) {
 			iter_wall_map();
 			mot_app(half_block, 310, 1500, straight, on);
 			wait_ms(300);
-			mot_onoff(off);
+			switch_Motor(off);
 			sta_LED_flag = 0;
 			pos_x = 0;
 			pos_y = 0;
@@ -1562,7 +1563,7 @@ int main(void) {
 			UX_effect(alart);
 			route_index = 1;
 
-			mot_onoff(on);
+			switch_Motor(on);
 			mot_app2(half_block, 310, 1500, straight, on);
 
 			while (path[route_index] != 4) {
@@ -1570,17 +1571,17 @@ int main(void) {
 
 				if (path[route_index] == 1) {
 					direction += 1;
-					move_right();
+					move_Right();
 
 				} else if (path[route_index] == 3) {
 					direction += 3;
-					move_left();
+					move_Left();
 				} else if (path[route_index] == 0) {
 					direction += 0;
-					move_forward();
+					move_Forward();
 				} else {
 					direction += 2;
-					move_back_2();
+					move_Backward_2();
 				}
 				direction %= 4;
 
@@ -1603,7 +1604,7 @@ int main(void) {
 			run_interruption = 0;
 			UX_effect(alart);
 
-			mot_onoff(on);
+			switch_Motor(on);
 			mot_app2(half_block, 350, 1500, straight, on);
 
 			while (run_interruption != 1) {
@@ -1611,17 +1612,17 @@ int main(void) {
 
 				if (l_sen.sen <= l_sen.non_threshold) {
 					direction += 3;
-					move_left();
+					move_Left();
 				} else if (cl_sen.sen <= cl_sen.non_threshold) {
 					direction += 0;
-					move_forward();
+					move_Forward();
 				} else if (r_sen.sen <= r_sen.non_threshold) {
 					direction += 1;
-					move_right();
+					move_Right();
 
 				} else {
 					direction += 2;
-					move_back();
+					move_Backward();
 				}
 				direction %= 4;
 
@@ -1633,7 +1634,7 @@ int main(void) {
 			iter_wall_map();
 			mot_app(half_block, 310, 1500, straight, on);
 			wait_ms(300);
-			mot_onoff(off);
+			switch_Motor(off);
 			sta_LED_flag = 0;
 			pos_x = 0;
 			pos_y = 0;
@@ -1657,15 +1658,15 @@ int main(void) {
 			 sta_LED_flag = 0;
 			 direction = 0;
 			 UX_effect(alart);
-			 mot_onoff(on);
+			 switch_Motor(on);
 			 mot_app2(half_block, 330, 2000, straight, on);
 			 for (k = 0; k < 4; k++) {
 			 mot_app2(full_block * 13, 460, 2000, straight, on);
 			 mot_app2(full_block, 330, 2000, straight, on);
-			 move_right();
+			 move_Right();
 			 mot_app2(full_block * 5, 460, 2000, straight, on);
 			 mot_app2(full_block, 330, 2000, straight, on);
-			 move_right();
+			 move_Right();
 			 }
 			 mot_app(half_block, 310, 2000, straight, on);
 
@@ -1676,48 +1677,48 @@ int main(void) {
 			sta_LED_flag = 1;
 
 			UX_effect(alart);
-			mot_onoff(on);
+			switch_Motor(on);
 			wait_ms(100);
 			mot_app2(half_block, 330, 2000, straight, on);
 			mot_app(half_block, 330, 2000, straight, on);
 			wait_ms(100);
-			mot_onoff(off);
+			switch_Motor(off);
 
 			while (PB.DR.BIT.B5 != 0)
 				;
 			UX_effect(alart);
-			mot_onoff(on);
+			switch_Motor(on);
 			wait_ms(100);
 			mot_app(r_distance, 310, 2000, right, on);
 			wait_ms(100);
-			mot_onoff(off);
+			switch_Motor(off);
 
 			while (PB.DR.BIT.B5 != 0)
 				;
 			UX_effect(alart);
-			mot_onoff(on);
+			switch_Motor(on);
 			wait_ms(100);
 			mot_app(l_distance, 310, 2000, left, on);
 			wait_ms(100);
-			mot_onoff(off);
+			switch_Motor(off);
 
 			while (PB.DR.BIT.B5 != 0)
 				;
 			UX_effect(alart);
-			mot_onoff(on);
+			switch_Motor(on);
 			wait_ms(100);
 			mot_app2(half_block, 330, 2000, straight, on);
 			mot_app2(full_block * 5, 480, 2000, straight, on);
 			mot_app(half_block, 330, 2000, straight, on);
 			wait_ms(100);
-			mot_onoff(off);
+			switch_Motor(off);
 
 			sta_LED_flag = 0;
 
 			break;
 		}
 
-		mot_onoff(off);
+		switch_Motor(off);
 
 	}
 

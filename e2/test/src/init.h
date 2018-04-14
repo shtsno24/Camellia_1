@@ -44,23 +44,7 @@
 //
 //} SPC;
 //
-typedef struct mot {
-	int cnt;//ステップ数
-	int duty;//デューティー
 
-	float vel;//現在の速度
-	float acc;//現在の設定加速度
-	float max_vel;//最大設定速度
-	float min_vel;//最小設定速度
-	float max_acc;//最大設定加速度
-	float min_acc;//最小設定加速度
-	float tar_vel;//現在の設定速度
-
-	char rot_dir_flag;//回転方向
-	char end_flag;
-	char stop_flag;
-
-} MOT;
 
 //typedef struct sen {
 //	short sen;//現在データ
@@ -81,7 +65,7 @@ typedef struct mot {
 
 //void initMTU(void);
 
-void initMotor(void);
+//void initMotor(void);
 
 //void initAD(void);
 

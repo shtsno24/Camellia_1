@@ -25,7 +25,11 @@ typedef struct sen {
 	short diff;//センサ差分
 } SEN;
 
+void init_Sensor(void);
 
+void init_ADC(void);
+
+int get_Sensor(int ch, int ad_c);
 
 
 #endif /* SENSOR_H_ */

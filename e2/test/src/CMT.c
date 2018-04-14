@@ -7,7 +7,13 @@
 
 #include "iodefine.h"
 #include "CMT.h"
+#include "sensor.h"
+#include "LED.h"
+#include "util.h"
+#include "calc.h"
+#include "math.h"
 
+extern SEN r_sen, cr_sen, l_sen, cl_sen;
 CMT_01 tim;
 
 void init_CMT(void) {	//CMT割込の設定
@@ -49,3 +55,60 @@ void wait_ms(int t) {
 		;
 }
 
+void sen_cmt1() {
+	short int i;
+// write this function to interrupt_handlers.c
+	CMT1.CMCSR.BIT.CMF = 0;
+	CMT1.CMCNT = 0;
+
+	drv_Sensor_LED(R_LED, on);
+	for (i = 0; i < 309; i++)
+		;
+	r_sen.sen = get_Sensor(R_sen, ad_0); //R sensor
+	drv_Sensor_LED(R_LED, off);
+
+	drv_Sensor_LED(CR_LED, on);
+	for (i = 0; i < 309; i++)
+		;
+	cr_sen.sen = get_Sensor(CR_sen, ad_0);		//CR sensor
+	drv_Sensor_LED(CR_LED, off);
+
+	drv_Sensor_LED(CL_LED, on);
+	for (i = 0; i < 309; i++)
+		;
+	cl_sen.sen = get_Sensor(CL_sen, ad_0);		//CL sensor
+	drv_Sensor_LED(CL_LED, off);
+
+	drv_Sensor_LED(L_LED, on);
+	for (i = 0; i < 309; i++)
+		;
+	l_sen.sen = get_Sensor(L_sen, ad_0);		//L sensor
+	drv_Sensor_LED(L_LED, off);
+
+	cr_sen.sen -= get_Sensor(CR_sen, ad_0);		//CR sensor
+	cl_sen.sen -= get_Sensor(CL_sen, ad_0);		//CL sensor
+	l_sen.sen -= get_Sensor(L_sen, ad_0);		//L sensor
+	r_sen.sen -= get_Sensor(R_sen, ad_0);		//R sensor
+
+	cr_sen.diff = cr_sen.sen - cr_sen.old[8];
+	r_sen.diff = r_sen.sen - r_sen.old[8];
+	cl_sen.diff = cl_sen.sen - cl_sen.old[8];
+	l_sen.diff = l_sen.sen - l_sen.old[8];
+
+	for (i = 8; i > 0; i--) {
+		r_sen.old[i] = r_sen.old[i - 1];
+		cr_sen.old[i] = cr_sen.old[i - 1];
+		l_sen.old[i] = l_sen.old[i - 1];
+		cl_sen.old[i] = cl_sen.old[i - 1];
+	}
+
+	cr_sen.old[0] = cr_sen.sen;		//CR sensor
+	r_sen.old[0] = r_sen.sen;		//R sensor
+	cl_sen.old[0] = cl_sen.sen;		//CL sensor
+	l_sen.old[0] = l_sen.sen;		//L sensor
+
+	diff_calc();
+
+	vel_calc();
+
+}

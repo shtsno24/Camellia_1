@@ -1,0 +1,10 @@
+/*
+ * calc.c
+ *
+ *  Created on: 2018/04/14
+ *      Author: shts
+ */
+
+#include "iodefine.h"
+#include "sensor.h"
+#include "motor.h"

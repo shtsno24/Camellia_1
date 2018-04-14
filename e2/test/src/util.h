@@ -31,8 +31,14 @@ typedef struct spc {
 	float kp_l;
 	float kp_r;
 	float diff;
+	float r_distance;
+	float l_distance;
+	float full_block;
+	float half_block;
+
 	unsigned char cnt_ctl;
 	unsigned char run_interruption;
+	unsigned char sta_LED_flag;
 
 } SPC;
 

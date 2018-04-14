@@ -14,6 +14,7 @@ C_SRCS += \
 ..\src/dbsct.c \
 ..\src/init.c \
 ..\src/interrupt_handlers.c \
+..\src/map.c \
 ..\src/motor.c \
 ..\src/reset_program.c \
 ..\src/sbrk.c \
@@ -31,6 +32,7 @@ C_DEPS += \
 ./src/dbsct.d \
 ./src/init.d \
 ./src/interrupt_handlers.d \
+./src/map.d \
 ./src/motor.d \
 ./src/reset_program.d \
 ./src/sbrk.d \
@@ -52,6 +54,7 @@ OBJS += \
 ./src/init.obj \
 ./src/init_stack.obj \
 ./src/interrupt_handlers.obj \
+./src/map.obj \
 ./src/motor.obj \
 ./src/reset_program.obj \
 ./src/sbrk.obj \

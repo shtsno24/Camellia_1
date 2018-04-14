@@ -20,6 +20,7 @@
 #include "sensor.h"
 #include "MTU.h"
 #include "motor.h"
+#include "map.h"
 #include "math.h"
 
 #define round(A)((int)(A + 0.5))

@@ -6,22 +6,23 @@
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="get_Battery_Voltage" key="selection"/>
+		<item value="stopMTU" key="selection"/>
 		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="stopMTU"/>
+			<item value="stop_MTU"/>
 			<item value="batt_vol"/>
 			<item value="get_sensor"/>
 			<item value="Rotate_detect"/>
 			<item value="mode_selector"/>
 			<item value="sen_LED_drv"/>
 			<item value="sta_LED_drv"/>
-			<item value="UX_effect"/>
-			<item value="Rotate"/>
 		</list>
 		<list key="replacehistory">
+			<item value="stop_MTU"/>
 			<item value="get_Battery_Voltage"/>
 			<item value="get_Sensor"/>
 			<item value="get_"/>
@@ -29,7 +30,6 @@
 			<item value="select_Mode"/>
 			<item value="drv_Sensor_LED"/>
 			<item value="drv_Status_LED"/>
-			<item value="drv_Buzzer"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">

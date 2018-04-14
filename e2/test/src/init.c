@@ -10,6 +10,7 @@
 #include "util.h"
 #include "CMT.h"
 #include "sensor.h"
+#include "MTU.h"
 
 #define round(A)((int)(A + 0.5))
 
@@ -194,77 +195,77 @@ void initMOT(void) {
  }
  */
 
-void initMTU(void) {
-	STB.CR4.BIT._MTU2 = 0; //スタンバイ解除
-	MTU2.TSTR.BYTE = 0x00;	//タイマストップ
-
-	MTU20.TIER.BIT.TGIEA = 1; //enable interrupt
-	MTU21.TIER.BIT.TGIEA = 1; //enable interrupt
-//	MTU22.TIER.BIT.TGIEA = 1; //enable interrupt
-//	MTU23.TIER.BIT.TGIEA = 1; //enable interrupt
-//	MTU23.TIER.BIT.TGIEC = 1; //enable interrupt
-
-	INTC.IPRD.BIT._MTU20G = 0xF; //set interrupt priority
-	INTC.IPRD.BIT._MTU21G = 0xE; //set interrupt priority
-//	INTC.IPRE.BIT._MTU22G = 0xD; //set interrupt priority
-//	INTC.IPRE.BIT._MTU23G = 0xC; //set interrupt priority
-
-	MTU20.TCR.BIT.TPSC = 1; //set clock 25/4=6.25MHz(0.16us)
-	MTU21.TCR.BIT.TPSC = 1; //set clock 25/4=6.25MHz(0.16us)
-//	MTU22.TCR.BIT.TPSC = 1; //set clock 25/4=6.25MHz(0.16us)
-//	MTU23.TCR.BIT.TPSC = 1; //set clock 25/4=6.25MHz(0.16us)
-
-	MTU20.TCNT = 0;	// reset counter
-	MTU21.TCNT = 0;
-	MTU22.TCNT = 0;
-	MTU23.TCNT = 0;
-
-	MTU20.TCR.BIT.CCLR = 1; //TGRAのコンペアマッチでTCNTクリア
-	MTU20.TIOR.BIT.IOA = 1; //0→0
-	MTU20.TIOR.BIT.IOB = 2; //0→1
-
-	MTU21.TCR.BIT.CCLR = 1; //TGRAのコンペアマッチでTCNTクリア
-	MTU21.TIOR.BIT.IOA = 1; //0→0
-	MTU21.TIOR.BIT.IOB = 2; //0→1
-	/*
-	 MTU22.TCR.BIT.CCLR = 1; //TGRAのコンペアマッチでTCNTクリア
-	 MTU22.TIOR.BIT.IOA = 1; //0→0
-	 MTU22.TIOR.BIT.IOB = 2; //0→1
-
-	 MTU23.TCR.BIT.CCLR = 1; //TGRAのコンペアマッチでTCNTクリア
-	 MTU23.TIOR.BIT.IOA = 1; //0→0
-	 MTU23.TIOR.BIT.IOB = 2; //0→1
-	 MTU23.TIOR.BIT.IOC = 1; //0→0
-	 MTU23.TIOR.BIT.IOD = 2; //0→1
-	 */
-	MTU2.TOER.BYTE = 0xFF; // permission of PWM output
-
-	MTU20.TGRA = 6250 - 1; // set PWM clock
-	MTU20.TGRB = round((6250 - 1) / 2); // set duty
-
-	MTU21.TGRA = 6250 - 1; // set PWM clock
-	MTU21.TGRB = round((6250 - 1) / 2); // set duty
-	/*
-	 MTU22.TGRA = 6250 - 1;; // set PWM clock
-	 MTU22.TGRB = round((6250 - 1) / 2); // set duty
-
-	 MTU23.TGRA = 6250 - 1; // set sensor's PWM clock
-	 MTU23.TGRB = round((6250 - 1) / 2); // set sensor's PWM duty
-	 MTU23.TGRC = 6250 - 1; // set PWM clock
-	 MTU23.TGRD = round((6250 - 1) / 2); // set duty
-	 */
-	MTU20.TMDR.BIT.MD = 2; //PWMモード1
-	MTU21.TMDR.BIT.MD = 2; //PWMモード1
-//	MTU22.TMDR.BIT.MD = 2; //PWMモード1
-//	MTU23.TMDR.BIT.MD = 2; //PWMモード1
-
-	/*
-	 MTU2.TSTR.BIT.CST0 = 1; //start MTU20's timer
-	 MTU2.TSTR.BIT.CST1 = 1; //start MTU21's timer
-	 MTU2.TSTR.BIT.CST2 = 1; //start MTU22's timer
-	 MTU2.TSTR.BIT.CST3 = 1; //start MTU23's timer
-	 */
-}
+//void initMTU(void) {
+//	STB.CR4.BIT._MTU2 = 0; //スタンバイ解除
+//	MTU2.TSTR.BYTE = 0x00;	//タイマストップ
+//
+//	MTU20.TIER.BIT.TGIEA = 1; //enable interrupt
+//	MTU21.TIER.BIT.TGIEA = 1; //enable interrupt
+////	MTU22.TIER.BIT.TGIEA = 1; //enable interrupt
+////	MTU23.TIER.BIT.TGIEA = 1; //enable interrupt
+////	MTU23.TIER.BIT.TGIEC = 1; //enable interrupt
+//
+//	INTC.IPRD.BIT._MTU20G = 0xF; //set interrupt priority
+//	INTC.IPRD.BIT._MTU21G = 0xE; //set interrupt priority
+////	INTC.IPRE.BIT._MTU22G = 0xD; //set interrupt priority
+////	INTC.IPRE.BIT._MTU23G = 0xC; //set interrupt priority
+//
+//	MTU20.TCR.BIT.TPSC = 1; //set clock 25/4=6.25MHz(0.16us)
+//	MTU21.TCR.BIT.TPSC = 1; //set clock 25/4=6.25MHz(0.16us)
+////	MTU22.TCR.BIT.TPSC = 1; //set clock 25/4=6.25MHz(0.16us)
+////	MTU23.TCR.BIT.TPSC = 1; //set clock 25/4=6.25MHz(0.16us)
+//
+//	MTU20.TCNT = 0;	// reset counter
+//	MTU21.TCNT = 0;
+//	MTU22.TCNT = 0;
+//	MTU23.TCNT = 0;
+//
+//	MTU20.TCR.BIT.CCLR = 1; //TGRAのコンペアマッチでTCNTクリア
+//	MTU20.TIOR.BIT.IOA = 1; //0→0
+//	MTU20.TIOR.BIT.IOB = 2; //0→1
+//
+//	MTU21.TCR.BIT.CCLR = 1; //TGRAのコンペアマッチでTCNTクリア
+//	MTU21.TIOR.BIT.IOA = 1; //0→0
+//	MTU21.TIOR.BIT.IOB = 2; //0→1
+//	/*
+//	 MTU22.TCR.BIT.CCLR = 1; //TGRAのコンペアマッチでTCNTクリア
+//	 MTU22.TIOR.BIT.IOA = 1; //0→0
+//	 MTU22.TIOR.BIT.IOB = 2; //0→1
+//
+//	 MTU23.TCR.BIT.CCLR = 1; //TGRAのコンペアマッチでTCNTクリア
+//	 MTU23.TIOR.BIT.IOA = 1; //0→0
+//	 MTU23.TIOR.BIT.IOB = 2; //0→1
+//	 MTU23.TIOR.BIT.IOC = 1; //0→0
+//	 MTU23.TIOR.BIT.IOD = 2; //0→1
+//	 */
+//	MTU2.TOER.BYTE = 0xFF; // permission of PWM output
+//
+//	MTU20.TGRA = 6250 - 1; // set PWM clock
+//	MTU20.TGRB = round((6250 - 1) / 2); // set duty
+//
+//	MTU21.TGRA = 6250 - 1; // set PWM clock
+//	MTU21.TGRB = round((6250 - 1) / 2); // set duty
+//	/*
+//	 MTU22.TGRA = 6250 - 1;; // set PWM clock
+//	 MTU22.TGRB = round((6250 - 1) / 2); // set duty
+//
+//	 MTU23.TGRA = 6250 - 1; // set sensor's PWM clock
+//	 MTU23.TGRB = round((6250 - 1) / 2); // set sensor's PWM duty
+//	 MTU23.TGRC = 6250 - 1; // set PWM clock
+//	 MTU23.TGRD = round((6250 - 1) / 2); // set duty
+//	 */
+//	MTU20.TMDR.BIT.MD = 2; //PWMモード1
+//	MTU21.TMDR.BIT.MD = 2; //PWMモード1
+////	MTU22.TMDR.BIT.MD = 2; //PWMモード1
+////	MTU23.TMDR.BIT.MD = 2; //PWMモード1
+//
+//	/*
+//	 MTU2.TSTR.BIT.CST0 = 1; //start MTU20's timer
+//	 MTU2.TSTR.BIT.CST1 = 1; //start MTU21's timer
+//	 MTU2.TSTR.BIT.CST2 = 1; //start MTU22's timer
+//	 MTU2.TSTR.BIT.CST3 = 1; //start MTU23's timer
+//	 */
+//}
 
 void initMOTOR(void) {
 	PE.DRL.BIT.B2 = 0; //reset (0 : off, 1 : on)
@@ -332,7 +333,7 @@ void initALL(void) {
 	init_CMT();
 	init_LED();
 	//initMTU_S();
-	initMTU();
+	init_MTU();
 	initMOTOR();
 	init_ADC();
 }

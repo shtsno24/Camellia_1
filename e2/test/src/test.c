@@ -18,6 +18,7 @@
 #include "LED.h"
 #include "CMT.h"
 #include "sensor.h"
+#include "MTU.h"
 #include "math.h"
 
 #define round(A)((int)(A + 0.5))
@@ -70,9 +71,9 @@ extern CMT_01 tim;
 //	off = 0, on = 1
 //};
 
-enum cst {
-	cst0 = 0, cst1, cst2, cst3, cst_all
-};
+//enum cst {
+//	cst0 = 0, cst1, cst2, cst3, cst_all
+//};
 
 enum turn {
 	back = 0, left = 1, right = 2, straight = 3,
@@ -342,137 +343,125 @@ void sen_cmt1() {
 
 }
 
-void stopMTU(int cst) {
-//stop MTU2's timer
-	switch (cst) {
-	case cst0:
-		MTU2.TSTR.BIT.CST0 = 0;
-		break;
-	case cst1:
-		MTU2.TSTR.BIT.CST1 = 0;
-		break;
-	case cst2:
-		MTU2.TSTR.BIT.CST2 = 0;
-		break;
-	case cst3:
-		MTU2.TSTR.BIT.CST3 = 0;
-		MTU2.TSTR.BIT.CST4 = 0;
-		break;
-	case cst_all:
-		MTU2.TSTR.BIT.CST0 = 0;
-		MTU2.TSTR.BIT.CST1 = 0;
-		MTU2.TSTR.BIT.CST2 = 0;
-		MTU2.TSTR.BIT.CST3 = 0;
-		MTU2.TSTR.BIT.CST4 = 0;
-		break;
-	}
-}
+//void stopMTU(int cst) {
+////stop MTU2's timer
+//	switch (cst) {
+//	case cst0:
+//		MTU2.TSTR.BIT.CST0 = 0;
+//		break;
+//	case cst1:
+//		MTU2.TSTR.BIT.CST1 = 0;
+//		break;
+//	case cst2:
+//		MTU2.TSTR.BIT.CST2 = 0;
+//		break;
+//	case cst3:
+//		MTU2.TSTR.BIT.CST3 = 0;
+//		MTU2.TSTR.BIT.CST4 = 0;
+//		break;
+//	case cst_all:
+//		MTU2.TSTR.BIT.CST0 = 0;
+//		MTU2.TSTR.BIT.CST1 = 0;
+//		MTU2.TSTR.BIT.CST2 = 0;
+//		MTU2.TSTR.BIT.CST3 = 0;
+//		MTU2.TSTR.BIT.CST4 = 0;
+//		break;
+//	}
+//}
+//
+//void startMTU(int cst) {
+////start MTU2's timer
+//	switch (cst) {
+//	case cst0:
+//		MTU2.TSTR.BIT.CST0 = 1;
+//		break;
+//	case cst1:
+//		MTU2.TSTR.BIT.CST1 = 1;
+//		break;
+//	case cst2:
+//		MTU2.TSTR.BIT.CST2 = 1;
+//		break;
+//	case cst3:
+//		MTU2.TSTR.BIT.CST3 = 1;
+//		MTU2.TSTR.BIT.CST4 = 1;
+//		break;
+//	case cst_all:
+//		MTU2.TSTR.BIT.CST0 = 1;
+//		MTU2.TSTR.BIT.CST1 = 1;
+//		MTU2.TSTR.BIT.CST2 = 1;
+//		MTU2.TSTR.BIT.CST3 = 1;
+//		MTU2.TSTR.BIT.CST4 = 1;
+//		break;
+//	}
+//}
 
-void startMTU(int cst) {
-//start MTU2's timer
-	switch (cst) {
-	case cst0:
-		MTU2.TSTR.BIT.CST0 = 1;
-		break;
-	case cst1:
-		MTU2.TSTR.BIT.CST1 = 1;
-		break;
-	case cst2:
-		MTU2.TSTR.BIT.CST2 = 1;
-		break;
-	case cst3:
-		MTU2.TSTR.BIT.CST3 = 1;
-		MTU2.TSTR.BIT.CST4 = 1;
-		break;
-	case cst_all:
-		MTU2.TSTR.BIT.CST0 = 1;
-		MTU2.TSTR.BIT.CST1 = 1;
-		MTU2.TSTR.BIT.CST2 = 1;
-		MTU2.TSTR.BIT.CST3 = 1;
-		MTU2.TSTR.BIT.CST4 = 1;
-		break;
-	}
-}
-
-void MTU20_INT_OVF(void) {
-	/*
-	 * this function operates R_motor
-	 * */
-
-	//stopMTU(cst0); //stop count
-	r_motor.duty = (1 / r_motor.vel) * (2.55e+6); //(1/v)*(step_distance / MTU_clock_duty)
-	r_motor.cnt--;
-
-//change duty
-	if (MTU20.TSR.BIT.TGFA == 1) {
-
-		MTU20.TCNT = 0; //reset counter
-
-		if (r_motor.duty < 0) {
-			MTU20.TGRA = 0;
-			MTU20.TGRB = 0;
-		} else {
-			MTU20.TGRA = r_motor.duty; //(1/v)*(step_distance / MTU_clock_duty)
-			MTU20.TGRB = round(r_motor.duty / 2); //(1/v)*(step_distance / MTU_clock_duty)
-		}
-
-	}
-
-	MTU20.TSR.BIT.TGFA = 0; //reset flag
-	PE.DRL.BIT.B1 = r_motor.rot_dir_flag;
-	if (r_motor.cnt < 0 && r_motor.end_flag == 1) {
-		r_motor.stop_flag = 1;
-		stopMTU(cst0);
-	} else {
-		startMTU(cst0);
-	}
-	/*
-	 if (r_motor.stop_flag == 1) {
-	 stopMTU(cst0);
-	 } else {
-	 startMTU(cst0);
-	 }
-	 */
-}
-
-void MTU21_INT_OVF(void) {
-	/*
-	 * this function operates L_motor
-	 */
-
-	//stopMTU(cst1); //stop count
-	l_motor.duty = (1 / l_motor.vel) * (2.55e+6); //(1/v)*(step_distance / MTU_clock_duty)
-	l_motor.cnt--;
-
-	if (MTU21.TSR.BIT.TGFA == 1) {
-		//change duty
-		MTU21.TCNT = 0; //reset counter
-
-		if (l_motor.duty < 0) {
-			MTU21.TGRA = 0;
-			MTU21.TGRB = 0;
-		} else {
-			MTU21.TGRA = l_motor.duty;
-			MTU21.TGRB = round(l_motor.duty / 2);
-		}
-	}
-
-	MTU21.TSR.BIT.TGFA = 0; //reset flag
-	PE.DRL.BIT.B5 = l_motor.rot_dir_flag;
-	if (l_motor.cnt < 0 && l_motor.end_flag == 1) {
-		l_motor.stop_flag = 1;
-		stopMTU(cst1);
-	} else {
-		startMTU(cst1);
-	}
-	/*
-	 if (l_motor.stop_flag == 1) {
-	 stopMTU(cst1);
-	 } else {
-	 startMTU(cst1);
-	 }
-	 */
-}
+//void change_Duty_MTU20(void) {
+//	/*
+//	 * this function operates R_motor
+//	 * */
+//
+//	//stopMTU(cst0); //stop count
+//	r_motor.duty = (1 / r_motor.vel) * (2.55e+6); //(1/v)*(step_distance / MTU_clock_duty)
+//	r_motor.cnt--;
+//
+////change duty
+//	if (MTU20.TSR.BIT.TGFA == 1) {
+//
+//		MTU20.TCNT = 0; //reset counter
+//
+//		if (r_motor.duty < 0) {
+//			MTU20.TGRA = 0;
+//			MTU20.TGRB = 0;
+//		} else {
+//			MTU20.TGRA = r_motor.duty; //(1/v)*(step_distance / MTU_clock_duty)
+//			MTU20.TGRB = round(r_motor.duty / 2); //(1/v)*(step_distance / MTU_clock_duty)
+//		}
+//
+//	}
+//
+//	MTU20.TSR.BIT.TGFA = 0; //reset flag
+//	PE.DRL.BIT.B1 = r_motor.rot_dir_flag;
+//	if (r_motor.cnt < 0 && r_motor.end_flag == 1) {
+//		r_motor.stop_flag = 1;
+//		stopMTU(cst0);
+//	} else {
+//		startMTU(cst0);
+//	}
+//
+//}
+//
+//void change_Duty_MTU21(void) {
+//	/*
+//	 * this function operates L_motor
+//	 */
+//
+//	//stopMTU(cst1); //stop count
+//	l_motor.duty = (1 / l_motor.vel) * (2.55e+6); //(1/v)*(step_distance / MTU_clock_duty)
+//	l_motor.cnt--;
+//
+//	if (MTU21.TSR.BIT.TGFA == 1) {
+//		//change duty
+//		MTU21.TCNT = 0; //reset counter
+//
+//		if (l_motor.duty < 0) {
+//			MTU21.TGRA = 0;
+//			MTU21.TGRB = 0;
+//		} else {
+//			MTU21.TGRA = l_motor.duty;
+//			MTU21.TGRB = round(l_motor.duty / 2);
+//		}
+//	}
+//
+//	MTU21.TSR.BIT.TGFA = 0; //reset flag
+//	PE.DRL.BIT.B5 = l_motor.rot_dir_flag;
+//	if (l_motor.cnt < 0 && l_motor.end_flag == 1) {
+//		l_motor.stop_flag = 1;
+//		stopMTU(cst1);
+//	} else {
+//		startMTU(cst1);
+//	}
+//
+//}
 
 //void drv_Buzzer(char status) {
 //	PE.DRL.BIT.B7 = status;

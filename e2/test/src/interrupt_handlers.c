@@ -15,6 +15,7 @@
 #include "init.h"
 #include "util.h"
 #include "CMT.h"
+#include "MTU.h"
 
 #pragma section IntPRG
 // 4 Illegal code
@@ -228,9 +229,9 @@ void INT_IRQ3(void) {/* sleep(); */
 // 87 Reserved
 
 // 88 MTU2_0 TGIA0
-void MTU20_INT_OVF(void);
+void change_Duty_MTU20(void);
 void INT_MTU2_0_TGIA0(void) {
-	MTU20_INT_OVF();
+	change_Duty_MTU20();
 }
 // 89 MTU2_0 TGIB0
 //void INT_MTU2_0_TGIB0(void){}
@@ -255,9 +256,9 @@ void INT_MTU2_0_TGIF0(void) {/* sleep(); */
 // 95 Reserved
 
 // 96 MTU2_1 TGIA1
-void MTU21_INT_OVF(void);
+void change_Duty_MTU21(void);
 void INT_MTU2_1_TGIA1(void) {
-	MTU21_INT_OVF();
+	change_Duty_MTU21();
 }
 // 97 MTU2_1 TGIB1
 //void INT_MTU2_1_TGIB1(void){}

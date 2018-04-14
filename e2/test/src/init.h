@@ -79,7 +79,7 @@ typedef struct mot {
 
 //void initSPEC(void);
 
-void initMTU(void);
+//void initMTU(void);
 
 void initMotor(void);
 

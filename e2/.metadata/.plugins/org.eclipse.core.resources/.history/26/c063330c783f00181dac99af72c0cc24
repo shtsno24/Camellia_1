@@ -8,12 +8,14 @@ SRC_SRCS += \
 
 C_SRCS += \
 ..\src/CMT.c \
+..\src/LED.c \
 ..\src/MTU.c \
 ..\src/dbsct.c \
 ..\src/init.c \
 ..\src/interrupt_handlers.c \
 ..\src/reset_program.c \
 ..\src/sbrk.c \
+..\src/sensor.c \
 ..\src/serial.c \
 ..\src/test.c \
 ..\src/util.c \
@@ -21,12 +23,14 @@ C_SRCS += \
 
 C_DEPS += \
 ./src/CMT.d \
+./src/LED.d \
 ./src/MTU.d \
 ./src/dbsct.d \
 ./src/init.d \
 ./src/interrupt_handlers.d \
 ./src/reset_program.d \
 ./src/sbrk.d \
+./src/sensor.d \
 ./src/serial.d \
 ./src/test.d \
 ./src/util.d \
@@ -37,6 +41,7 @@ SRC_DEPS += \
 
 OBJS += \
 ./src/CMT.obj \
+./src/LED.obj \
 ./src/MTU.obj \
 ./src/dbsct.obj \
 ./src/init.obj \
@@ -44,6 +49,7 @@ OBJS += \
 ./src/interrupt_handlers.obj \
 ./src/reset_program.obj \
 ./src/sbrk.obj \
+./src/sensor.obj \
 ./src/serial.obj \
 ./src/test.obj \
 ./src/util.obj \

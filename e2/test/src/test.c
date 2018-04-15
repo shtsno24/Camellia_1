@@ -52,7 +52,7 @@ extern SEN r_sen, cr_sen, l_sen, cl_sen;
 extern MOT r_motor, l_motor;
 extern SW Switch;
 extern CMT_01 tim;
-
+extern MAP map;
 
 //enum AD_C {
 //	ad_0 = 0, ad_1 = 1
@@ -90,7 +90,7 @@ extern CMT_01 tim;
 //};
 
 enum mode {
-	astar = 0, search = 1, map = 2, test = 3, run = 4
+	astar = 0, search = 1, show_map = 2, test = 3, run = 4
 };
 
 //int get_Sensor(int ch, int ad_c) {
@@ -685,41 +685,41 @@ void sen_calibration() {
 //	sta_LED_drv(Green, ((rot_sw + 1) & 4) >> 2);
 //}
 
-void direction_detect() {
-	if (direction == 0) {
-		pos_y += 1;
-		/*
-		 sta_LED_drv(Red, off);
-		 sta_LED_drv(Yerrow, off);
-		 sta_LED_drv(Green, on);
-		 */
-	} else if (direction == 1) {
-		pos_x += 1;
-		/*
-		 sta_LED_drv(Red, on);
-		 sta_LED_drv(Yerrow, off);
-		 sta_LED_drv(Green, off);
-		 */
-	} else if (direction == 3) {
-		pos_x -= 1;
-		/*
-		 sta_LED_drv(Red, off);
-		 sta_LED_drv(Yerrow, on);
-		 sta_LED_drv(Green, off);
-		 */
-	} else if (direction == 2) {
-		pos_y -= 1;
-		/*
-		 sta_LED_drv(Red, off);
-		 sta_LED_drv(Yerrow, off);
-		 sta_LED_drv(Green, off);
-		 */
-	}
-	drv_Status_LED(Red, pos_y & 1);
-	drv_Status_LED(Yerrow, (pos_x & 1) >> 0);
-	drv_Status_LED(Green, (pos_x & 2) >> 1);
-
-}
+//void Detect_direction() {
+//	if (direction == 0) {
+//		pos_y += 1;
+//		/*
+//		 sta_LED_drv(Red, off);
+//		 sta_LED_drv(Yerrow, off);
+//		 sta_LED_drv(Green, on);
+//		 */
+//	} else if (direction == 1) {
+//		pos_x += 1;
+//		/*
+//		 sta_LED_drv(Red, on);
+//		 sta_LED_drv(Yerrow, off);
+//		 sta_LED_drv(Green, off);
+//		 */
+//	} else if (direction == 3) {
+//		pos_x -= 1;
+//		/*
+//		 sta_LED_drv(Red, off);
+//		 sta_LED_drv(Yerrow, on);
+//		 sta_LED_drv(Green, off);
+//		 */
+//	} else if (direction == 2) {
+//		pos_y -= 1;
+//		/*
+//		 sta_LED_drv(Red, off);
+//		 sta_LED_drv(Yerrow, off);
+//		 sta_LED_drv(Green, off);
+//		 */
+//	}
+//	drv_Status_LED(Red, pos_y & 1);
+//	drv_Status_LED(Yerrow, (pos_x & 1) >> 0);
+//	drv_Status_LED(Green, (pos_x & 2) >> 1);
+//
+//}
 
 //void move_Left() {
 //	kp_r -= 0.1;
@@ -809,136 +809,136 @@ void direction_detect() {
 //
 //}
 
-void iter_wall_map() {
-	/*
-	 * wall : W-S-E-N
-	 * 		 MSB   LSB
-	 *
-	 * map_x : vertical walls to x-axis
-	 * map_y : vertical walls to y-axis
-	 * */
+//void update_Wall_map() {
+//	/*
+//	 * wall : W-S-E-N
+//	 * 		 MSB   LSB
+//	 *
+//	 * map_x : vertical walls to x-axis
+//	 * map_y : vertical walls to y-axis
+//	 * */
+//
+//	wall = 0;
+//	if (r_sen.sen > r_sen.non_threshold) {
+//		wall |= 1 << ((1 + direction) % 4);
+//	}
+//	if (l_sen.sen > l_sen.non_threshold) {
+//		wall |= 1 << ((3 + direction) % 4);
+//	}
+//	if (cl_sen.sen > cl_sen.non_threshold) {
+//		wall |= 1 << ((0 + direction) % 4);
+//	}
+//
+//	if (pos_x < map_size - 1) {
+//		wall_map_x[pos_x] |= ((wall & 2) >> 1) << pos_y;
+//		searched_map_x[pos_x] &= ~(1 << pos_y);
+//	}
+//	if (pos_x - 1 >= 0) {
+//		wall_map_x[pos_x - 1] |= ((wall & 8) >> 3) << pos_y;
+//		searched_map_x[pos_x - 1] &= ~(1 << pos_y);
+//	}
+//
+//	if (pos_y < map_size - 1) {
+//		wall_map_y[pos_y] |= ((wall & 1) >> 0) << pos_x;
+//		searched_map_y[pos_y] &= ~(1 << pos_x);
+//	}
+//	if (pos_y - 1 >= 0) {
+//		wall_map_y[pos_y - 1] |= ((wall & 4) >> 2) << pos_x;
+//		searched_map_y[pos_y - 1] &= ~(1 << pos_x);
+//	}
+//}
 
-	wall = 0;
-	if (r_sen.sen > r_sen.non_threshold) {
-		wall |= 1 << ((1 + direction) % 4);
-	}
-	if (l_sen.sen > l_sen.non_threshold) {
-		wall |= 1 << ((3 + direction) % 4);
-	}
-	if (cl_sen.sen > cl_sen.non_threshold) {
-		wall |= 1 << ((0 + direction) % 4);
-	}
+//void print_Wall_map_x(int row) {
+//	int i, mask = 1;
+//	mask <<= row;
+//
+//	for (i = 0; i < map_size - 1; i++) {
+//		myprintf("  ");
+//		if (wall_map_x[i] & mask) {
+//			myprintf("|");
+//		} else {
+//			myprintf(" ");
+//		}
+//	}
+//
+//}
+//
+//void print_Wall_map_y(int row) {
+//	int i, mask;
+//	for (i = 0; i < map_size - 1; i++) {
+//		mask = 1 << i;
+//		if (wall_map_y[row] & mask) {
+//			myprintf("--");
+//		} else {
+//			myprintf("  ");
+//		}
+//		myprintf("+");
+//	}
+//	mask <<= 1;
+//	if (wall_map_y[row] & mask) {
+//		myprintf("--");
+//	} else {
+//		myprintf("  ");
+//	}
+//
+//}
 
-	if (pos_x < map_size - 1) {
-		wall_map_x[pos_x] |= ((wall & 2) >> 1) << pos_y;
-		searched_map_x[pos_x] &= ~(1 << pos_y);
-	}
-	if (pos_x - 1 >= 0) {
-		wall_map_x[pos_x - 1] |= ((wall & 8) >> 3) << pos_y;
-		searched_map_x[pos_x - 1] &= ~(1 << pos_y);
-	}
+//void print_Wall_map() {
+//	int i;
+//	myprintf("\n");
+//	for (i = 0; i < map_size; i++) {
+//		myprintf("+--");
+//	}
+//	myprintf("+\n|");
+//
+//	print_Wall_map_x(map_size - 1);
+//	myprintf("  |\n+");
+//	for (i = 1; i < map_size; i++) {
+//		print_Wall_map_y(map_size - 1 - i);
+//		myprintf("+\n|");
+//		print_Wall_map_x(map_size - 1 - i);
+//		myprintf("  |\n+");
+//	}
+//
+//	for (i = 0; i < map_size; i++) {
+//		myprintf("--+");
+//	}
+//	myprintf("\n\n");
+//}
 
-	if (pos_y < map_size - 1) {
-		wall_map_y[pos_y] |= ((wall & 1) >> 0) << pos_x;
-		searched_map_y[pos_y] &= ~(1 << pos_x);
-	}
-	if (pos_y - 1 >= 0) {
-		wall_map_y[pos_y - 1] |= ((wall & 4) >> 2) << pos_x;
-		searched_map_y[pos_y - 1] &= ~(1 << pos_x);
-	}
-}
+//char read_Wall_map(char x, char y) {
+//
+//	/*
+//	 *  wall : W-S-E-N
+//	 * 		 MSB   LSB
+//	 */
+//
+//	char wall = 0;
+//
+//	//myprintf("\n\n");
+//
+//	if (x < map_size - 1) {
+//		wall |= ((wall_map_x[x] & (1 << y)) >> y) << 1;
+//		//myprintf("%d\n", ((mixed_map_x[x] & (1 << y)) >> y) << 1);
+//	}
+//	if (x - 1 >= 0) {
+//		wall |= ((wall_map_x[x - 1] & (1 << y)) >> y) << 3;
+//		//myprintf("%d\n", ((mixed_map_x[x - 1] & (1 << y)) >> y) << 3);
+//	}
+//
+//	if (y < map_size - 1) {
+//		wall |= (wall_map_y[y] & (1 << x)) >> x;
+//		//myprintf("%d\n", (mixed_map_y[y] & (1 << x)) >> x);
+//	}
+//	if (y - 1 >= 0) {
+//		wall |= ((wall_map_y[y - 1] & (1 << x)) >> x) << 2;
+//		//myprintf("%d\n", ((mixed_map_y[y - 1] & (1 << x)) >> x) << 2);
+//	}
+//	return wall;
+//
+//}
 
-void print_wall_map_x(int row) {
-	int i, mask = 1;
-	mask <<= row;
-
-	for (i = 0; i < map_size - 1; i++) {
-		myprintf("  ");
-		if (wall_map_x[i] & mask) {
-			myprintf("|");
-		} else {
-			myprintf(" ");
-		}
-	}
-
-}
-
-void print_wall_map_y(int row) {
-	int i, mask;
-	for (i = 0; i < map_size - 1; i++) {
-		mask = 1 << i;
-		if (wall_map_y[row] & mask) {
-			myprintf("--");
-		} else {
-			myprintf("  ");
-		}
-		myprintf("+");
-	}
-	mask <<= 1;
-	if (wall_map_y[row] & mask) {
-		myprintf("--");
-	} else {
-		myprintf("  ");
-	}
-
-}
-
-void print_wall_map() {
-	int i;
-	myprintf("\n");
-	for (i = 0; i < map_size; i++) {
-		myprintf("+--");
-	}
-	myprintf("+\n|");
-
-	print_wall_map_x(map_size - 1);
-	myprintf("  |\n+");
-	for (i = 1; i < map_size; i++) {
-		print_wall_map_y(map_size - 1 - i);
-		myprintf("+\n|");
-		print_wall_map_x(map_size - 1 - i);
-		myprintf("  |\n+");
-	}
-
-	for (i = 0; i < map_size; i++) {
-		myprintf("--+");
-	}
-	myprintf("\n\n");
-}
-
-char get_wall_from_wall_map(char x, char y) {
-
-	/*
-	 *  wall : W-S-E-N
-	 * 		 MSB   LSB
-	 */
-
-	char wall = 0;
-
-	//myprintf("\n\n");
-
-	if (x < map_size - 1) {
-		wall |= ((wall_map_x[x] & (1 << y)) >> y) << 1;
-		//myprintf("%d\n", ((mixed_map_x[x] & (1 << y)) >> y) << 1);
-	}
-	if (x - 1 >= 0) {
-		wall |= ((wall_map_x[x - 1] & (1 << y)) >> y) << 3;
-		//myprintf("%d\n", ((mixed_map_x[x - 1] & (1 << y)) >> y) << 3);
-	}
-
-	if (y < map_size - 1) {
-		wall |= (wall_map_y[y] & (1 << x)) >> x;
-		//myprintf("%d\n", (mixed_map_y[y] & (1 << x)) >> x);
-	}
-	if (y - 1 >= 0) {
-		wall |= ((wall_map_y[y - 1] & (1 << x)) >> x) << 2;
-		//myprintf("%d\n", ((mixed_map_y[y - 1] & (1 << x)) >> x) << 2);
-	}
-	return wall;
-
-}
-
-void print_searched_map_x(int row) {
+/*void print_Searched_map_x(int row) {
 	int i, mask = 1;
 	mask <<= row;
 
@@ -953,7 +953,7 @@ void print_searched_map_x(int row) {
 
 }
 
-void print_searched_map_y(int row) {
+void print_Searched_map_y(int row) {
 	int i, mask;
 	for (i = 0; i < map_size - 1; i++) {
 		mask = 1 << i;
@@ -973,7 +973,7 @@ void print_searched_map_y(int row) {
 
 }
 
-void print_searched_map() {
+void print_Searched_map() {
 	int i;
 	myprintf("\n");
 	for (i = 0; i < map_size; i++) {
@@ -981,12 +981,12 @@ void print_searched_map() {
 	}
 	myprintf("+\n|");
 
-	print_searched_map_x(map_size - 1);
+	print_Searched_map_x(map_size - 1);
 	myprintf("  |\n+");
 	for (i = 1; i < map_size; i++) {
-		print_searched_map_y(map_size - 1 - i);
+		print_Searched_map_y(map_size - 1 - i);
 		myprintf("+\n|");
-		print_searched_map_x(map_size - 1 - i);
+		print_Searched_map_x(map_size - 1 - i);
 		myprintf("  |\n+");
 	}
 
@@ -994,9 +994,9 @@ void print_searched_map() {
 		myprintf("--+");
 	}
 	myprintf("\n\n");
-}
+}*/
 
-void initwall_map() {
+/*void initwall_map() {
 	int i;
 	for (i = 0; i < map_size - 1; i++) {
 		wall_map_x[i] = 0;
@@ -1005,17 +1005,17 @@ void initwall_map() {
 		searched_map_y[i] = 0xffffffff;
 
 	}
-}
+}*/
 
-void mix_map() {
+/*void mix_map() {
 	int i;
 	for (i = 0; i < map_size - 1; i++) {
 		mixed_map_x[i] = wall_map_x[i] | searched_map_x[i];
 		mixed_map_y[i] = wall_map_y[i] | searched_map_y[i];
 	}
-}
+}*/
 
-void print_mixed_map_x(int row) {
+/*void print_Mixed_map_x(int row) {
 	int i, mask = 1;
 	mask <<= row;
 
@@ -1030,7 +1030,7 @@ void print_mixed_map_x(int row) {
 
 }
 
-void print_mixed_map_y(int row) {
+void print_Mixed_map_y(int row) {
 	int i, mask;
 	for (i = 0; i < map_size - 1; i++) {
 		mask = 1 << i;
@@ -1050,7 +1050,7 @@ void print_mixed_map_y(int row) {
 
 }
 
-void print_mixed_map() {
+void print_Mixed_map() {
 	int i;
 	myprintf("\n");
 	for (i = 0; i < map_size; i++) {
@@ -1058,12 +1058,12 @@ void print_mixed_map() {
 	}
 	myprintf("+\n|");
 
-	print_mixed_map_x(map_size - 1);
+	print_Mixed_map_x(map_size - 1);
 	myprintf("  |\n+");
 	for (i = 1; i < map_size; i++) {
-		print_mixed_map_y(map_size - 1 - i);
+		print_Mixed_map_y(map_size - 1 - i);
 		myprintf("+\n|");
-		print_mixed_map_x(map_size - 1 - i);
+		print_Mixed_map_x(map_size - 1 - i);
 		myprintf("  |\n+");
 	}
 
@@ -1071,7 +1071,7 @@ void print_mixed_map() {
 		myprintf("--+");
 	}
 	myprintf("\n\n");
-}
+}*/
 
 char get_wall_from_mixed_map(char x, char y) {
 
@@ -1115,7 +1115,7 @@ void iter_a_star_dist_map() {
 				if (a_star_dist_map[i][j] == dist) {
 					buff_x = i;
 					buff_y = j;
-					wall = get_wall_from_wall_map(buff_x, buff_y);
+					wall = read_Wall_map(buff_x, buff_y);
 
 					if ((wall & 2) != 2) {
 						if (buff_x != (map_size - 1)) {
@@ -1178,7 +1178,7 @@ char generate_a_star_path() {
 			pri_flag;
 	int i = 0;
 
-	wall = get_wall_from_wall_map(x, y);
+	wall = read_Wall_map(x, y);
 	dist = a_star_dist_map[x][y];
 	pri_flag = 4;
 
@@ -1293,7 +1293,7 @@ void iter_dist_map() {
 	unsigned char buff_x = 0, buff_y = 0, wall, dist = 0;
 	int i, j, k;
 	mix_map();
-	print_mixed_map();
+	print_Mixed_map();
 	while (dist_map[0][0] == 255) {
 		for (i = 0; i < map_size; i++) {
 			for (j = 0; j < map_size; j++) {
@@ -1474,7 +1474,7 @@ int main(void) {
 	r_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) + 0.5);
 	l_distance = (int) ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) - 1);
 
-	initwall_map();
+//	initwall_map();
 	initdist_map();
 
 	while (1) {
@@ -1512,7 +1512,7 @@ int main(void) {
 
 			while (run_interruption != 1) {
 				a_star_dist_map[pos_x][pos_y] = 255;
-				iter_wall_map();
+				update_Wall_map();
 				iter_a_star_dist_map();
 				tmp_path = generate_a_star_path();
 				init_a_dist_map();
@@ -1537,12 +1537,12 @@ int main(void) {
 				}
 				direction %= 4;
 
-				direction_detect();
+				Detect_direction();
 				if (pos_x == goal_x & pos_y == goal_y) {
 					run_interruption = 1;
 				}
 			}
-			iter_wall_map();
+			update_Wall_map();
 			mot_app(half_block, 310, 1500, straight, on);
 			wait_ms(300);
 			switch_Motor(off);
@@ -1568,7 +1568,7 @@ int main(void) {
 			mot_app2(half_block, 310, 1500, straight, on);
 
 			while (path[route_index] != 4) {
-				iter_wall_map();
+				update_Wall_map();
 
 				if (path[route_index] == 1) {
 					direction += 1;
@@ -1586,10 +1586,10 @@ int main(void) {
 				}
 				direction %= 4;
 
-				direction_detect();
+				Detect_direction();
 				route_index += 1;
 			}
-			iter_wall_map();
+			update_Wall_map();
 			mot_app(half_block, 310, 1500, straight, on);
 			wait_ms(300);
 			sta_LED_flag = 0;
@@ -1609,7 +1609,7 @@ int main(void) {
 			mot_app2(half_block, 350, 1500, straight, on);
 
 			while (run_interruption != 1) {
-				iter_wall_map();
+				update_Wall_map();
 
 				if (l_sen.sen <= l_sen.non_threshold) {
 					direction += 3;
@@ -1627,12 +1627,12 @@ int main(void) {
 				}
 				direction %= 4;
 
-				direction_detect();
+				Detect_direction();
 				if (pos_x == goal_x & pos_y == goal_y) {
 					run_interruption = 1;
 				}
 			}
-			iter_wall_map();
+			update_Wall_map();
 			mot_app(half_block, 310, 1500, straight, on);
 			wait_ms(300);
 			switch_Motor(off);
@@ -1644,13 +1644,13 @@ int main(void) {
 			generate_path();
 			break;
 
-		case map:
+		case show_map:
 
 			sta_LED_flag = 0;
 			direction = 0;
 			UX_effect(alart);
-			print_wall_map();
-			print_searched_map();
+			print_Wall_map();
+			print_Searched_map();
 			initpath();
 			iter_dist_map();
 			generate_path();

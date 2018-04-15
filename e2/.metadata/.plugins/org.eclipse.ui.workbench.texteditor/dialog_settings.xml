@@ -6,30 +6,30 @@
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="move_Forward" key="selection"/>
+		<item value="print_Mixed_map" key="selection"/>
 		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="move_Foward"/>
-			<item value="move_forward"/>
-			<item value="mot_onoff"/>
-			<item value="move_back"/>
-			<item value="move_backward"/>
-			<item value="move_straight"/>
-			<item value="move_right"/>
-			<item value="move_left"/>
+			<item value="print_mixed_map"/>
+			<item value="print_searched_map"/>
+			<item value="print_Searched_map"/>
+			<item value="initwall_map"/>
+			<item value="get_wall_from_wall_map"/>
+			<item value="print_wall_map"/>
+			<item value="print_wall_map_"/>
+			<item value="iter_wall_map"/>
 		</list>
 		<list key="replacehistory">
-			<item value="move_Forward"/>
-			<item value="move_Foward"/>
-			<item value="switch_Motor"/>
-			<item value="move_Backward"/>
-			<item value="move_Right"/>
-			<item value="move_Left"/>
-			<item value="drv_Motor"/>
-			<item value="start_MTU"/>
+			<item value="print_Mixed_map"/>
+			<item value="print_Searched_map"/>
+			<item value="read_Wall_map"/>
+			<item value="print_Wall_map"/>
+			<item value="print_Wall_map_"/>
+			<item value="update_Wall_map"/>
+			<item value="Detect_direction"/>
+			<item value="mp_size"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">

@@ -8,6 +8,8 @@
 #ifndef MAP_H_
 #define MAP_H_
 
+#define mp_size 16
+
 typedef struct map {
 	unsigned char pos_x;
 	unsigned char pos_y;
@@ -17,15 +19,19 @@ typedef struct map {
 	unsigned char wall;
 	unsigned char tmp_path;
 	unsigned char map_size;
-	unsigned char path[16 * 16];
-	unsigned char dist_map[16][16];
-	unsigned char a_dist_map[16][16];
-	unsigned int wall_map_x[16 - 1];
-	unsigned int wall_map_y[16 - 1];
-	unsigned int searched_map_x[16 - 1];
-	unsigned int searched_map_y[16 - 1];
-	unsigned int mixed_map_x[16 - 1];
-	unsigned int mixed_map_y[16 - 1];
+	unsigned char path[mp_size * mp_size];
+	unsigned char dist_map[mp_size][mp_size];
+	unsigned char a_dist_map[mp_size][mp_size];
+	unsigned int wall_map_x[mp_size - 1];
+	unsigned int wall_map_y[mp_size - 1];
+	unsigned int searched_map_x[mp_size - 1];
+	unsigned int searched_map_y[mp_size - 1];
+	unsigned int mixed_map_x[mp_size - 1];
+	unsigned int mixed_map_y[mp_size - 1];
 } MAP;
+
+void init_Map();
+
+void Detect_direction();
 
 #endif /* MAP_H_ */

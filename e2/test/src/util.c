@@ -150,8 +150,8 @@ void detect_Rotate(void) {
 }
 
 void select_Mode() {
-	Switch.rot_sw = (char) (Switch.rot_sw % 5);
 	detect_Rotate();
+	Switch.rot_sw = (char) (Switch.rot_sw % 5);
 	drv_Status_LED(Red, (Switch.rot_sw & 1));
 	drv_Status_LED(Yerrow, (Switch.rot_sw & 2) >> 1);
 	drv_Status_LED(Green, (Switch.rot_sw & 4) >> 2);

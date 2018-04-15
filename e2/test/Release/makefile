@@ -138,7 +138,7 @@ post-build:
 	-C:\Renesas\E2_STU~1\DEBUGC~1\SH\SH_CON~1.EXE test.abs test.x
 	@echo.
 
-.PHONY: all clean dependents $(LINKER_OUTPUT_OUTPUTS)
+.PHONY: all clean dependents
 .SECONDARY: post-build
 
 -include ../makefile.targets

@@ -12,12 +12,14 @@
 #include "sensor.h"
 #include "MTU.h"
 #include "motor.h"
-
+#include "map.h"
+#include "LED.h"
 #define round(A)((int)(A + 0.5))
 
 //SPC spec;
 extern SEN r_sen, cr_sen, l_sen, cl_sen;
 extern MOT r_motor, l_motor;
+extern MAP map;
 
 //void init_IO(void) {
 //	PFC.PEIORL.BIT.B0 = 1; //R_Clock
@@ -336,4 +338,6 @@ void initALL(void) {
 	//initMTU_S();
 	init_MTU();
 	init_ADC();
+	init_Map();
+	init_LED();
 }

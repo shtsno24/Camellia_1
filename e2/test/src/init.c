@@ -335,9 +335,7 @@ void initALL(void) {
 	init_Motor();
 	init_CMT();
 	init_LED();
-	//initMTU_S();
 	init_MTU();
 	init_ADC();
 	init_Map();
-	init_LED();
 }

@@ -43,7 +43,7 @@ void init_Map(void) {
 	map.dist_map[map.goal_x][map.goal_y] = 0;
 }
 
-void Detect_direction() {
+void detect_Direction() {
 	if (map.direction == 0) {
 		map.pos_y += 1;
 		/*
@@ -266,7 +266,7 @@ void print_Searched_map() {
 	myprintf("\n\n");
 }
 
-void mix_map() {
+void mix_Map() {
 	int i;
 	for (i = 0; i < map.map_size - 1; i++) {
 		map.mixed_map_x[i] = map.wall_map_x[i] | map.searched_map_x[i];
@@ -330,4 +330,378 @@ void print_Mixed_map() {
 		myprintf("--+");
 	}
 	myprintf("\n\n");
+}
+
+char read_Mixed_map(char x, char y) {
+
+	/*
+	 *  wall : W-S-E-N
+	 * 		 MSB   LSB
+	 */
+
+	char wall = 0;
+
+	myprintf("\n\n");
+
+	if (x < map.map_size - 1) {
+		wall |= ((map.mixed_map_x[x] & (1 << y)) >> y) << 1;
+		//myprintf("%d\n", ((mixed_map_x[x] & (1 << y)) >> y) << 1);
+	}
+	if (x - 1 >= 0) {
+		wall |= ((map.mixed_map_x[x - 1] & (1 << y)) >> y) << 3;
+		//myprintf("%d\n", ((mixed_map_x[x - 1] & (1 << y)) >> y) << 3);
+	}
+
+	if (y < map.map_size - 1) {
+		wall |= (map.mixed_map_y[y] & (1 << x)) >> x;
+		//myprintf("%d\n", (mixed_map_y[y] & (1 << x)) >> x);
+	}
+	if (y - 1 >= 0) {
+		wall |= ((map.mixed_map_y[y - 1] & (1 << x)) >> x) << 2;
+		//myprintf("%d\n", ((mixed_map_y[y - 1] & (1 << x)) >> x) << 2);
+	}
+	return wall;
+
+}
+
+void update_A_dist_map() {
+	unsigned char buff_x = 0, buff_y = 0, wall, dist = 0;
+	int i, j, k;
+
+	while (map.a_dist_map[map.pos_x][map.pos_y] == 255) {
+		for (i = 0; i < map.map_size; i++) {
+			for (j = 0; j < map.map_size; j++) {
+				if (map.a_dist_map[i][j] == dist) {
+					buff_x = i;
+					buff_y = j;
+					wall = read_Wall_map(buff_x, buff_y);
+
+					if ((wall & 2) != 2) {
+						if (buff_x != (map.map_size - 1)) {
+							if (map.a_dist_map[buff_x + 1][buff_y] == 255) {
+								map.a_dist_map[buff_x + 1][buff_y] = dist + 1;
+							}
+						}
+					}
+					if ((wall & 8) != 8) {
+						if (buff_x != 0) {
+							if (map.a_dist_map[buff_x - 1][buff_y] == 255) {
+								map.a_dist_map[buff_x - 1][buff_y] = dist + 1;
+							}
+						}
+					}
+
+					if ((wall & 1) != 1) {
+						if (buff_y != (map.map_size - 1)) {
+							if (map.a_dist_map[buff_x][buff_y + 1] == 255) {
+								map.a_dist_map[buff_x][buff_y + 1] = dist + 1;
+							}
+						}
+					}
+
+					if ((wall & 4) != 4) {
+						if (buff_y != 0) {
+							if (map.a_dist_map[buff_x][buff_y - 1] == 255) {
+								map.a_dist_map[buff_x][buff_y - 1] = dist + 1;
+							}
+						}
+					}
+				}
+			}
+		}
+		dist += 1;
+	}
+
+}
+
+char generate_A_path() {
+	/*
+	 * =================
+	 * about path[]
+	 * 0:forward
+	 * 1:right
+	 * 2:backward
+	 * 3:left
+	 * 4:goal
+	 * =================
+	 * wall : W-S-E-N
+	 * 		 MSB   LSB
+	 * =================
+	 * dir : 0 North
+	 * 		 1 East
+	 * 		 2 South
+	 * 		 3 West
+	 * =================
+	 * */
+	char x = map.pos_x, y = map.pos_y, dir = map.direction, rel_dir, wall, dist, min_dist,
+			pri_flag;
+	int i = 0;
+
+	wall = read_Wall_map(x, y);
+	dist = map.a_dist_map[x][y];
+	pri_flag = 4;
+
+	if ((wall & 4) == 0) {
+		if (y - 1 >= 0) {
+			if (map.a_dist_map[x][y - 1] <= dist) {
+				dist = map.a_dist_map[x][y - 1];
+				min_dist = 2;
+				if (min_dist == dir) {
+					pri_flag = dir;
+				}
+			}
+		}
+	}
+
+	if ((wall & 2) == 0) {
+		if (x + 1 < map.map_size) {
+			if (map.a_dist_map[x + 1][y] <= dist) {
+				dist = map.a_dist_map[x + 1][y];
+				min_dist = 1;
+				if (min_dist == dir) {
+					pri_flag = dir;
+				}
+			}
+		}
+	}
+
+	if ((wall & 8) == 0) {
+		if (x - 1 >= 0) {
+			if (map.a_dist_map[x - 1][y] <= dist) {
+				dist = map.a_dist_map[x - 1][y];
+				min_dist = 3;
+				if (min_dist == dir) {
+					pri_flag = dir;
+				}
+			}
+		}
+	}
+
+	if ((wall & 1) == 0) {
+		if (y + 1 < map.map_size) {
+			if (map.a_dist_map[x][y + 1] <= dist) {
+				dist = map.a_dist_map[x][y + 1];
+				min_dist = 0;
+				if (min_dist == dir) {
+					pri_flag = dir;
+				}
+			}
+		}
+	}
+
+	if (pri_flag != 4) {
+		min_dist = pri_flag;
+	}
+
+	rel_dir = min_dist - dir;
+	if (rel_dir < 0) {
+		rel_dir += 4;
+	}
+	return rel_dir;
+}
+
+void init_A_dist_map() {
+	int i, j;
+
+	for (i = 0; i < map.map_size; i++) {
+		for (j = 0; j < map.map_size; j++) {
+			map.a_dist_map[i][j] = 255;
+		}
+	}
+	map.a_dist_map[map.goal_x][map.goal_y] = 0;
+}
+
+void init_Dist_map() {
+	int i, j;
+
+	for (i = 0; i < map.map_size; i++) {
+		for (j = 0; j < map.map_size; j++) {
+			map.dist_map[i][j] = 255;
+		}
+	}
+	map.dist_map[map.goal_x][map.goal_y] = 0;
+
+}
+
+void print_Dist_map() {
+	int i, j;
+
+	myprintf("\n");
+	for (i = 0; i < map.map_size; i++) {
+		for (j = 0; j < map.map_size; j++) {
+			myprintf("%3d ", map.dist_map[j][map.map_size - 1 - i]);
+		}
+		myprintf("\n");
+	}
+}
+
+char read_Dist_map(char x, char y) {
+	return map.dist_map[x][y];
+}
+
+void update_Dist_map() {
+	unsigned char buff_x = 0, buff_y = 0, wall, dist = 0;
+	int i, j, k;
+	mix_Map();
+	print_Mixed_map();
+	while (map.dist_map[0][0] == 255) {
+		for (i = 0; i < map.map_size; i++) {
+			for (j = 0; j < map.map_size; j++) {
+				if (map.dist_map[i][j] == dist) {
+					buff_x = i;
+					buff_y = j;
+					wall = read_Mixed_map(buff_x, buff_y);
+
+					if ((wall & 2) != 2) {
+						if (buff_x != (map.map_size - 1)) {
+							if (map.dist_map[buff_x + 1][buff_y] == 255) {
+								map.dist_map[buff_x + 1][buff_y] = dist + 1;
+							}
+						}
+					}
+					if ((wall & 8) != 8) {
+						if (buff_x != 0) {
+							if (map.dist_map[buff_x - 1][buff_y] == 255) {
+								map.dist_map[buff_x - 1][buff_y] = dist + 1;
+							}
+						}
+					}
+
+					if ((wall & 1) != 1) {
+						if (buff_y != (map.map_size - 1)) {
+							if (map.dist_map[buff_x][buff_y + 1] == 255) {
+								map.dist_map[buff_x][buff_y + 1] = dist + 1;
+							}
+						}
+					}
+
+					if ((wall & 4) != 4) {
+						if (buff_y != 0) {
+							if (map.dist_map[buff_x][buff_y - 1] == 255) {
+								map.dist_map[buff_x][buff_y - 1] = dist + 1;
+							}
+						}
+					}
+				}
+			}
+		}
+		print_Dist_map();
+		dist += 1;
+	}
+}
+
+
+void generate_Path() {
+	/*
+	 * =================
+	 * about path[]
+	 * 0:forward
+	 * 1:right
+	 * 2:backward
+	 * 3:left
+	 * 4:goal
+	 * =================
+	 * wall : W-S-E-N
+	 * 		 MSB   LSB
+	 * =================
+	 * dir : 0 North
+	 * 		 1 East
+	 * 		 2 South
+	 * 		 3 West
+	 * =================
+	 * */
+	char x = 0, y = 0, dir = map.direction, rel_dir = map.direction, wall, dist,
+			min_dist, pri_flag;
+	int i = 0;
+
+	myprintf("=======\n");
+
+	while (map.dist_map[x][y] != 0) {
+		wall = read_Mixed_map(x, y);
+		dist = map.dist_map[x][y];
+		pri_flag = 4;
+
+		if ((wall & 1) == 0) {
+			if (y + 1 < map.map_size) {
+				if (map.dist_map[x][y + 1] <= dist) {
+					dist = map.dist_map[x][y + 1];
+					min_dist = 0;
+					if (dir == min_dist) {
+						pri_flag = dir;
+					}
+				}
+
+			}
+		}
+		if ((wall & 2) == 0) {
+			if (x + 1 < map.map_size) {
+				if (map.dist_map[x + 1][y] <= dist) {
+					dist = map.dist_map[x + 1][y];
+					min_dist = 1;
+					if (dir == min_dist) {
+						pri_flag = dir;
+					}
+				}
+
+			}
+		}
+		if ((wall & 4) == 0) {
+			if (y - 1 >= 0) {
+				if (map.dist_map[x][y - 1] <= dist) {
+					dist = map.dist_map[x][y - 1];
+					min_dist = 2;
+					if (dir == min_dist) {
+						pri_flag = dir;
+					}
+				}
+
+			}
+		}
+		if ((wall & 8) == 0) {
+			if (x - 1 >= 0) {
+				if (map.dist_map[x - 1][y] <= dist) {
+					dist = map.dist_map[x - 1][y];
+					min_dist = 3;
+					if (dir == min_dist) {
+						pri_flag = dir;
+					}
+				}
+
+			}
+		}
+
+		if (pri_flag != 4) {
+			min_dist = pri_flag;
+			myprintf("====\n");
+		}
+
+		if (min_dist == 0) {
+			y += 1;
+		} else if (min_dist == 1) {
+			x += 1;
+		} else if (min_dist == 2) {
+			y -= 1;
+		} else if (min_dist == 3) {
+			x -= 1;
+		}
+
+		rel_dir = min_dist - dir;
+		if (rel_dir < 0) {
+			rel_dir += 4;
+		}
+
+		dir = min_dist;
+		myprintf("(%d,%d)\n", x, y);
+		myprintf("%d\n", rel_dir);
+		map.path[i] = rel_dir;
+
+		i++;
+	}
+}
+
+void init_Path() {
+	int i;
+	for (i = 0; i < map.map_size * map.map_size; i++) {
+		map.path[i] = 4;
+	}
 }

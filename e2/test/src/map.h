@@ -32,6 +32,48 @@ typedef struct map {
 
 void init_Map();
 
-void Detect_direction();
+void detect_Direction();
+
+void update_Wall_map();
+
+void print_Wall_map_x(int);
+
+void print_Wall_map_y(int);
+
+void print_Wall_map();
+
+char read_Wall_map(char, char);
+
+void print_Searched_map_x(int);
+
+void print_Searched_map_y(int);
+
+void print_Searched_map();
+
+void mix_Map();
+
+void print_Mixed_map_x(int);
+
+void print_Mixed_map_y(int);
+
+void print_Mixed_map();
+
+char read_Mixed_map(char, char);
+
+void update_A_dist_map();
+
+char generate_A_path();
+
+void init_A_dist_map();
+
+void print_Dist_map();
+
+char read_Dist_map(char, char);
+
+void update_Dist_map();
+
+void generate_Path();
+
+void init_Path();
 
 #endif /* MAP_H_ */

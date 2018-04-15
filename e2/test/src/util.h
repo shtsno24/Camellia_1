@@ -57,13 +57,17 @@ void init_IO(void);
 
 void init_CPU(void);
 
-void UX_effect(char);
-
 void init_Buzzer(void);
 
 void drv_Buzzer(char);
 
+void UX_effect(char);
+
+void init_Switch(void);
+
 void detect_Rotate(void);
 
 void select_Mode(void);
+
+void get_Battery_Voltage(void);
 #endif /* UTIL_H_ */

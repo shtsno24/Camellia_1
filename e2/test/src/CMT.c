@@ -55,7 +55,7 @@ void wait_ms(int t) {
 		;
 }
 
-void sen_cmt1() {
+void sen_cmt1(void) {
 	short int i;
 // write this function to interrupt_handlers.c
 	CMT1.CMCSR.BIT.CMF = 0;

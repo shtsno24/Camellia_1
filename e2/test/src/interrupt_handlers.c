@@ -12,7 +12,6 @@
 
 #include <machine.h>
 #include "vect.h"
-#include "init.h"
 #include "util.h"
 #include "CMT.h"
 #include "MTU.h"
@@ -493,11 +492,9 @@ void INT_CMT0_CMI0(void) {
 
 //void INT_CMT1_CMI1(void) {/* sleep(); */}
 
- void interrupt_cmt1(void);
- void sen_cmt1(SPC spec);
+ void sen_cmt1();
  void INT_CMT1_CMI1(void){
- //interrupt_cmt1();
-	 sen_cmt1(spec);
+	 sen_cmt1();
  }
 // 189 Reserved
 // 190 Reserved

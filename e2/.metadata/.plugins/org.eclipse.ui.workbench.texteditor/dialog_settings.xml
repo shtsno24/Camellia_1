@@ -6,37 +6,37 @@
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="print_Mixed_map" key="selection"/>
+		<item value="tmp_path" key="selection"/>
 		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="print_mixed_map"/>
-			<item value="print_searched_map"/>
-			<item value="print_Searched_map"/>
-			<item value="initwall_map"/>
-			<item value="get_wall_from_wall_map"/>
-			<item value="print_wall_map"/>
-			<item value="print_wall_map_"/>
-			<item value="iter_wall_map"/>
+			<item value="tmp_path"/>
+			<item value="initpath"/>
+			<item value="map_size"/>
+			<item value="generate_path"/>
+			<item value="path"/>
+			<item value="dist_map"/>
+			<item value="direction"/>
+			<item value="Detect_direction"/>
 		</list>
 		<list key="replacehistory">
-			<item value="print_Mixed_map"/>
-			<item value="print_Searched_map"/>
-			<item value="read_Wall_map"/>
-			<item value="print_Wall_map"/>
-			<item value="print_Wall_map_"/>
-			<item value="update_Wall_map"/>
-			<item value="Detect_direction"/>
-			<item value="mp_size"/>
+			<item value="init_Path"/>
+			<item value="map.map_size"/>
+			<item value="generate_Path"/>
+			<item value="map.path"/>
+			<item value="map.dist_map"/>
+			<item value="map.direction"/>
+			<item value="detect_Direction"/>
+			<item value="update_Dist_map"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="303" key="DIALOG_WIDTH"/>
 		<item value="1|Yu Gothic UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Yu Gothic UI" key="DIALOG_FONT_NAME"/>
 		<item value="381" key="DIALOG_HEIGHT"/>
-		<item value="664" key="DIALOG_X_ORIGIN"/>
-		<item value="377" key="DIALOG_Y_ORIGIN"/>
+		<item value="922" key="DIALOG_X_ORIGIN"/>
+		<item value="247" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>

@@ -20,8 +20,8 @@ void init_Motor(void) {
 	r_motor.acc = 0.0;
 	l_motor.acc = 0.0;
 
-	r_motor.min_vel = 240.0;
-	l_motor.min_vel = 240.0;
+	r_motor.min_vel = 220.0;
+	l_motor.min_vel = 220.0;
 	r_motor.max_vel = 2000.0;
 	l_motor.max_vel = 2000.0;
 	r_motor.vel = 300.0;
@@ -136,6 +136,8 @@ void mot_app(int dist, int t_vel, int t_acc, char move_flag, char end_flag) {
 			break;
 		}
 	}
+	stop_MTU(cst0);
+	stop_MTU(cst1);
 	spec.cnt_ctl = 0;
 }
 
@@ -215,20 +217,13 @@ void move_Forward() {
 void move_Backward() {
 	mot_app(spec.half_block, 330, 2000, straight, on);
 	wait_ms(1000);
-	mot_app(spec.r_distance, 310, 2000, right, on);
+	mot_app(spec.r_distance*2, 310, 2000, right, on);
 	wait_ms(1000);
 	mot_app(spec.half_block, 270, 2000, back, on);
 	switch_Motor(off);
 	wait_ms(1000);
 	switch_Motor(on);
-	mot_app(18, 280, 2000, straight, on);
-	wait_ms(1000);
-	mot_app(spec.r_distance, 310, 2000, right, on);
-	wait_ms(1000);
-	mot_app(spec.half_block, 270, 2000, back, on);
-	switch_Motor(off);
-	wait_ms(1000);
-	switch_Motor(on);
+	wait_ms(100);
 	mot_app2(15 + spec.half_block, 330, 2000, straight, on);
 
 }

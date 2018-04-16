@@ -1352,6 +1352,7 @@ char read_dist_map(char x, char y) {
 	return dist_map[x][y];
 }
 */
+
 /*
 void generate_Path() {
 
@@ -1518,13 +1519,11 @@ int main(void) {
 			map.direction = 0;
 			spec.run_interruption = 0;
 			UX_effect(alart);
-			route_index = 1;
 
 			switch_Motor(on);
 			mot_app2(spec.half_block, 350, 1500, straight, on);
 
 			while (spec.run_interruption != 1) {
-				map.a_dist_map[map.pos_x][map.pos_y] = 255;
 				update_Wall_map();
 				update_A_dist_map();
 				map.tmp_path = generate_A_path();
@@ -1533,7 +1532,6 @@ int main(void) {
 				if (map.tmp_path == 1) {
 					map.direction += 1;
 					move_Right();
-
 				} else if (map.tmp_path == 3) {
 					map.direction += 3;
 					move_Left();

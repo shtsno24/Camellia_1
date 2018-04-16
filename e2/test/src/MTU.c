@@ -167,7 +167,7 @@ void change_Duty_MTU20(void) {
 	PE.DRL.BIT.B1 = r_motor.rot_dir_flag;
 	if (r_motor.cnt < 0 && r_motor.end_flag == 1) {
 		r_motor.stop_flag = 1;
-		stop_MTU(cst0);
+		//stop_MTU(cst0);
 	} else {
 		start_MTU(cst0);
 	}
@@ -200,7 +200,7 @@ void change_Duty_MTU21(void) {
 	PE.DRL.BIT.B5 = l_motor.rot_dir_flag;
 	if (l_motor.cnt < 0 && l_motor.end_flag == 1) {
 		l_motor.stop_flag = 1;
-		stop_MTU(cst1);
+		//stop_MTU(cst1);
 	} else {
 		start_MTU(cst1);
 	}

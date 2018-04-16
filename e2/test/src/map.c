@@ -189,20 +189,20 @@ char read_Wall_map(char x, char y) {
 	//myprintf("\n\n");
 
 	if (x < map.map_size - 1) {
-		map.wall |= ((map.wall_map_x[x] & (1 << y)) >> y) << 1;
+		wall |= ((map.wall_map_x[x] & (1 << y)) >> y) << 1;
 		//myprintf("%d\n", ((mixed_map_x[x] & (1 << y)) >> y) << 1);
 	}
 	if (x - 1 >= 0) {
-		map.wall |= ((map.wall_map_x[x - 1] & (1 << y)) >> y) << 3;
+		wall |= ((map.wall_map_x[x - 1] & (1 << y)) >> y) << 3;
 		//myprintf("%d\n", ((mixed_map_x[x - 1] & (1 << y)) >> y) << 3);
 	}
 
 	if (y < map.map_size - 1) {
-		map.wall |= (map.wall_map_y[y] & (1 << x)) >> x;
+		wall |= (map.wall_map_y[y] & (1 << x)) >> x;
 		//myprintf("%d\n", (mixed_map_y[y] & (1 << x)) >> x);
 	}
 	if (y - 1 >= 0) {
-		map.wall |= ((map.wall_map_y[y - 1] & (1 << x)) >> x) << 2;
+		wall |= ((map.wall_map_y[y - 1] & (1 << x)) >> x) << 2;
 		//myprintf("%d\n", ((mixed_map_y[y - 1] & (1 << x)) >> x) << 2);
 	}
 	return wall;

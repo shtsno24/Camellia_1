@@ -34,7 +34,7 @@ void diff_calc(void) {
 
 	if (spec.cnt_ctl == 1 || cr_sen.ref_wall < cr_sen.sen
 			|| cl_sen.ref_wall < cl_sen.sen) {
-		spec.diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
+		spec.diff = (float) (l_motor.cnt - r_motor.cnt) * 0;
 		if (spec.sta_LED_flag == 1) {
 			drv_Status_LED(Green, on);
 			drv_Status_LED(Yerrow, on);
@@ -74,7 +74,7 @@ void diff_calc(void) {
 			}
 
 		} else {
-			spec.diff = (float) (l_motor.cnt - r_motor.cnt) * 50;
+			spec.diff = (float) (l_motor.cnt - r_motor.cnt) * 0;
 
 			if (spec.sta_LED_flag == 1) {
 				drv_Status_LED(Green, off);
@@ -90,17 +90,17 @@ void diff_calc(void) {
 void vel_calc() {
 
 	if (l_motor.tar_vel + spec.kp_l * spec.diff > l_motor.vel) {
-		l_motor.vel = l_motor.vel + (l_motor.acc * 0.001);
+		l_motor.vel += (l_motor.acc * 0.001);
 
 	} else if (l_motor.tar_vel + spec.kp_l * spec.diff <= l_motor.vel) {
-		l_motor.vel = l_motor.vel - (l_motor.acc * 0.001);
+		l_motor.vel -= (l_motor.acc * 0.001);
 	}
 
 	if (r_motor.tar_vel - spec.kp_r * spec.diff > r_motor.vel) {
-		r_motor.vel = r_motor.vel + (r_motor.acc * 0.001);
+		r_motor.vel +=  (r_motor.acc * 0.001);
 
 	} else if (r_motor.tar_vel - spec.kp_r * spec.diff <= r_motor.vel) {
-		r_motor.vel = r_motor.vel - (r_motor.acc * 0.001);
+		r_motor.vel -=  (r_motor.acc * 0.001);
 
 	}
 

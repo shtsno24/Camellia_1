@@ -326,7 +326,7 @@ extern MAP map;
 //	CPG.FRQCR.BIT.MPFC = 3;    // MPφ / 4 = 25MHz
 //}
 
-void initALL(void) {
+void init_ALL(void) {
 	init_CPU();
 	init_IO();
 	init_Spec();

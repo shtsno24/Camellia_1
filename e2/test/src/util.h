@@ -21,12 +21,13 @@ typedef struct spc {
 	float tread; //[mm]
 	float tire_dim; //[mm]
 	float step_dist; //[mm]
+	float step_angle;//[deg]
 
 	short pwm_base_clock; //set interrupt duty
 	short pwm_half_clock;
 
-	float vel_min;
-	float tar_vel_min;
+	//float vel_min;
+	//float tar_vel_min;
 	float batt;
 	float kp_l;
 	float kp_r;

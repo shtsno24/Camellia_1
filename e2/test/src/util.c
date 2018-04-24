@@ -18,16 +18,18 @@ SW Switch;
 
 void init_Spec() {
 	spec.tread = 90.0;
-	spec.tire_dim = 90.0;
-	spec.step_dist = 0.408407;
-	spec.vel_min = 200;
-	spec.tar_vel_min = 250;
+	spec.tire_dim = 51.6;
+	//spec.tire_dim = 90.0;
+	spec.step_angle = 0.9; //[deg]
+	//spec.step_dist = 0.408407;
+	spec.step_dist = spec.tire_dim * 3.14159265 * (spec.step_angle / 360);//[mm]
+
 	spec.pwm_base_clock = 6250 - 1; //(interrupt duty : 1ms(@6.25MHz))
 	spec.pwm_half_clock = round((6250 - 1) / 2);
-	spec.r_distance = ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) - 1);
-	spec.l_distance = ((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) + 0.5);
+	spec.r_distance = (int)((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) - 0);
+	spec.l_distance = (int)((90.0 / 180 * 3.141592) * (spec.tire_dim / 2) + 0.5);
 	spec.full_block = 180;
-	spec.half_block = 93.5;
+	spec.half_block = 92;
 	spec.kp_l = 0.19;
 	spec.kp_r = 0.19;
 	spec.cnt_ctl = 0;
@@ -146,7 +148,6 @@ void detect_Rotate(void) {
 		Switch.rot_sw += 0;
 	}
 	Switch.rot_sw_old = Switch.rot_sw_now;
-
 }
 
 void select_Mode() {

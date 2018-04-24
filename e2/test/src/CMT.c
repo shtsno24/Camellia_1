@@ -42,6 +42,7 @@ void interrupt_cmt0() {
 	CMT0.CMCSR.BIT.CMF = 0;
 	tim.count_cmt_0 += 1;
 }
+
 void interrupt_cmt1() {
 // write this function to interrupt_handlers.c
 	CMT1.CMCSR.BIT.CMF = 0;
@@ -56,7 +57,7 @@ void wait_ms(int t) {
 }
 
 void sen_cmt1(void) {
-	short int i;
+	unsigned int i;
 // write this function to interrupt_handlers.c
 	CMT1.CMCSR.BIT.CMF = 0;
 	CMT1.CMCNT = 0;
@@ -108,7 +109,6 @@ void sen_cmt1(void) {
 	l_sen.old[0] = l_sen.sen;		//L sensor
 
 	diff_calc();
-
 	vel_calc();
 
 }

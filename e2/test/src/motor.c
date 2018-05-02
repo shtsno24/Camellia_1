@@ -22,8 +22,8 @@ void init_Motor(void) {
 	r_motor.acc = 0.0;
 	l_motor.acc = 0.0;
 
-	r_motor.min_vel = 200.0;
-	l_motor.min_vel = 200.0;
+	r_motor.min_vel = 190.0;
+	l_motor.min_vel = 190.0;
 	r_motor.max_vel = 2000.0;
 	l_motor.max_vel = 2000.0;
 	r_motor.vel = 300.0;
@@ -85,7 +85,6 @@ void drv_Motor(int dist, int t_vel, int t_acc, char rot_dir_flag, int end_flag,
 		PE.DRL.BIT.B1 = r_motor.rot_dir_flag;
 		r_motor.end_flag = end_flag;
 		r_motor.stop_flag = 0;
-		//start_MTU(cst0);
 		break;
 	case L_motor:
 		l_motor.cnt = dist / spec.step_dist;
@@ -95,7 +94,6 @@ void drv_Motor(int dist, int t_vel, int t_acc, char rot_dir_flag, int end_flag,
 		PE.DRL.BIT.B5 = l_motor.rot_dir_flag;
 		l_motor.end_flag = end_flag;
 		l_motor.stop_flag = 0;
-		//start_MTU(cst1);
 		break;
 	}
 
@@ -112,36 +110,52 @@ void switch_Motor(char sw) {
 
 void mot_app(int dist, int t_vel, int t_acc, char move_flag, char end_flag) {
 
+	int decel_dist;
+	decel_dist = (t_vel * t_vel - r_motor.min_vel * r_motor.min_vel)
+			/ (2 * t_acc);
 	if (move_flag == straight) {
 		spec.cnt_ctl = 0;
 	} else {
 		spec.cnt_ctl = 1;
 	}
-	drv_Status_LED(Green, on);
 
-	drv_Status_LED(Green, off);
 	start_MTU(cst0);
 	start_MTU(cst1);
 
-	drv_Motor(dist / 2, t_vel, t_acc, move_flag & 1, end_flag, R_motor);
-	drv_Motor(dist / 2, t_vel, t_acc, (move_flag & 2) >> 1, end_flag, L_motor);
+	if (dist >= decel_dist) {
+		drv_Motor(dist - decel_dist, t_vel, t_acc, move_flag & 1, end_flag,
+				R_motor);
+		drv_Motor(dist - decel_dist, t_vel, t_acc, (move_flag & 2) >> 1,
+				end_flag, L_motor);
+		while (1) {
+			if (l_motor.stop_flag == 1 || r_motor.stop_flag == 1) {
+				break;
+			}
+		}
 
-	while (1) {
-		if (l_motor.stop_flag == 1 || r_motor.stop_flag == 1) {
-			break;
+		drv_Motor(decel_dist, r_motor.min_vel, t_acc, move_flag & 1, end_flag,
+				R_motor);
+		drv_Motor(decel_dist, l_motor.min_vel, t_acc, (move_flag & 2) >> 1,
+				end_flag, L_motor);
+
+		while (1) {
+			if (l_motor.stop_flag == 1 || r_motor.stop_flag == 1) {
+				break;
+			}
+		}
+	} else {
+		drv_Motor(dist, r_motor.min_vel, t_acc, move_flag & 1, end_flag,
+				R_motor);
+		drv_Motor(dist, l_motor.min_vel, t_acc, (move_flag & 2) >> 1, end_flag,
+				L_motor);
+
+		while (1) {
+			if (l_motor.stop_flag == 1 || r_motor.stop_flag == 1) {
+				break;
+			}
 		}
 	}
 
-	drv_Motor(dist / 2, r_motor.min_vel, t_acc, move_flag & 1, end_flag,
-			R_motor);
-	drv_Motor(dist / 2, l_motor.min_vel, t_acc, (move_flag & 2) >> 1, end_flag,
-			L_motor);
-
-	while (1) {
-		if (l_motor.stop_flag == 1 || r_motor.stop_flag == 1) {
-			break;
-		}
-	}
 	stop_MTU(cst0);
 	stop_MTU(cst1);
 
@@ -175,9 +189,18 @@ void move_Left() {
 	spec.kp_r -= 0.1;
 	spec.kp_l -= 0.1;
 	mot_app(spec.half_block, 330, 2000, straight, on);
-	wait_ms(1000);
+
+	wait_ms(100);
+	switch_Motor(off);
+	wait_ms(300);
+	switch_Motor(on);
+	wait_ms(50);
 	mot_app(spec.l_distance, 310, 2000, left, on);
-	wait_ms(1000);
+	wait_ms(100);
+	switch_Motor(off);
+	wait_ms(300);
+	switch_Motor(on);
+	wait_ms(50);
 	mot_app2(spec.half_block, 330, 2000, straight, on);
 	spec.kp_r += 0.1;
 	spec.kp_l += 0.1;
@@ -187,9 +210,17 @@ void move_Right() {
 	spec.kp_r -= 0.1;
 	spec.kp_l -= 0.1;
 	mot_app(spec.half_block, 330, 2000, straight, on);
-	wait_ms(1000);
+	wait_ms(100);
+	switch_Motor(off);
+	wait_ms(300);
+	switch_Motor(on);
+	wait_ms(50);
 	mot_app(spec.r_distance, 310, 2000, right, on);
-	wait_ms(1000);
+	wait_ms(100);
+	switch_Motor(off);
+	wait_ms(300);
+	switch_Motor(on);
+	wait_ms(50);
 	mot_app2(spec.half_block, 330, 1800, straight, on);
 	spec.kp_r += 0.1;
 	spec.kp_l += 0.1;
@@ -205,20 +236,40 @@ void move_Forward() {
 
 void move_Backward() {
 	mot_app(spec.half_block, 330, 2000, straight, on);
-	wait_ms(1000);
+	wait_ms(100);
+	switch_Motor(off);
+	wait_ms(300);
+	switch_Motor(on);
+	wait_ms(50);
 	mot_app(spec.r_distance * 2 - 8, 310, 2000, right, on);
-	wait_ms(1000);
+	wait_ms(100);
+	switch_Motor(off);
+	wait_ms(300);
+	switch_Motor(on);
+	wait_ms(50);
 	mot_app(spec.half_block, 270, 2000, back, on);
-	wait_ms(1000);
+	wait_ms(100);
+	switch_Motor(off);
+	wait_ms(300);
+	switch_Motor(on);
+	wait_ms(50);
 	mot_app2(15 + spec.half_block, 330, 2000, straight, on);
 
 }
 
 void move_Backward_2() {
 	mot_app(spec.half_block, 330, 2000, straight, on);
-	wait_ms(650);
+	wait_ms(100);
+	switch_Motor(off);
+	wait_ms(300);
+	switch_Motor(on);
+	wait_ms(50);
 	mot_app(spec.r_distance * 2 - 8, 310, 2000, right, on);
-	wait_ms(650);
+	wait_ms(100);
+	switch_Motor(off);
+	wait_ms(300);
+	switch_Motor(on);
+	wait_ms(50);
 	mot_app2(spec.half_block, 330, 2000, straight, on);
 
 }

@@ -113,7 +113,7 @@ void change_Duty_MTU20(void) {
 	r_motor.duty = spec.step_dist / r_motor.vel * 25e+6;
 	r_motor.cnt--;
 
-//change duty
+	//change duty
 	if (MTU20.TSR.BIT.TGFA == 1) {
 
 		MTU20.TCNT = 0; //reset counter

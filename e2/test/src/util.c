@@ -26,10 +26,10 @@ void init_Spec() {
 
 	spec.pwm_base_clock = 6250 - 1; //(interrupt duty : 1ms(@6.25MHz))
 	spec.pwm_half_clock = round((6250 - 1) / 2);
-	spec.r_distance = (int)((90.0 / 180 * 3.141592) * (spec.tread / 2) - 0);
-	spec.l_distance = (int)((90.0 / 180 * 3.141592) * (spec.tread / 2) + 0.5);
-	spec.full_block = 180;
-	spec.half_block = 92;
+	spec.r_distance = (int)((90.0 / 180 * 3.141592) * (spec.tread / 2) - 2.6);
+	spec.l_distance = (int)((90.0 / 180 * 3.141592) * (spec.tread / 2) - 2.6);
+	spec.full_block = 179.52;
+	spec.half_block = 92.2;
 	spec.kp_l = 0.3;
 	spec.kp_r = 0.3;
 	spec.cnt_ctl = 0;

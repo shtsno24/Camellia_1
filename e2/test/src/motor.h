@@ -37,13 +37,13 @@ typedef struct mot {
 
 void init_Motor(void);
 
-void drv_Motor(int, int, int, char, int, int);
+void drv_Motor(float, float, int, char, char, char);
 
 void switch_Motor(char);
 
-void mot_app(int, int, int, char, char);
+void mot_app(float, float, int, char, char);
 
-void mot_app2(int, int, int, char, char);
+void mot_app2(float, float, int, char, char);
 
 void move_Left(void);
 

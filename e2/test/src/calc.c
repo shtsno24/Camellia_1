@@ -21,20 +21,20 @@ void diff_calc(void) {
 	short ref_boost_L, ref_boost_R;
 
 	if (abs(r_sen.diff) > r_sen.diff_threshold) {
-		ref_boost_R = 30;  //変化量が一定以上なら、閾値を引き上げる
+		ref_boost_R = 80;  //変化量が一定以上なら、閾値を引き上げる
 	} else {
 		ref_boost_R = 0; //変化量が一定以下なら、設定通りの閾値
 	}
 
 	if (abs(l_sen.diff) > l_sen.diff_threshold) {
-		ref_boost_L = 30;  //変化量が一定以上なら、閾値を引き上げる
+		ref_boost_L = 80;  //変化量が一定以上なら、閾値を引き上げる
 	} else {
 		ref_boost_L = 0; //変化量が一定以下なら、設定通りの閾値
 	}
 
 	if (spec.cnt_ctl == 1 || cr_sen.ref_wall < cr_sen.sen
 			|| cl_sen.ref_wall < cl_sen.sen) {
-		spec.diff = (float) (l_motor.cnt - r_motor.cnt) * 0;
+		spec.diff = (float) (l_motor.cnt - r_motor.cnt) * 10;
 		if (spec.sta_LED_flag == 1) {
 			drv_Status_LED(Green, on);
 			drv_Status_LED(Yerrow, on);
@@ -74,7 +74,7 @@ void diff_calc(void) {
 			}
 
 		} else {
-			spec.diff = (float) (l_motor.cnt - r_motor.cnt) * 0;
+			spec.diff = (float) (l_motor.cnt - r_motor.cnt) * 10;
 
 			if (spec.sta_LED_flag == 1) {
 				drv_Status_LED(Green, off);
@@ -101,7 +101,5 @@ void vel_calc() {
 
 	} else if (r_motor.tar_vel - spec.kp_r * spec.diff <= r_motor.vel) {
 		r_motor.vel -=  (r_motor.acc * 0.001);
-
 	}
-
 }

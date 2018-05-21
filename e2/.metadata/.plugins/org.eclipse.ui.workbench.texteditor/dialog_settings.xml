@@ -6,12 +6,13 @@
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="cnt_ctl" key="selection"/>
+		<item value="BIT.B2" key="selection"/>
 		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="BIT.B2"/>
 			<item value="cnt_ctl"/>
 			<item value="start_CMT"/>
 			<item value="stop_CMT"/>
@@ -19,7 +20,6 @@
 			<item value="initALL"/>
 			<item value="stop_MTU"/>
 			<item value="start_MTU"/>
-			<item value="tar_vel_mi"/>
 		</list>
 		<list key="replacehistory">
 			<item value="init_Path"/>
@@ -33,9 +33,9 @@
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item value="303" key="DIALOG_WIDTH"/>
-		<item value="1|Yu Gothic UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Yu Gothic UI" key="DIALOG_FONT_NAME"/>
-		<item value="381" key="DIALOG_HEIGHT"/>
+		<item value="361" key="DIALOG_WIDTH"/>
+		<item value="1|Yu Gothic UI|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|Yu Gothic UI" key="DIALOG_FONT_NAME"/>
+		<item value="444" key="DIALOG_HEIGHT"/>
 		<item value="922" key="DIALOG_X_ORIGIN"/>
 		<item value="247" key="DIALOG_Y_ORIGIN"/>
 	</section>

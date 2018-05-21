@@ -114,14 +114,9 @@ void change_Duty_MTU20(void) {
 	r_motor.cnt--;
 
 	//change duty
-	if (MTU20.TSR.BIT.TGFA == 1) {
-
-		MTU20.TCNT = 0; //reset counter
-		MTU20.TGRA = r_motor.duty; //(1/v)*(step_distance / MTU_clock_duty)
-		MTU20.TGRB = round(r_motor.duty / 2); //(1/v)*(step_distance / MTU_clock_duty)
-
-	}
-
+	MTU20.TCNT = 0; //reset counter
+	MTU20.TGRA = r_motor.duty; //(1/v)*(step_distance / MTU_clock_duty)
+	MTU20.TGRB = round(r_motor.duty / 2); //(1/v)*(step_distance / MTU_clock_duty)
 	MTU20.TSR.BIT.TGFA = 0; //reset flag
 
 	if (r_motor.cnt < 0 && r_motor.end_flag == 1) {
@@ -138,15 +133,12 @@ void change_Duty_MTU21(void) {
 	l_motor.duty = spec.step_dist / l_motor.vel * 25e+6;
 	l_motor.cnt--;
 
-	if (MTU21.TSR.BIT.TGFA == 1) {
-		//change duty
-		MTU21.TCNT = 0; //reset counter
-		MTU21.TGRA = l_motor.duty;
-		MTU21.TGRB = round(l_motor.duty / 2);
-
-	}
-
+	//change duty
+	MTU21.TCNT = 0; //reset counter
+	MTU21.TGRA = l_motor.duty;
+	MTU21.TGRB = round(l_motor.duty / 2);
 	MTU21.TSR.BIT.TGFA = 0; //reset flag
+
 	l_motor.stop_flag = 0;
 	if (l_motor.cnt < 0 && l_motor.end_flag == 1) {
 		l_motor.stop_flag = 1;

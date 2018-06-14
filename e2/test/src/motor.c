@@ -6,6 +6,7 @@
  */
 #include "iodefine.h"
 #include "motor.h"
+#include "math.h"
 #include "serial.h"
 #include "util.h"
 #include "MTU.h"
@@ -17,8 +18,8 @@ extern SPC spec;
 void init_Motor(void) {
 	r_motor.min_acc = 0.0;
 	l_motor.min_acc = 0.0;
-	r_motor.max_acc = 1000;
-	l_motor.max_acc = 1000;
+	r_motor.max_acc = 1500;
+	l_motor.max_acc = 1500;
 	r_motor.acc = 0.0;
 	l_motor.acc = 0.0;
 
@@ -190,14 +191,27 @@ void mot_sla_app(float dist, float t_vel, float theta, float omega, int t_acc,
 	char rot_l, rot_r;
 	spec.cnt_ctl = 2;
 
+	if (theta == 0) {
+		spec.cnt_ctl = 1;
+	}
+
+	if (dist_l < 0) {
+		dist_l *= -1;
+	}
+	if (dist_r < 0) {
+		dist_r *= -1;
+	}
+
 	if (vel_l < 0) {
 		rot_l = 0;
+		vel_l *= -1.0;
 	} else {
 		rot_l = 1;
 	}
 
 	if (vel_r < 0) {
 		rot_r = 0;
+		vel_r *= -1.0;
 	} else {
 		rot_r = 1;
 	}
@@ -213,13 +227,11 @@ void mot_sla_app(float dist, float t_vel, float theta, float omega, int t_acc,
 			break;
 		}
 	}
-	stop_MTU(cst0);
-	stop_MTU(cst1);
 	spec.cnt_ctl = 0;
 }
 
-void move_test() {
-	mot_sla_app(180, 300, 90, 200, 1500, on);
+void move_test(float angle, float omega) {
+	mot_sla_app(180, 330, angle, omega, 1500, on);
 }
 
 void move_Left() {

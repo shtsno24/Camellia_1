@@ -17,7 +17,7 @@ SPC spec;
 SW Switch;
 
 void init_Spec() {
-	spec.tread = 90.0;
+	spec.tread = 91.0;
 	spec.tire_dim = 51.6;
 	//spec.tire_dim = 90.0;
 	spec.step_angle = 0.9; //[deg]

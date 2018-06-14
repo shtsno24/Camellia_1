@@ -262,60 +262,67 @@ int main(void) {
 			break;
 
 		case test:
-
-			spec.sta_LED_flag = 1;
-
-			UX_effect(alart);
-			switch_Motor(on);
-			wait_ms(100);
-			mot_app2(spec.half_block, 330, 2000, straight, on);
-			myprintf("mot_app2");
-			mot_app(spec.half_block, 330, 2000, straight, on);
-			myprintf("mot_app");
-			wait_ms(100);
-
-			switch_Motor(off);
-
-			while (PB.DR.BIT.B5 != 0)
-				;
-			switch_Motor(on);
-			UX_effect(alart);
-			wait_ms(100);
-			mot_app(spec.r_distance, 250, 2000, right, on);
-			myprintf("mot_app");
-			wait_ms(100);
-			switch_Motor(off);
-
-			while (PB.DR.BIT.B5 != 0)
-				;
-			switch_Motor(on);
-			UX_effect(alart);
-			wait_ms(100);
-			mot_app(spec.l_distance, 250, 2000, left, on);
-			myprintf("mot_app");
-			wait_ms(100);
-			switch_Motor(off);
-
-			while (PB.DR.BIT.B5 != 0)
-				;
-			switch_Motor(on);
-			UX_effect(alart);
-			wait_ms(100);
-			mot_app2(spec.half_block, 330, 2000, straight, on);
-			mot_app2(spec.full_block * 1, 330, 2000, straight, on);
-			mot_app(spec.half_block, 330, 2000, straight, on);
-			wait_ms(100);
-			switch_Motor(off);
-
-			spec.sta_LED_flag = 0;
-
 			/*
+			 spec.sta_LED_flag = 1;
+
 			 UX_effect(alart);
 			 switch_Motor(on);
 			 wait_ms(100);
-			 move_test();
+			 mot_app2(spec.half_block, 330, 2000, straight, on);
+			 myprintf("mot_app2");
+			 mot_app(spec.half_block, 330, 2000, straight, on);
+			 myprintf("mot_app");
+			 wait_ms(100);
+
 			 switch_Motor(off);
+
+			 while (PB.DR.BIT.B5 != 0)
+			 ;
+			 switch_Motor(on);
+			 UX_effect(alart);
+			 wait_ms(100);
+			 mot_app(spec.r_distance, 250, 2000, right, on);
+			 myprintf("mot_app");
+			 wait_ms(100);
+			 switch_Motor(off);
+
+			 while (PB.DR.BIT.B5 != 0)
+			 ;
+			 switch_Motor(on);
+			 UX_effect(alart);
+			 wait_ms(100);
+			 mot_app(spec.l_distance, 250, 2000, left, on);
+			 myprintf("mot_app");
+			 wait_ms(100);
+			 switch_Motor(off);
+
+			 while (PB.DR.BIT.B5 != 0)
+			 ;
+			 switch_Motor(on);
+			 UX_effect(alart);
+			 wait_ms(100);
+			 mot_app2(spec.half_block, 330, 2000, straight, on);
+			 mot_app2(spec.full_block * 1, 330, 2000, straight, on);
+			 mot_app(spec.half_block, 330, 2000, straight, on);
+			 wait_ms(100);
+			 switch_Motor(off);
+
+			 spec.sta_LED_flag = 0;
 			 */
+
+			UX_effect(alart);
+			switch_Motor(on);
+			wait_ms(100);
+			move_test(0, 0);
+			move_test(90, 200);
+			move_test(0, 0);
+			move_test(0, 0);
+			move_test(-90, -200);
+			move_test(0, 0);
+			mot_app(spec.half_block, 300, 1000, straight, on);
+			wait_ms(100);
+			switch_Motor(off);
+
 			break;
 		}
 

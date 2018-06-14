@@ -17,13 +17,13 @@ extern SPC spec;
 void init_Motor(void) {
 	r_motor.min_acc = 0.0;
 	l_motor.min_acc = 0.0;
-	r_motor.max_acc = 100;
-	l_motor.max_acc = 100;
+	r_motor.max_acc = 1000;
+	l_motor.max_acc = 1000;
 	r_motor.acc = 0.0;
 	l_motor.acc = 0.0;
 
-	r_motor.min_vel = 195.0;
-	l_motor.min_vel = 195.0;
+	r_motor.min_vel = 200.0;
+	l_motor.min_vel = 200.0;
 	r_motor.max_vel = 2000.0;
 	l_motor.max_vel = 2000.0;
 	r_motor.vel = 300.0;
@@ -54,8 +54,8 @@ void init_Motor(void) {
 	PE.DRL.BIT.B2 = 0; //reset(0 : off, 1 : on)
 }
 
-void drv_Motor(float dist, float t_vel, int t_acc, char rot_dir_flag, char end_flag,
-		char ch) {
+void drv_Motor(float dist, float t_vel, int t_acc, char rot_dir_flag,
+		char end_flag, char ch) {
 	/*
 	 rot_dir
 	 1 : forward
@@ -181,6 +181,47 @@ void mot_app2(float dist, float t_vel, int t_acc, char move_flag, char end_flag)
 	spec.cnt_ctl = 0;
 }
 
+void mot_sla_app(float dist, float t_vel, float theta, float omega, int t_acc,
+		char end_flag) {
+	float dist_l = dist + (theta * 3.141592 / 180.0) * spec.tread / 2;
+	float vel_l = t_vel + (omega * 3.141592 / 180.0) * spec.tread / 2;
+	float dist_r = dist - (theta * 3.141592 / 180.0) * spec.tread / 2;
+	float vel_r = t_vel - (omega * 3.141592 / 180.0) * spec.tread / 2;
+	char rot_l, rot_r;
+	spec.cnt_ctl = 2;
+
+	if (vel_l < 0) {
+		rot_l = 0;
+	} else {
+		rot_l = 1;
+	}
+
+	if (vel_r < 0) {
+		rot_r = 0;
+	} else {
+		rot_r = 1;
+	}
+
+	drv_Motor(dist_r, vel_r, t_acc, rot_r, end_flag, R_motor);
+	drv_Motor(dist_l, vel_l, t_acc, rot_l, end_flag, L_motor);
+
+	start_MTU(cst0);
+	start_MTU(cst1);
+
+	while (1) {
+		if (l_motor.stop_flag == 1 || r_motor.stop_flag == 1) {
+			break;
+		}
+	}
+	stop_MTU(cst0);
+	stop_MTU(cst1);
+	spec.cnt_ctl = 0;
+}
+
+void move_test() {
+	mot_sla_app(180, 300, 90, 200, 1500, on);
+}
+
 void move_Left() {
 	spec.kp_r -= 0.1;
 	spec.kp_l -= 0.1;
@@ -190,7 +231,7 @@ void move_Left() {
 	wait_ms(200);
 	switch_Motor(on);
 	wait_ms(100);
-	mot_app(spec.l_distance, 200, 1700, left, on);
+	mot_app(spec.l_distance, 250, 1700, left, on);
 	wait_ms(100);
 	switch_Motor(off);
 	wait_ms(200);
@@ -207,10 +248,10 @@ void move_Right() {
 	mot_app(spec.half_block, 330, 1700, straight, on);
 	wait_ms(100);
 	switch_Motor(off);
-	wait_ms(2000);
+	wait_ms(200);
 	switch_Motor(on);
 	wait_ms(100);
-	mot_app(spec.r_distance, 200, 1700, right, on);
+	mot_app(spec.r_distance, 250, 1700, right, on);
 	wait_ms(10);
 	switch_Motor(off);
 	wait_ms(200);
@@ -236,19 +277,19 @@ void move_Backward() {
 	wait_ms(290);
 	switch_Motor(on);
 	wait_ms(100);
-	mot_app(spec.r_distance * 2, 200, 1700, right, on);
+	mot_app(spec.r_distance * 2, 250, 1700, right, on);
 	wait_ms(10);
 	switch_Motor(off);
 	wait_ms(200);
 	switch_Motor(on);
 	wait_ms(100);
-	mot_app(spec.half_block, 200, 1700, back, on);
+	mot_app(spec.half_block, 250, 1700, back, on);
 	wait_ms(100);
 	switch_Motor(off);
 	wait_ms(200);
 	switch_Motor(on);
-	wait_ms(100);
-	mot_app2(15 + spec.half_block, 330, 1700, straight, on);
+	wait_ms(200);
+	mot_app2(30 + spec.half_block, 330, 1500, straight, on);
 }
 
 void move_Backward_2() {
@@ -258,7 +299,7 @@ void move_Backward_2() {
 	wait_ms(200);
 	switch_Motor(on);
 	wait_ms(100);
-	mot_app(spec.r_distance * 2, 200, 1700, right, on);
+	mot_app(spec.r_distance * 2, 250, 1700, right, on);
 	wait_ms(100);
 	switch_Motor(off);
 	wait_ms(200);

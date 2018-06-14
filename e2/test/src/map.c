@@ -33,6 +33,8 @@ void init_Map(void) {
 		map.searched_map_y[i] = 0xffffffff;
 	}
 
+	map.wall_map_x[0] = 1;
+
 	for (i = 0; i < map.map_size; i++) {
 		for (j = 0; j < map.map_size; j++) {
 			map.a_dist_map[i][j] = 255;

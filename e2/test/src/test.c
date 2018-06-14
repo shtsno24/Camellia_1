@@ -111,6 +111,7 @@ int main(void) {
 			UX_effect(alart);
 
 			switch_Motor(on);
+			wait_ms(100);
 			mot_app2(spec.half_block, 330, 2000, straight, on);
 
 			while (spec.run_interruption != 1) {
@@ -145,7 +146,7 @@ int main(void) {
 				}
 			}
 			update_Wall_map();
-			mot_app(spec.half_block, 310, 2000, straight, on);
+			mot_app(spec.half_block, 330, 2000, straight, on);
 			wait_ms(300);
 			switch_Motor(off);
 			spec.sta_LED_flag = 0;
@@ -301,13 +302,20 @@ int main(void) {
 			UX_effect(alart);
 			wait_ms(100);
 			mot_app2(spec.half_block, 330, 2000, straight, on);
-			mot_app2(spec.full_block * 14, 500, 2000, straight, on);
+			mot_app2(spec.full_block * 1, 330, 2000, straight, on);
 			mot_app(spec.half_block, 330, 2000, straight, on);
 			wait_ms(100);
 			switch_Motor(off);
 
 			spec.sta_LED_flag = 0;
 
+			/*
+			 UX_effect(alart);
+			 switch_Motor(on);
+			 wait_ms(100);
+			 move_test();
+			 switch_Motor(off);
+			 */
 			break;
 		}
 

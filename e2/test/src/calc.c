@@ -41,6 +41,9 @@ void diff_calc(void) {
 			drv_Status_LED(Red, on);
 		}
 		return;
+	} else if (spec.cnt_ctl==2) {
+		spec.diff = 0;
+		return;
 	} else {
 		if ((r_sen.sen >= r_sen.non_threshold + ref_boost_R)
 				&& (l_sen.sen >= l_sen.non_threshold + ref_boost_L)) {
@@ -97,9 +100,9 @@ void vel_calc() {
 	}
 
 	if (r_motor.tar_vel - spec.kp_r * spec.diff > r_motor.vel) {
-		r_motor.vel +=  (r_motor.acc * 0.001);
+		r_motor.vel += (r_motor.acc * 0.001);
 
 	} else if (r_motor.tar_vel - spec.kp_r * spec.diff <= r_motor.vel) {
-		r_motor.vel -=  (r_motor.acc * 0.001);
+		r_motor.vel -= (r_motor.acc * 0.001);
 	}
 }

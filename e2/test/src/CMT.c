@@ -13,6 +13,7 @@
 #include "calc.h"
 #include "math.h"
 
+extern SPC spec;
 extern SEN r_sen, cr_sen, l_sen, cl_sen;
 CMT_01 tim;
 
@@ -111,4 +112,11 @@ void sen_cmt1(void) {
 	diff_calc();
 	vel_calc();
 
+	if (spec.slalom == 1) {
+		spec.angle -= 1;
+		if (spec.angle < 0) {
+			spec.slalom = 0;
+			return;
+		}
+	}
 }

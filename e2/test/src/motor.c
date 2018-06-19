@@ -182,42 +182,11 @@ void mot_app2(float dist, float t_vel, int t_acc, char move_flag, char end_flag)
 	spec.cnt_ctl = 0;
 }
 
-void mot_sla_app(float dist, float t_vel, float theta, float omega, int t_acc,
+void mot_sla_app(float dist, float t_vel, float theta, float angle_acc,float omega, int t_acc,
 		char end_flag) {
-	float dist_l = dist + (theta * 3.141592 / 180.0) * spec.tread / 2;
-	float vel_l = t_vel + (omega * 3.141592 / 180.0) * spec.tread / 2;
-	float dist_r = dist - (theta * 3.141592 / 180.0) * spec.tread / 2;
-	float vel_r = t_vel - (omega * 3.141592 / 180.0) * spec.tread / 2;
-	char rot_l, rot_r;
-	spec.cnt_ctl = 2;
 
-	if (theta == 0) {
-		spec.cnt_ctl = 1;
-	}
+	float theta_dec = (omega*omega)/(2*angle_acc);
 
-	if (dist_l < 0) {
-		dist_l *= -1;
-	}
-	if (dist_r < 0) {
-		dist_r *= -1;
-	}
-
-	if (vel_l < 0) {
-		rot_l = 0;
-		vel_l *= -1.0;
-	} else {
-		rot_l = 1;
-	}
-
-	if (vel_r < 0) {
-		rot_r = 0;
-		vel_r *= -1.0;
-	} else {
-		rot_r = 1;
-	}
-
-	drv_Motor(dist_r, vel_r, t_acc, rot_r, end_flag, R_motor);
-	drv_Motor(dist_l, vel_l, t_acc, rot_l, end_flag, L_motor);
 
 	start_MTU(cst0);
 	start_MTU(cst1);
@@ -231,7 +200,7 @@ void mot_sla_app(float dist, float t_vel, float theta, float omega, int t_acc,
 }
 
 void move_test(float angle, float omega) {
-	mot_sla_app(180, 330, angle, omega, 1500, on);
+	//mot_sla_app(180, 330, angle, omega, 1500, on);
 }
 
 void move_Left() {

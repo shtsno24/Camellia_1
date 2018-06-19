@@ -23,6 +23,7 @@ void init_Spec() {
 	spec.step_angle = 0.9; //[deg]
 	//spec.step_dist = 0.408407;
 	spec.step_dist = spec.tire_dim * 3.14159265 * (spec.step_angle / 360);//[mm]
+	spec.angle = 0.0;
 
 	spec.pwm_base_clock = 6250 - 1; //(interrupt duty : 1ms(@6.25MHz))
 	spec.pwm_half_clock = round((6250 - 1) / 2);
@@ -32,6 +33,7 @@ void init_Spec() {
 	spec.half_block = 92.2;
 	spec.kp_l = 0.3;
 	spec.kp_r = 0.3;
+	spec.slalom = 0;
 	spec.cnt_ctl = 0;
 	spec.diff = 0.0;
 	spec.sta_LED_flag = 0;

@@ -16,12 +16,21 @@ enum on_off {
 	off = 0, on = 1
 };
 
+enum ctl_flag {
+	wall = 0, rot = 1, none = 2
+};
 
 typedef struct spc {
 	float tread; //[mm]
 	float tire_dim; //[mm]
 	float step_dist; //[mm]
-	float step_angle;//[deg]
+	float step_angle; //[deg]
+	float angle;//[rad] 現在の車体角
+	float omega;//[rad/s]　現在の角速度
+	float tar_omega;//[rad/s] 目標角速度
+
+	float max_omega;//[rad/s] 最大角速度
+	float max_angle_acc;//[rad/s^2] 最大角加速度
 
 	short pwm_base_clock; //set interrupt duty
 	short pwm_half_clock;
@@ -37,6 +46,7 @@ typedef struct spc {
 	float full_block;
 	float half_block;
 
+	unsigned char slalom;
 	unsigned char cnt_ctl;
 	unsigned char run_interruption;
 	unsigned char sta_LED_flag;

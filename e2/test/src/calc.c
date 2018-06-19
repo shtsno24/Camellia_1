@@ -32,7 +32,7 @@ void diff_calc(void) {
 		ref_boost_L = 0; //変化量が一定以下なら、設定通りの閾値
 	}
 
-	if (spec.cnt_ctl == 1 || cr_sen.ref_wall < cr_sen.sen
+	if (spec.cnt_ctl == rot || cr_sen.ref_wall < cr_sen.sen
 			|| cl_sen.ref_wall < cl_sen.sen) {
 		spec.diff = (float) (l_motor.cnt - r_motor.cnt) * 10;
 		if (spec.sta_LED_flag == 1) {
@@ -41,7 +41,7 @@ void diff_calc(void) {
 			drv_Status_LED(Red, on);
 		}
 		return;
-	} else if (spec.cnt_ctl==2) {
+	} else if (spec.cnt_ctl == none) {
 		spec.diff = 0;
 		return;
 	} else {

@@ -113,9 +113,10 @@ void sen_cmt1(void) {
 	vel_calc();
 
 	if (spec.slalom == 1) {
-		spec.angle -= 1;
-		if (spec.angle < 0) {
+		spec.angle += spec.omega*0.001;
+		if (spec.angle >= spec.tar_angle) {
 			spec.slalom = 0;
+			spec.angle = 0.0;
 			return;
 		}
 	}

@@ -186,17 +186,17 @@ void mot_sla_app(float dist, float t_vel, float theta, float angle_acc,float ome
 		char end_flag) {
 
 	float theta_dec = (omega*omega)/(2*angle_acc);
-
+	spec.slalom = 1;
+	spec.cnt_ctl = none;
 
 	start_MTU(cst0);
 	start_MTU(cst1);
+	spec.tar_angle = theta;
+	spec.tar_omega = omega;
 
-	while (1) {
-		if (l_motor.stop_flag == 1 || r_motor.stop_flag == 1) {
-			break;
-		}
+	while (spec.slalom != 0) {
 	}
-	spec.cnt_ctl = 0;
+	spec.slalom = 0;
 }
 
 void move_test(float angle, float omega) {

@@ -27,6 +27,7 @@ typedef struct spc {
 	float step_angle; //[deg]
 	float angle;//[rad] 現在の車体角
 	float omega;//[rad/s]　現在の角速度
+	float tar_angle;//[rad/s] 目標角速度
 	float tar_omega;//[rad/s] 目標角速度
 
 	float max_omega;//[rad/s] 最大角速度
